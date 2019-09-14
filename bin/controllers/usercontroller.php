@@ -81,12 +81,13 @@
 							$ps->bindParam(2, $hashword1);
 							$ps->bindParam(3, $email);
 							if ($ps->execute()) {
-
-								$resultSet = $ps->fetch();
+								$this->viewModel->setUserAccount(new UserAccountModel(NULL));
+								$this->viewModel->useraccount->username = $username;
+								$this->viewModel->useraccount->email = $email;
+								/*$resultSet = $ps->fetch();
 								print_r($resultSet);
 								if ($ps->rowCount() > 0) {
-									echo "???";
-								}
+								}*/
 
 							}
 							else {

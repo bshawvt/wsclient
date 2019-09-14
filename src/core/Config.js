@@ -4,8 +4,8 @@ var Config = {
 	version: {client: "", server: ""},
 	serverAddress: {
 		game: {address: "wss://govehill.dynu.net", port: 443},
-		register: "auth/portal.php",
-		recovery: "auth/portal.php"
+		register: "portal.php",
+		recovery: "portal.php"
 	},
 
 	defaults: {

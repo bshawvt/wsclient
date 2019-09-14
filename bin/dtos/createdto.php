@@ -1,6 +1,5 @@
 <?PHP 
 	class CreateDto {
-		public $useraccount = NULL;
 		public $error = NULL;
 		private $errorList = NULL;
 		function __construct() {
@@ -8,8 +7,11 @@
 			$this->errorList = array();
 			$this->error = FALSE;
 		}
-		public function setUserAccount($resultSet) {
-			$this->useraccount = new UserAccountModel($resultSet);
+		public function setUserAccount($model) {
+			$this->useraccount = $model;
+		}
+		public function getUserAccount() {
+			return $this->useraccount;
 		}
 		public function setError($msg) {
 			$this->errorList[] = $msg;
