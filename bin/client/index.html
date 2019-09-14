@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>HTML5/ThreeJSNetworkBase</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, minimal-ui">
+		<meta name="mobile-web-app-capable" content="yes">
+
+		<!-- todo: minify all da scripts into one -->
+		<script src="/src/3rd/three.js"></script>
+
+		<!-- utilities -->
+		<script src="/src/core/Config.js"></script>
+		<script src="/src/core/Common.js"></script>
+		<script src="/src/core/Debug.js"></script>
+
+		<!-- engine & game init  -->
+		<script src="/src/core/Init.js"></script>
+		<script src="/src/core/Game.js"></script>
+
+		<!-- network -->
+		<script src="/src/core/Network.js"></script>
+
+		<!-- user interface -->
+		<script src="/src/core/UserInterface.js"></script>
+		<script src="/src/core/UserInterface.container.js"></script>
+		<script src="/src/core/UserInterface.container.note.js"></script>
+		<script src="/src/core/UserInterface.container.example.js"></script>
+		<script src="/src/core/UserInterface.container.console.js"></script>
+		<script src="/src/core/UserInterface.container.console.command.js"></script>
+		<script src="/src/core/UserInterface.container.metrics.js"></script>
+		<script src="/src/core/UserInterface.container.controls.js"></script>
+		<script src="/src/core/UserInterface.container.login.js"></script>
+
+		<!-- input -->
+		<script src="/src/core/Input.js"></script>
+		<script src="/src/core/Input.event.js"></script>
+		<script src="/src/core/Input.definitions.js"></script>
+
+		<!-- scene -->
+		<script src="/src/core/SceneManager.js"></script>
+		<script src="/src/core/Scene.camera.js"></script>
+		<script src="/src/core/Scene.object.js"></script>
+		<script src="/src/core/Scene.object.test.js"></script>
+
+
+		<!-- classes that don't hold the project together like a cheap carpenters glue -->
+		<!--<script src=""></script>-->
+
+		<link href="https://fonts.googleapis.com/css?family=Roboto|Montserrat|Thasadith|Coiny" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="/src/core/UserInterface.default.css">
+
+		<style>
+		body {
+			overflow: hidden;
+		}
+		canvas {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			border: 0px solid #000;
+		}
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">(()=>{init();})();</script>
+	</body>
+</html>
