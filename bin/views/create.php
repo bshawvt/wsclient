@@ -2,15 +2,12 @@
 	<?PHP 
 		$model = $this->getViewModel();
 		$html = array();
-		//$html = array();
+
 		if ($model->error) {
 			$html[] = $model->getError();
 		}
 		else {
-			$html[] = "Successfully registered ";
-			$html[] = $model->useraccount->username;
-			$html[] = "! Your recovery email is ";
-			$html[] = $model->useraccount->email;
+			$html[] = "Your account has been created! Please remember your email!<br/>";
 		}
 		echo implode("", $html);
 	?>

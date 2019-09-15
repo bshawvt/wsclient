@@ -165,7 +165,7 @@
 						<details>
 							<summary>Recover</summary>
 							<div class="user-form">
-								<label>Request a new password</label>
+								<label>Change password / recover your account</label>
 								<form method="POST" action="?controller=user&action=recover">
 									<input name="email" placeholder="Your@email.com"/>
 									<button type="submit">Send Email</button>

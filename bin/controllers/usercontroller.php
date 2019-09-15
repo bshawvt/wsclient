@@ -63,11 +63,7 @@
 			return "views/play.php"; // fallback
 		}
 		public function create($username, $hashword1, $hashword2, $email, $secret) {
-			/*echo "username: " . $username . "<br/>";
-			echo "hashword1: " . $hashword1 . "<br/>";
-			echo "hashword2: " . $hashword2 . "<br/>";
-			echo "email: " . $email . "<br/>";
-			echo "secret: " . $secret . "<br/>";*/
+
 			$this->viewModel = new CreateDto();
 			if (strlen($username) > 4) {
 				if (strcmp($secret, "thing") == 0) {
@@ -84,15 +80,10 @@
 								$this->viewModel->setUserAccount(new UserAccountModel(NULL));
 								$this->viewModel->useraccount->username = $username;
 								$this->viewModel->useraccount->email = $email;
-								/*$resultSet = $ps->fetch();
-								print_r($resultSet);
-								if ($ps->rowCount() > 0) {
-								}*/
-
 							}
 							else {
 								//print_r($ps->errorInfo());
-								$this->viewModel->setError($ps->errorInfo()[2]);
+								$this->viewModel->setError("That username or email address is already in use<br/>");
 							}
 						}
 					}
