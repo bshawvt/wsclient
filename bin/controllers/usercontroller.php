@@ -98,24 +98,6 @@
 			else {
 				$this->viewModel->setError("username is not long enough<br/>");
 			}
-			//header("Location: /views/index.php");
-			/*$ps = $this->dbContext->prepare('CALL WSProc_GenerateTokenOnAuth(?, ?, ?)');
-
-			$ps->bindParam(1, $username);
-			$ps->bindParam(2, $hashword);
-			$ps->bindParam(3, $ip);
-			$ps->execute();
-
-			$resultSet = $ps->fetch();
-			if ($ps->rowCount() > 0) {
-				$this->viewModel = new UserAccountDto($resultSet);
-				if ($this->viewModel->useraccount->sessionToken !== NULL) {
-					//setcookie("testicle", "testies2");
-					setcookie("session", $this->viewModel->useraccount->sessionToken, time()+10, "/bin/client.html");//, "example.com", 1);
-					header("Location: ../../bin/client.html");
-				}
-			}
-			//echo $username . " " . $hashword;*/
 			return "views/create.php";
 		}
 	}
