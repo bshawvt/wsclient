@@ -8,6 +8,9 @@
 			$html[] = $model->getError();
 			$html[] = "</span></p>";
 		}
+		else if ($model->getTempData() != NULL) {
+			$html[] = $model->getTempData();
+		}
 		else {
 			$html[] = "<p><h3>An email has been sent</h3>";
 			$html[] = "An email has been sent to <span class='italic'>";

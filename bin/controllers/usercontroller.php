@@ -116,14 +116,32 @@
 				$ps->bindParam(1, $email);
 
 				if ($ps->execute()){
+					$resultSet = $ps->fetch();
 					$this->viewModel->setEmail($email);
+					$this->viewModel->setRecoveryToken($resultSet["recoveryToken"]);
 
 					$to = $email;
 					$subject = "Test";
-					$message = "<a href='https://localhost:4443/bin/index.php'>click me</a>";
-					if (mail($to, $subject, $message) == FALSE) {
+
+					$token = $this->viewModel->getRecoveryToken();
+					$url = "https://anotherprophecy.com/bin/index.php?controller=user&action=reset&email=$email&token=$token";
+
+					$msg = array();
+					$msg[] = "<h2>A password reset has been requested.</h2>";
+					$msg[] = "To continue, <a>click here</a>(<a>$url</a>). <br/>";
+					$msg[] = "If you did not request this email please ignore it. This password reset will become invalid after 2 hours.";
+
+					$headers = array();
+					$headers[] = "From: no-reply@anotherprophecy.com\r\n";
+					$headers[] = "Reply-To: no-reply@anotherprophecy.com\r\n";
+					$headers[] = "MIME-Version: 1.0\r\n";
+					$headers[] = "Content-Type: text/html; charset=UTF-8\r\n";
+
+					/*if (mail($to, $subject, $message) == FALSE) {
 						$this->viewModel->setError("Email could not be sent");
-					}
+					}*/
+					// fake mail function because i dont have a relay server on my computer
+					$this->viewModel->setTempData(implode("", $msg));
 				}
 				else {
 					$this->viewModel->setError("This email does not exist");
