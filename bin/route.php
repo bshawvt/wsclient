@@ -2,11 +2,15 @@
 	
 	
 	require ("dbcontext.php");
+
 	require ("controllers/controller.php");
 	require ("controllers/usercontroller.php");
-	require ("dtos/useraccountdto.php");
+
 	require ("models/useraccountmodel.php");
+
+	require ("dtos/useraccountdto.php");
 	require ("dtos/createdto.php");
+	require ("dtos/recoverdto.php");
 
 
 	class Route {
@@ -20,14 +24,23 @@
 		public $email = NULL;
 		public $secret = NULL;
 		public $clientIP = NULL;
+		public $token = NULL;
+
+
 
 		function __construct() {
+			// get
 			if (isset($_GET['action'])) {
 				$this->action = strtolower($_GET['action']);
 			}
 			if (isset($_GET['controller'])) {
 				$this->controller = strtolower($_GET['controller']);
 			}
+			if (isset($_GET['token'])) {
+				$this->token = strtolower($_GET['token']);
+			}
+
+			// post
 			if (isset($_POST['username'])) {
 				$this->username = strtolower($_POST['username']);
 			}

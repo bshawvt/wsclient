@@ -94,20 +94,24 @@
 				return result;
 			}
 
-			function onsubmit_login(e) {
-				console.log("!!!");
-				var hashwords = getFormPasswordElement(e);
+			function onsubmit_login(e, event) {
+				event.preventDefault();
+
+				/*var hashwords = getFormPasswordElement(e);
 				var crypt = new sjcl.hash.sha256();
 				
 				crypt.update(hashwords.hashword1.value);
 				var hash = sjcl.codec.base64.fromBits(crypt.finalize());
 				
 				hashwords.hashword1.value = hash;
+				console.log(hash);*/
+				e.submit();
 			}
 
-			function onsubmit_create(e) {
-				console.log("???");
-				var hashwords = getFormPasswordElement(e);
+			function onsubmit_create(e, event) {
+				event.preventDefault();
+
+				/*var hashwords = getFormPasswordElement(e);
 				var crypt = new sjcl.hash.sha256();
 				
 				crypt.update(hashwords.hashword1.value);
@@ -117,7 +121,8 @@
 				var hash2 = sjcl.codec.base64.fromBits(crypt.finalize());
 
 				hashwords.hashword1.value = hash1;
-				hashwords.hashword2.value = hash2;
+				hashwords.hashword2.value = hash2;*/
+				e.submit();
 			}
 			</script>
 	</head>
@@ -136,7 +141,7 @@
 								<label>Create your account</label>
 								<span class="clear-fix"></span>
 
-								<form method="POST" action="?controller=user&action=create" onsubmit="onsubmit_create(this)">
+								<form method="POST" action="?controller=user&action=create" onsubmit="onsubmit_create(this, event)">
 									<input name="username" placeholder="Username"/>
 									<input name="hashword1" value="" placeholder="Password" type="Password"/>
 									<input name="hashword2" value="" placeholder="Confirm password" type="Password"/>
@@ -153,7 +158,7 @@
 							<summary>Play</summary>
 							<div class="user-form">
 								<label>Login and join the game</label>
-								<form method="POST" action="?controller=user&action=login" onsubmit="onsubmit_login(this)">
+								<form method="POST" action="?controller=user&action=play" onsubmit="onsubmit_login(this, event)">
 									<input name="username" placeholder="Username"/>
 									<input name="hashword1" value="" placeholder="Password" type="Password"/>
 									<button type="submit">Login</button>

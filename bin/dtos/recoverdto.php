@@ -1,17 +1,13 @@
 <?PHP 
-	class CreateDto {
+	class RecoverDto {
 		public $error = NULL;
 		private $errorList = NULL;
+
+		private $email = NULL;
 		function __construct() {
-			$this->useraccount = NULL;
 			$this->errorList = array();
 			$this->error = FALSE;
-		}
-		public function setUserAccount($model) {
-			$this->useraccount = $model;
-		}
-		public function getUserAccount() {
-			return $this->useraccount;
+
 		}
 		public function setError($msg) {
 			$this->errorList[] = $msg;
@@ -19,6 +15,12 @@
 		}
 		public function getError() {
 			return implode("<br/>", $this->errorList);
+		}
+		public function setEmail($email) {
+			$this->email = $email;
+		}
+		public function getEmail() {
+			return $this->email;
 		}
 	}
 ?>

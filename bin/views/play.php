@@ -3,10 +3,13 @@
 		$model = $this->getViewModel();
 		$html = array();
 		if ($model === NULL) {
-			$html[] = "<span>Failed to authenticate! Please try again</span>";
+			$html[] = "<p><h3>Your submission was invalid:</h3>";
+			$html[] = "<span class='italic'>";
+			$html[] = "You failed to authenticate";
+			$html[] = "</span></p>";
 		}
 		else {
-			$html[] = "<span>Redirecting to client...</span>";
+			$html[] = "<span>Congratulations, something broke!</span>";
 		}
 		echo implode("", $html);		
 	?>
