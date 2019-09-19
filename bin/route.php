@@ -6,13 +6,6 @@
 	require ("controllers/controller.php");
 	require ("controllers/usercontroller.php");
 
-	require ("models/useraccountmodel.php");
-
-	require ("dtos/useraccountdto.php");
-	require ("dtos/createdto.php");
-	require ("dtos/recoverdto.php");
-
-
 	class Route {
 
 		private $action = NULL;
@@ -25,7 +18,8 @@
 		public $secret = NULL;
 		public $clientIP = NULL;
 		public $token = NULL;
-
+		public $recovery_email = NULL;
+		public $recovery_token = NULL;
 
 
 		function __construct() {
@@ -38,6 +32,9 @@
 			}
 			if (isset($_GET['token'])) {
 				$this->token = strtolower($_GET['token']);
+			}
+			if (isset($_GET['recovery_email'])) {
+				$this->recovery_email = strtolower($_GET['recovery_email']);
 			}
 
 			// post
@@ -52,6 +49,9 @@
 			}
 			if (isset($_POST['email'])) {
 				$this->email = $_POST['email'];
+			}
+			if (isset($_POST['recovery_token'])) {
+				$this->recovery_token = $_POST['recovery_token'];
 			}
 			if (isset($_POST['secret'])) {
 				$this->secret = strtolower($_POST['secret']);

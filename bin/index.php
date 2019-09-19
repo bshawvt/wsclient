@@ -145,6 +145,7 @@
 									<input name="username" placeholder="Username"/>
 									<input name="hashword1" value="" placeholder="Password" type="Password"/>
 									<input name="hashword2" value="" placeholder="Confirm password" type="Password"/>
+									<label>Optional</label>
 									<input name="email" placeholder="Your@email.com"/>
 									<label>What is the answer from read more? <a href="javascript:void(0);" onclick='load("views/creation.html", "content")'>Read more...</a></label>
 									<input name="secret" placeholder="Answer">
@@ -172,7 +173,7 @@
 							<div class="user-form">
 								<label>Change password / recover your account</label>
 								<form method="POST" action="?controller=user&action=recover">
-									<input name="email" placeholder="Your@email.com"/>
+									<input name="email" placeholder="Your recovery@email.com"/>
 									<button type="submit">Send Email</button>
 								</form>
 							</div>

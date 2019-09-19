@@ -1,5 +1,12 @@
 <?PHP 
 	
+	require ("models/useraccountmodel.php");
+
+	require ("dtos/useraccountdto.php");
+	require ("dtos/createdto.php");
+	require ("dtos/recoverdto.php");
+
+	require ("services/emailservice.php");
 
 	class UserController {
 		private $dbContext = NULL;
@@ -8,9 +15,11 @@
 		private $viewModel = NULL;
 
 		function __construct($route) {
-			$this->dbContext = (new DBContext())->getContext();
-			$this->route = $route;
 
+			$this->dbContext = (new DBContext())->getContext();
+			
+			// todo : this should be moved to routing
+			$this->route = $route;
 			switch($this->route->getAction()) {
 				case "play": {
 					$this->view = $this->play($this->route->username, $this->route->hashword1, $this->route->clientIP);
@@ -21,7 +30,15 @@
 					break;
 				}
 				case "recover": {
-					$this->view = $this->recover($this->route->email, $this->route->token);
+					$this->view = $this->recover($this->route->email);
+					break;
+				}
+				case "reset": {
+					$this->view = $this->reset($this->route->recovery_email, $this->route->token);
+					break;
+				}
+				case "change": {
+					$this->view = $this->change($this->route->recovery_token, $this->route->email, $this->route->hashword1, $this->route->hashword2);
 					break;
 				}
 				default: {
@@ -71,14 +88,22 @@
 			if (strlen($username) > 4) {
 				if (strcmp($secret, $MAGIC_KEY) == 0) {
 					if (strcmp($hashword1, $hashword2) == 0) {
-						if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+						if ($email!=NULL && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
 							$this->viewModel->setError("Invalid email address");
 						}
 						else {
-							$ps = $this->dbContext->prepare('CALL WSProc_InsertUserAccount(?, ?, ?);');
+							$query = 'CALL WSProc_InsertUserAccount(?, ?, ?);';
+							if ($email == NULL) {
+								$query = 'CALL WSProc_InsertUserAccount(?, ?, NULL);';
+							}
+							$ps = $this->dbContext->prepare($query);
 							$ps->bindParam(1, $username);
 							$ps->bindParam(2, $hashword1);
-							$ps->bindParam(3, $email);
+
+							if ($email != NULL) {
+								$ps->bindParam(3, $email);
+							}
+
 							if ($ps->execute()) {
 								$this->viewModel->setUserAccount(new UserAccountModel(NULL));
 								$this->viewModel->useraccount->username = $username;
@@ -104,7 +129,7 @@
 			return "views/create.php";
 		}
 
-		public function recover($email, $token) {
+		public function recover($email) {
 			// generate and insert new useraccountrecovery token
 
 			$this->viewModel = new RecoverDto();
@@ -118,74 +143,59 @@
 				if ($ps->execute()){
 					$resultSet = $ps->fetch();
 					$this->viewModel->setEmail($email);
-					$this->viewModel->setRecoveryToken($resultSet["recoveryToken"]);
+					$token = $resultSet["recoveryToken"];
 
-					$to = $email;
-					$subject = "Test";
-
-					$token = $this->viewModel->getRecoveryToken();
-					$url = "https://anotherprophecy.com/bin/index.php?controller=user&action=reset&email=$email&token=$token";
-
-					$msg = array();
-					$msg[] = "<h2>A password reset has been requested.</h2>";
-					$msg[] = "To continue, <a>click here</a>(<a>$url</a>). <br/>";
-					$msg[] = "If you did not request this email please ignore it. This password reset will become invalid after 2 hours.";
-
-					$headers = array();
-					$headers[] = "From: no-reply@anotherprophecy.com\r\n";
-					$headers[] = "Reply-To: no-reply@anotherprophecy.com\r\n";
-					$headers[] = "MIME-Version: 1.0\r\n";
-					$headers[] = "Content-Type: text/html; charset=UTF-8\r\n";
-
-					/*if (mail($to, $subject, $message) == FALSE) {
-						$this->viewModel->setError("Email could not be sent");
-					}*/
-					// fake mail function because i dont have a relay server on my computer
-					$this->viewModel->setTempData(implode("", $msg));
+					$service = new EmailService($email);
+					$service->sendRecoveryEmail($token);
+	
 				}
 				else {
 					$this->viewModel->setError("This email does not exist");
 				}
 			}
 			return "views/recover.php";
-			/*if (strlen($username) > 4) {
-				if (strcmp($secret, "thing") == 0) {
-					if (strcmp($hashword1, $hashword2) == 0) {
-						if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-							$this->viewModel->setError("bad email address<br/>");
-						}
-						else {
-							$ps = $this->dbContext->prepare('CALL WSProc_InsertUserAccount(?, ?, ?);');
-							$ps->bindParam(1, $username);
-							$ps->bindParam(2, $hashword1);
-							$ps->bindParam(3, $email);
-							if ($ps->execute()) {
-								$this->viewModel->setUserAccount(new UserAccountModel(NULL));
-								$this->viewModel->useraccount->username = $username;
-								$this->viewModel->useraccount->email = $email;
-							}
-							else {
-								//print_r($ps->errorInfo());
-								$this->viewModel->setError("That username or email address is already in use<br/>");
-							}
-						}
-					}
-					else {
-						$this->viewModel->setError("passwords do not match<br/>");
-					}
-				}
-				else {
-					$this->viewModel->setError("secret is incorrect<br/>");
-				}
-			}
-			else {
-				$this->viewModel->setError("username is not long enough<br/>");
-			}
-			return "views/create.php";*/
 		}
 
-		public function changePassword($userId, $hashword) {
 
+
+		public function reset($email, $token) {
+			echo "$email <br/> $token <br/>";
+			if (!filter_var($email, FILTER_VALIDATE_EMAIL) || $token==NULL) {
+				// todo: 
+			} 
+			else {
+
+				$this->viewModel = new RecoverDto();
+				$this->viewModel->setEmail($email);
+				$this->viewModel->setToken($token);
+
+			}
+
+			return "views/reset.php";
+		}
+		public function change($token, $email, $hashword1, $hashword2) {
+			
+			$this->viewModel = new RecoverDto();
+			if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strcmp($hashword1, $hashword2) != 0) {
+				// todo: 
+				$this->viewModel->setError("Your email is invalid or your passwords did not match");
+			}
+			else {
+				//$this->viewModel = new 
+				//$this->viewModel->setError("$token <br/> $email <br/> $hashword1 <br/> $hashword2 <br/>");
+				//(IN mytoken BLOB, IN myemail VARCHAR(128), IN myhash BLOB)
+				$query = "CALL WSProc_ConsumeRecoveryToken(?, ?, ?);";
+				$ps = $this->dbContext->prepare($query);
+				$ps->bindParam(1, $token);
+				$ps->bindParam(2, $email);
+				$ps->bindParam(3, $hashword1);
+
+
+				if ($ps->execute()){
+					$resultSet = $ps->fetch();	
+				}
+			}
+			return "views/change.php";
 		}
 	}
 ?>
