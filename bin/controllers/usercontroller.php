@@ -63,7 +63,7 @@
 		public function play($username, $hashword, $ip) {
 
 			$ip = $_SERVER['REMOTE_ADDR'];
-			$ps = $this->dbContext->prepare('CALL WSProc_GenerateTokenOnAuth(?, ?, ?)');
+			$ps = $this->dbContext->prepare('CALL WSProc_GenerateSessionToken(?, ?, ?)');
 
 			$ps->bindParam(1, $username);
 			$ps->bindParam(2, $hashword);

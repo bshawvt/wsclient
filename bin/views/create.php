@@ -16,7 +16,7 @@
 				$html[] = "WARNING! You did not provide an email address while creating your account. If you lose access to your account it cannot be recovered! You can set your email address in game.";
 			}
 			else {
-				$html[] = "No creation confirmation emails will be sent so please remember the email address you used to create your account so that you may recover it or change your password later on!</p>";
+				$html[] = "No confirmation email will be sent so please remember the email address you used to create your account so that you may recover it or change your password later on!</p>";
 			}
 		}
 		echo implode("", $html);
