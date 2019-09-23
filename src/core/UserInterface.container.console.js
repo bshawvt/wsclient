@@ -42,11 +42,12 @@ ContainerConsole.prototype.send = function(e) {
 		var evt = new InputEvent(e);
 		if (evt.key == Input.KEY_ENTER) {
 			var input = this.input.value;
-			new ConsoleCommand(input, this);
+			
+			this.appendText((new ConsoleCommand(this, input)).text);
 
 			this.input.value = "";
-			this.addElement({name: "br"}, this.textArea);
-			this.textArea.scrollTop = this.textArea.scrollHeight;
+			//this.addElement({name: "br"}, this.textArea);
+			//this.textArea.scrollTop = this.textArea.scrollHeight;
 		}
 	}
 };
@@ -54,4 +55,6 @@ ContainerConsole.prototype.send = function(e) {
 ContainerConsole.prototype.appendText = function(text) {
 	this.addText(text, this.textArea);
 	this.addElement({name: "br"}, this.textArea);
+
+	this.textArea.scrollTop = this.textArea.scrollHeight;
 };

@@ -1,4 +1,28 @@
-function ConsoleCommand(input, consoleContainer) {
+function ConsoleCommand(invoker, input) {
+	
+	this.command = "";
+	this.text = input;
+
+	if (input[0] == "/") {
+		this.command = input.split(" ")[0].toLowerCase();
+		switch(this.command) {
+			case "/help": {
+				this.text = "You have ^23423983been ^helped prolly";
+				break;
+			}
+			default: {
+				this.text = "Unknown input";
+				break;
+			}
+		}
+	}
+}
+
+ConsoleCommand.prototype.getResult = function() {
+	return this;
+};
+
+/*function ConsoleCommand(input, consoleContainer) {
 	
 	//console.log(consoleContainer);
 	if (consoleContainer === undefined) return;
@@ -62,10 +86,10 @@ function ConsoleCommand(input, consoleContainer) {
 				break;
 			}
 		}
-		consoleContainer.addText(result, consoleContainer.textArea);
+		//consoleContainer.addText(result, consoleContainer.textArea);
 	}
 	else {
-		consoleContainer.addText(input, consoleContainer.textArea);
+		//consoleContainer.addText(input, consoleContainer.textArea);
 	}
 }
 ConsoleCommand.prototype.hasGameReference = function(container) {
@@ -73,4 +97,4 @@ ConsoleCommand.prototype.hasGameReference = function(container) {
 		return false;
 	}
 	return true;
-};
+};*/
