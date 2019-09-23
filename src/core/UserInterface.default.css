@@ -115,14 +115,12 @@ body {
 	position: relative;
 	height: 20px;
 
-	width: 100%;
 	
-	bottom: 0px;
-	left: 0px;
-	top: -2px;
 
-	/*padding-left: 5px;*/
-	/*padding-right: 5px;*/
+	width: auto;
+	padding-left: 5px;
+	padding-right: 5px;
+	margin: 2px;
 
 	caret-color: #000;
 	color: rgb(25, 25, 25);
