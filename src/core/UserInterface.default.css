@@ -113,7 +113,7 @@ body {
 .ui-default-input {
 
 	position: relative;
-	height: 15px;
+	height: 20px;
 
 	width: 100%;
 	
@@ -121,14 +121,16 @@ body {
 	left: 0px;
 	top: -2px;
 
-	padding-left: 5px;
-	padding-right: 5px;
+	/*padding-left: 5px;*/
+	/*padding-right: 5px;*/
 
 	caret-color: #000;
-	color: black;
+	color: rgb(25, 25, 25);
 	outline: none;
-	border: 0px solid #000;
-	background: linear-gradient(180deg, rgba(225, 225, 225, 0.5), rgba(255, 255, 255, 0.55), rgba(225, 225, 225, 0.5));
+	border: 1px solid #000;
+	box-shadow: inset 0 0 5px #fff;
+	background-color: rgb(200, 200, 200);
+	/*background: linear-gradient(180deg, rgba(225, 225, 225, 0.5), rgba(255, 255, 255, 0.55), rgba(225, 225, 225, 0.5));*/
 }
 .ui-default-title-button {
 	float: right;
@@ -141,7 +143,7 @@ body {
 	max-height: 24px;
 }
 .ui-default-icon {
-	background: url(../../bin/data/ss_ui01.png);
+	background: url(/bin/client/data/ss_ui01.png);
 }
 .ui-default-icon-resize {
 	position: absolute;
@@ -169,8 +171,12 @@ body {
 	display: none;
 }
 .clearfix {
-	clear: both;
+	/*clear: both;*/
+	content:"";
+	display:table;
+	clear:both;
 }
+
 .float-left {
 	float: left;
 }

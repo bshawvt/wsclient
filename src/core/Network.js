@@ -26,6 +26,8 @@ Network.prototype.connect = function(args) {
 
 	if (this.session === null) {
 		this.invoker.ui.output("You must login to play");
+
+		new ContainerConnector(this);
 		//this.invoker.ui.get("console").appendText("");
 		//console.log("invalid token.. stopping");
 		return;
@@ -43,10 +45,11 @@ Network.prototype.connect = function(args) {
 		this.socket = socket;
 	}
 };
-Network.prototype.connect2 = function(args) {
-	this.invoker.ui.output("Connecting to server...");
-	var connectionString = [ Config.serverAddress.game.address + ":",
-		Config.serverAddress.game.port + "/"];
+Network.prototype.directConnect = function(args) {
+	this.invoker.ui.output("directConnect to server...");
+	console.log(args.session);
+	var connectionString = [ args.address + ":",
+		args.port + "/", args.session ];
 	var socket = new WebSocket(connectionString.join(''));
 	// i hate these closures but it's the only way
 	socket.onclose = (event) => { this.onClose(event); }
