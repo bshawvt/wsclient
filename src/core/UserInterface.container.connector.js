@@ -2,8 +2,8 @@ function ContainerConnector(net) {
 	Container.call(this, {});
 
 	var self = this;
-	this.w = 300;
-	this.h = 500;
+	this.w = 200;
+	this.h = 300;
 	
 	this.net = net;
 
@@ -16,35 +16,45 @@ function ContainerConnector(net) {
 	var remove = this.addElement({name: "button", className: "ui-default-title-button ui-default-icon ui-default-icon-remove"}, title);
 	var hide = this.addElement({name: "button", className: "ui-default-title-button ui-default-icon ui-default-icon-hide"}, title);
 	var body = this.addElement({name: "div", className: "ui-default-body"});
-
+	var resize = this.addElement({name: "div", className: "ui-default-icon ui-default-icon-resize noselect"})
+	
 
 	this.addText("connection address:", body);
-	//this.addElement({name: "br"});
+	this.addElement({name: "br"}, body);
 	var addr = this.addElement({name: "input", className: "ui-default-input",
-								attributes: [{	name: "value", value: Config.serverAddress.game.address}]}, 
+								attributes: [{	name: "value", value: Config.servers.game.address}]}, 
 								body);
-	this.addText("session token:", body);
-	//this.addElement({name: "br"});
+	this.addElement({name: "br"}, body);
+	this.addText("port:", body);
+	this.addElement({name: "br"}, body);
 	var port = this.addElement({name: "input", className: "ui-default-input",
-								attributes: [{	name: "value", value: Config.serverAddress.game.port}]}, 
+								attributes: [{	name: "value", value: Config.servers.game.port}]}, 
 								body);
+	this.addElement({name: "br"}, body);
 	this.addText("session token:", body);
-	//this.addElement({name: "br"});
+	this.addElement({name: "br"}, body);
 	var token = this.addElement({name: "input", className: "ui-default-input",
 								attributes: [{	name: "value", value: ""}]}, 
 								body);
-	var connect = this.addElement({name: "button", text: "Connect", className: "ui-default-button ui-button float-right"}, body);
+	this.addElement({name: "br"}, body);
+	this.addText("client version:", body);
+	this.addElement({name: "br"}, body);
+	var version = this.addElement({name: "input", className: "ui-default-input",
+								attributes: [{ name: "value", value: Config.version.build }]}, 
+								body);
+	
+	this.addElement({name: "br", className: "clearfix"}, body);
+
+	var connect = this.addElement({name: "button", text: "Connect", className: "ui-default-button ui-button"}, body);
 	connect.onclick = () => {
-		console.log(addr, port, token);
-		this.net.directConnect({address: addr.value, port: port.value, session: token.value});
+		console.log(addr, port, token, version);
+		this.net.directConnect({address: addr.value, port: port.value, session: token.value, version: version.value});
 	};
-
-	this.addElement({name: "span", className: "clearfix"}, body);
-
 	
 	this.addDragEvent(title);
 	this.addRemoveEvent(remove);
 	this.addHideEvent(hide);
+	this.addDragEvent(resize, true);
 
 	this.appendContainer();
 	this.update({x: this.x, y: this.y, w: this.w, h: this.h, pushIndex: true});

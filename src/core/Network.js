@@ -35,7 +35,7 @@ Network.prototype.connect = function(args) {
 	if (this.socket == null) {
 		this.invoker.ui.output("Connecting to server...");
 		var connectionString = [ Config.serverAddress.game.address + ":",
-			Config.serverAddress.game.port + "/", this.session ];
+			Config.serverAddress.game.port + "/", this.session, "&v=", Config.version.build ];
 		var socket = new WebSocket(connectionString.join(''));
 		// i hate these closures but it's the only way
 		socket.onclose = (event) => { this.onClose(event); }
@@ -49,7 +49,9 @@ Network.prototype.directConnect = function(args) {
 	this.invoker.ui.output("directConnect to server...");
 	console.log(args.session);
 	var connectionString = [ args.address + ":",
-		args.port + "/", args.session ];
+		args.port + "/", args.session, "/", args.version  ];
+
+
 	var socket = new WebSocket(connectionString.join(''));
 	// i hate these closures but it's the only way
 	socket.onclose = (event) => { this.onClose(event); }
@@ -57,38 +59,6 @@ Network.prototype.directConnect = function(args) {
 	socket.onmessage = (event) => { this.onMessage(event); }
 	socket.onopen = (event) => { this.onOpen(event); }
 	this.socket = socket;
-};
-Network.prototype.connect3 = function(args) {
-
-	if (this.session === null) {
-		this.invoker.ui.output("You must login to play");
-		//this.invoker.ui.get("console").appendText("");
-		//console.log("invalid token.. stopping");
-		return;
-	}
-	if (this.socket == null) {
-		this.invoker.ui.output("Connecting to server...");
-		var connectionString = [ Config.serverAddress.game.address + ":",
-			Config.serverAddress.game.port + "/", this.session ];
-		var socket = new WebSocket(connectionString.join(''));
-		// i hate these closures but it's the only way
-		socket.onclose = (event) => { this.onClose(event); }
-		socket.onerror = (event) => { this.onError(event); }
-		socket.onmessage = (event) => { this.onMessage(event); }
-		socket.onopen = (event) => { this.onOpen(event); }
-		this.socket = socket;
-	}
-
-		this.invoker.ui.output("Connecting to server 2...");
-		var connectionString = [ Config.serverAddress.game.address + ":",
-			Config.serverAddress.game.port + "/", this.session ];
-		var socket2 = new WebSocket(connectionString.join(''));
-		// i hate these closures but it's the only way
-		socket2.onclose = (event) => { this.onClose(event); }
-		socket2.onerror = (event) => { this.onError(event); }
-		socket2.onmessage = (event) => { this.onMessage(event); }
-		socket2.onopen = (event) => { this.onOpen(event); }
-		this.socket2 = socket2;
 };
 Network.prototype.onClose = function(event) {
 	this.invoker.ui.output("Disconnected: " + event.reason);
