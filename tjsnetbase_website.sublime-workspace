@@ -1,0 +1,852 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"inet",
+				"inet_ntop"
+			],
+			[
+				"de",
+				"details\tTag"
+			],
+			[
+				"Network",
+				"NetworkServer"
+			],
+			[
+				"In",
+				"InputEvent"
+			],
+			[
+				"C",
+				"Container"
+			],
+			[
+				"Contain",
+				"ContainerMetrics"
+			],
+			[
+				"ui-fe",
+				"ui-default-textarea"
+			],
+			[
+				"Scn",
+				"SceneObject"
+			],
+			[
+				"Net",
+				"NetworkServer"
+			],
+			[
+				"primitiveLi",
+				"primitiveLists"
+			],
+			[
+				"primti",
+				"primitiveLists"
+			],
+			[
+				"primitive",
+				"primitiveLists"
+			],
+			[
+				"primit",
+				"primitiveIndices"
+			],
+			[
+				"blockCou",
+				"blockCountOffset"
+			],
+			[
+				"primiti",
+				"primitiveIndices"
+			],
+			[
+				"primi",
+				"primitiveGroups"
+			],
+			[
+				"off",
+				"offset"
+			],
+			[
+				"vertex",
+				"vertexLineLength"
+			],
+			[
+				"netObject",
+				"netObjectManager"
+			],
+			[
+				"fpas",
+				"fpassword2"
+			],
+			[
+				"reset",
+				"reset-submit"
+			],
+			[
+				"editUser",
+				"editUsername"
+			],
+			[
+				"select",
+				"selectedUserAccount"
+			],
+			[
+				"auth",
+				"authenticated"
+			],
+			[
+				"fetch",
+				"fetch_array"
+			],
+			[
+				"forward",
+				"forwardAngle"
+			],
+			[
+				"ui",
+				"uiIsActive"
+			],
+			[
+				"Aud",
+				"AudioManager"
+			],
+			[
+				"Scne",
+				"SceneManager"
+			],
+			[
+				"particle",
+				"particleSpawner"
+			],
+			[
+				"ema",
+				"email"
+			],
+			[
+				"ste",
+				"stepElapsedTime"
+			],
+			[
+				"spawn",
+				"SpawnerSceneObject"
+			],
+			[
+				"request",
+				"requestNumber"
+			],
+			[
+				"frame",
+				"frameTime2"
+			],
+			[
+				"titl",
+				"titleHeight"
+			],
+			[
+				"geo",
+				"geometry"
+			],
+			[
+				"temp",
+				"tempOffsetY"
+			],
+			[
+				"offset",
+				"offsetX"
+			],
+			[
+				"canvas",
+				"canvas2d"
+			],
+			[
+				"can",
+				"canvas2d"
+			],
+			[
+				"w",
+				"Widget2D"
+			],
+			[
+				"drawWi",
+				"drawWidgetCalls"
+			],
+			[
+				"offs",
+				"offsety"
+			],
+			[
+				"re",
+				"render"
+			],
+			[
+				"movem",
+				"movementY"
+			],
+			[
+				"get",
+				"getContext"
+			],
+			[
+				"inner",
+				"innerWidth"
+			],
+			[
+				"hei",
+				"innerHeight"
+			],
+			[
+				"netob",
+				"netObject"
+			],
+			[
+				"ping",
+				"lastPingTime"
+			],
+			[
+				"netObj",
+				"netObjectManager"
+			],
+			[
+				"UPDATE_TYPE_",
+				"UPDATE_TYPE_SYNC"
+			],
+			[
+				"neto",
+				"netObjectManager"
+			],
+			[
+				"scene",
+				"sceneObjects"
+			],
+			[
+				"scen",
+				"sceneObjectsQueue"
+			],
+			[
+				"sceneO",
+				"sceneObjectsQueue"
+			],
+			[
+				"draw",
+				"drawCircle"
+			],
+			[
+				"netw",
+				"networkObject"
+			],
+			[
+				"LOGIN",
+				"LOGIN_SUCCESS"
+			],
+			[
+				"TYPE_",
+				"TYPE_DISCONNECT"
+			],
+			[
+				"p_",
+				"p_currentStepTime"
+			],
+			[
+				"icon",
+				"icon_32x32"
+			],
+			[
+				"inn",
+				"innerHeight"
+			],
+			[
+				"ss",
+				"ssl_port"
+			],
+			[
+				"mouse",
+				"g_mouseMetrics"
+			],
+			[
+				"g_",
+				"g_cursorItemId"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "bin/controllers/controller.php",
+			"settings":
+			{
+				"buffer_size": 434,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 35.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 416.0
+	},
+	"console":
+	{
+		"height": 295.0,
+		"history":
+		[
+			"Exception(\"test\", 'xxx')",
+			"Exception(\"test\")",
+			"os.path.basename(os.path.split(t)[0])",
+			"os.path.basename(os.path.split(t))",
+			"os.path.basename(t)",
+			"os.path.split(t)",
+			"t[2]",
+			"t = \"E:\\\\Development\\\\Projects\\\\Web\\\\TJSNetworkBase\\\\src\\\\core\\\\UserInterface.js\"",
+			"t = \"E:\\\\Development\\\\Projects\\\\Web\\\\TJSNetworkBase\\\\src\\\\core\\\\UserInterface.js\"[2]",
+			"t[2]",
+			"t[1]",
+			"t[0]",
+			"t = \"E:\\\\Development\\\\Projects\\\\Web\\\\TJSNetworkBase\\\\src\\\\core\\\\UserInterface.js\"",
+			"os.path.split(\"E:\\\\Development\\\\Projects\\\\Web\\\\TJSNetworkBase\\\\src\\\\core\\\\UserInterface.js\")[0][3]",
+			"os.path.split(\"E:\\\\Development\\\\Projects\\\\Web\\\\TJSNetworkBase\\\\src\\\\core\\\\UserInterface.js\")[0][2]",
+			"print(os.path.split(\"E:\\\\Development\\\\Projects\\\\Web\\\\TJSNetworkBase\\\\src\\\\core\\\\UserInterface.js\")[0][2])",
+			"import os",
+			"os.path.split(\"E:\\\\Development\\\\Projects\\\\Web\\\\TJSNetworkBase\\\\src\\\\core\\\\UserInterface.js\")[0][1]",
+			"os.path.split(\"E:\\\\Development\\\\Projects\\\\Web\\\\TJSNetworkBase\\\\src\\\\core\\\\UserInterface.js\")[0][2]",
+			"os.path.split(\"E:\\\\Development\\\\Projects\\\\Web\\\\TJSNetworkBase\\\\src\\\\core\\\\UserInterface.js\")[0][0]",
+			"os.path.split(\"E:\\\\Development\\\\Projects\\\\Web\\\\TJSNetworkBase\\\\src\\\\core\\\\UserInterface.js\")[0]",
+			"os.path.split(\"E:\\\\Development\\\\Projects\\\\Web\\\\TJSNetworkBase\\\\src\\\\core\\\\UserInterface.js\")[1]",
+			"os.path.split(\"E:\\\\Development\\\\Projects\\\\Web\\\\TJSNetworkBase\\\\src\\\\core\\\\UserInterface.js\")[0]",
+			"os.path.split(\"E:\\\\Development\\\\Projects\\\\Web\\\\TJSNetworkBase\\\\src\\\\core\\\\UserInterface.js\")[-1]",
+			"os.path.split(\"E:\\\\Development\\\\Projects\\\\Web\\\\TJSNetworkBase\\\\src\\\\core\\\\UserInterface.js\")[2]",
+			"os.path.split(\"E:\\\\Development\\\\Projects\\\\Web\\\\TJSNetworkBase\\\\src\\\\core\\\\UserInterface.js\")[1]",
+			"os.path.split(\"E:\\\\Development\\\\Projects\\\\Web\\\\TJSNetworkBase\\\\src\\\\core\\\\UserInterface.js\")[0]",
+			"os.path.split(\"E:\\\\Development\\\\Projects\\\\Web\\\\TJSNetworkBase\\\\src\\\\core\\\\UserInterface.js\")",
+			"os.path.dirname(\"E:\\\\Development\\\\Projects\\\\Web\\\\TJSNetworkBase\\\\src\\\\core\\\\UserInterface.js\")",
+			"os.path.abspath(\"E:\\\\Development\\\\Projects\\\\Web\\\\TJSNetworkBase\\\\src\\\\core\\\\UserInterface.js\")",
+			"import os",
+			".",
+			"sublime.active_window()",
+			"import sublime",
+			"s is 1",
+			"s",
+			"s = 1",
+			"sublime.run_command('package_reloader_reload')",
+			"sublime.run_command()",
+			"run_command()",
+			"run_command",
+			"package_reloader_reload()",
+			"package_reloader_reload",
+			"sublime.project_data()",
+			" ",
+			"def x():",
+			"vv = undefined",
+			"vv = null",
+			"def test(t): return 12",
+			"def test(t):",
+			"testicles.add({'test':1})",
+			"testicles = []",
+			"clr()",
+			"clr",
+			"ttt[0] = {'fuk': 1}",
+			"ttt[0] = {fuk: 1}",
+			"ttt = []",
+			"testx",
+			"testx.t",
+			"testx['t']",
+			"test['t']",
+			"test.t",
+			"testx['t'] = 2",
+			"testx.t = 1",
+			"testx",
+			"testx = {}",
+			"testi['fxx'] = 1",
+			"testi = []",
+			"test2['tx'] = 2",
+			"test2 = 0",
+			"test['fx']",
+			"test['fx'] = 2",
+			"test['fx']",
+			"test['wtf']",
+			"test[wtf]",
+			"test.wtf",
+			"test",
+			"test = {\"wtf\":1}",
+			"view.run_command('test')",
+			"view.run_command('butt')",
+			"view.run_command('Butt')",
+			"view.run_command('examplex')",
+			"view.run_command('example')",
+			"view.run_command",
+			"def test(): print(\"shit\")",
+			"def test()",
+			"def",
+			"pass",
+			"def test(): print(\"test\")",
+			"def test(): pass",
+			"2**3",
+			"def fib(n):",
+			"def test():",
+			"def test()\"",
+			"def test():",
+			"def test(): print(\"fuk\");",
+			"def test(): print(\"fuk\")",
+			"def test() print(\"fuk\")",
+			"def test() ",
+			"def test:",
+			"clear()",
+			"clear",
+			"sys.version",
+			"import sys",
+			"sys",
+			"def hi",
+			"help",
+			"version",
+			"version()",
+			"print(\"hi\")",
+			"help",
+			"help()"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/E/Development/Projects/Web/WSClient/bin"
+	],
+	"file_history":
+	[
+		"/E/Development/Projects/Web/WSClient/bin/models/useraccountmodel.php",
+		"/E/Development/Projects/Web/WSClient/bin/views/creation.html",
+		"/E/Development/Projects/Web/WSClient/bin/index.php",
+		"/E/Development/Projects/Web/WSClient/bin/dtos/useraccountdto.php",
+		"/E/Development/Projects/Web/WSClient/bin/dtos/createdto.php",
+		"/E/Development/Projects/Web/WSClient/bin/route.php",
+		"/E/Development/Projects/Web/WSClient/bin/dtos/recoverdto.php",
+		"/E/Development/Projects/Web/WSClient/bin/views/reset.php",
+		"/E/Development/Projects/Web/WSClient/bin/services/emailservice.php",
+		"/E/Development/Projects/Web/WSClient/bin/controllers/usercontroller.php",
+		"/E/Development/Projects/Web/WSClient/notes.txt",
+		"/E/Development/Projects/Web/WSClient/bin/client/index.html",
+		"/E/Development/Projects/Web/WSClient/bin/views/play.php",
+		"/E/Development/Projects/Web/WSClient/bin/views/recover.php",
+		"/E/Development/Projects/Web/WSClient/bin/views/create.php",
+		"/E/Development/Projects/Web/WSClient/bin/views/change.php",
+		"/E/Development/Projects/Web/WSClient/bin/views/index.php",
+		"/C/Users/bshaw/AppData/Roaming/.minecraft/config/foamfix.cfg",
+		"/C/Users/bshaw/AppData/Roaming/.minecraft/crash-reports/crash-2019-09-23_10.53.46-server.txt",
+		"/C/Users/bshaw/AppData/Local/Temp/7zO4E886303/splashes.txt",
+		"/C/Users/bshaw/AppData/Roaming/.minecraft/launcher_profiles.json",
+		"/C/Users/bshaw/AppData/Roaming/.minecraft/optionsof.txt",
+		"/C/Users/bshaw/AppData/Roaming/.minecraft/options.txt",
+		"/C/Users/bshaw/AppData/Roaming/.minecraft/config/forge.cfg",
+		"/C/Users/bshaw/AppData/Roaming/.minecraft/config/ice_and_fire.cfg",
+		"/C/Users/bshaw/Twitch/Minecraft/Instances/RLCraft/config/foamfix.cfg",
+		"/C/Users/bshaw/AppData/Roaming/.minecraft/mods/StartMenuOverride/pack.mcmeta",
+		"/C/Users/bshaw/AppData/Roaming/.minecraft/resourcepacks/StartMenuOverride/pack.mcmeta",
+		"/C/Users/bshaw/AppData/Roaming/.minecraft/config/splash.properties",
+		"/C/Users/bshaw/AppData/Roaming/.minecraft/minecraft launcher/options.json",
+		"/E/Development/Projects/Web/WSClient/bin/desktop.css",
+		"/C/FolderOfFolders/Apache24/conf/httpd.conf",
+		"/C/FolderOfFolders/Apache24/conf/extra/httpd-ssl.conf",
+		"/C/Users/bshaw/AppData/Local/Temp/Temp1_io_mesh_ovo.zip/io_mesh_ovo/export_ovo.py",
+		"/E/Development/Projects/Web/WSClient/src/core/Config.js",
+		"/E/Development/SDK/Ovo Vertex Object/Ovo_Vertex_Object_Specification.txt",
+		"/C/Users/bshaw/AppData/Local/Temp/Temp1_io_mesh_ovo (1).zip/io_mesh_ovo/__init__.py",
+		"/C/Users/bshaw/Downloads/test.ovo",
+		"/C/FolderOfFolders/Backup/OldPC/Ovo_Vertex_Object_Specification.txt",
+		"/C/Users/bshaw/AppData/Local/Temp/Temp1_io_mesh_ovo (1).zip/io_mesh_ovo/export_ovo.py",
+		"/C/Users/bshaw/AppData/Local/Temp/Temp1_io_mesh_ovo (1).zip/io_mesh_ovo/import_ovo.py",
+		"/C/Users/bshaw/AppData/Local/Temp/Temp1_io_mesh_ovo (1).zip/io_mesh_ovo/trianglestripifier.py",
+		"/C/Users/bshaw/Downloads/latest.php",
+		"/E/Development/Projects/Web/WSClient/bin/dbcontext.php",
+		"/E/Development/Projects/Web/WSClient/bin/client/sandbox.html",
+		"/E/Development/Projects/Web/TJSNetworkBase/bin/client.html",
+		"/E/Development/Projects/Web/TJSNetworkBase/bin/auth/_pages/_acctcreation.html",
+		"/E/Development/Projects/Web/TJSNetworkBase/src/core/UserInterface.js",
+		"/E/Development/Projects/Web/TJSNetworkBase/src/core/Input.event.js",
+		"/E/Development/Projects/Web/TJSNetworkBase/src/core/UserInterface.container.console.command.js",
+		"/E/Development/Projects/Web/TJSNetworkBase/src/core/Config.js",
+		"/E/Programs/tjsbase_config.json",
+		"/E/Development/Projects/Web/TJSNetworkBase/src/core/Init.js",
+		"/E/Development/Projects/Web/TJSNetworkBase/src/core/UserInterface.container.metrics.js",
+		"/E/Development/Projects/Web/TJSNetworkBase/src/core/Game.js",
+		"/E/Development/Projects/Web/TJSNetworkBase/src/core/UserInterface.container.login.js",
+		"/E/Development/Projects/Web/TJSNetworkBase/src/core/UserInterface.container.js",
+		"/E/Development/Projects/Web/TJSNetworkBase/src/core/UserInterface.container.console.js",
+		"/E/Development/Projects/Web/TJSNetworkBase/bin/auth/views/test.html",
+		"/E/Development/Projects/Web/TJSNetworkBase/bin/auth/models/useraccountmodel.php",
+		"/E/Development/Projects/Web/TJSNetworkBase/bin/auth/dtos/useraccountdto.php",
+		"/E/Development/Projects/Web/TJSNetworkBase/bin/auth/route.php",
+		"/E/Development/Projects/Web/TJSNetworkBase/bin/auth/controllers/usercontroller.php",
+		"/C/FolderOfFolders/Apache24/php/php.ini",
+		"/C/FolderOfFolders/Apache24/x32/conf/httpd.conf",
+		"/C/FolderOfFolders/Apache24/INSTALL.txt",
+		"/C/FolderOfFolders/Apache24/README.txt",
+		"/E/Development/Projects/Web/TJSNetworkBase/bin/auth/controllers/controller.php",
+		"/E/Development/Projects/Web/TJSNetworkBase/bin/auth/views/index.php",
+		"/E/Development/Projects/Web/TJSNetworkBase/bin/auth/dbcontext.php",
+		"/E/Development/Projects/Web/TJSNetworkBase/bin/auth/views/news.php",
+		"/C/FolderOfFolders/Apache24/conf/original/httpd.conf",
+		"/E/Development/Projects/Web/TJSNetworkBase/bin/auth/models/bookmarkmodel.php",
+		"/E/Development/Projects/Web/TJSNetworkBase/bin/auth/dtos/indexdto.php",
+		"/E/Development/Projects/Web/TJSNetworkBase/bin/auth/_acctcreation.html",
+		"/E/Development/Projects/Web/TJSNetworkBase/notes.txt",
+		"/E/Development/Projects/Web/TJSNetworkBase/bin/auth/style.css",
+		"/E/Development/Projects/Web/TJSNetworkBase/bin/auth/reset.css",
+		"/E/Development/Projects/Web/TJSNetworkBase/bin/auth/mobile.css",
+		"/E/Development/Projects/Web/TJSNetworkBase/bin/auth/desktop.css",
+		"/E/Development/Projects/Web/TJSNetworkBase/src/core/Network.js",
+		"/E/Development/Projects/Web/TJSNetworkBase/launch.bat",
+		"/E/Programs/Launch WebServerLite.bat",
+		"/E/Development/Projects/Web/TJSNetworkBase/index.html",
+		"/E/Development/Projects/Web/TJSNetworkBase/bin/.htaccess",
+		"/E/Development/Projects/Web/TJSNetworkBase/src/core/UserInterface.default.css",
+		"/E/Development/Projects/Web/TJSNetworkBase/src/core/Network.message.js",
+		"/E/Development/Projects/Web/TJSNetworkBase/bin/auth/portal.php",
+		"/E/Development/Tools/greenlock-express.js/index.js",
+		"/E/Programs/webserverlite.bat",
+		"/E/Programs/launch_do.bat",
+		"/E/Development/Projects/Web/TJSNetworkBase/src/3rd/three.js",
+		"/E/Development/Projects/NodeJS/custom_modules/webserverlite/bin/license.txt",
+		"/C/Certbot/live/README",
+		"/C/Certbot/live/govehill.dynu.net/README",
+		"/C/Certbot/live/govehill.dynu.net/privkey.pem",
+		"/C/Development/Builds/OllyDbg/errordb.txt",
+		"/C/Development/Builds/OllyDbg/exceptiondb.txt",
+		"/C/Development/Builds/OllyDbg/mnemdb.json",
+		"/C/Development/Builds/OllyDbg/ntstatusdb.txt",
+		"/C/Development/Builds/OllyDbg/winconstants.txt",
+		"/C/Users/bshaw/AppData/Roaming/npm/node_modules/greenlock-cli/examples/standalone.sh",
+		"/C/Users/bshaw/AppData/Roaming/npm/node_modules/greenlock-cli/bin/greenlock.js",
+		"/E/Development/Tools/greenlock-express.js/config.js",
+		"/E/Development/Tools/greenlock-express.js/examples/production.js",
+		"/E/Development/Tools/greenlock-express.js/examples/websockets.js",
+		"/E/Development/Tools/greenlock-express.js/server.js",
+		"/E/Development/Tools/greenlock-express.js/README.md",
+		"/E/Development/Tools/node_modules/greenlock-cli/lib/servers.js",
+		"/E/Development/Tools/greenlock-express.js/examples/quickstart.js",
+		"/C/Users/bshaw/Desktop/byond/byond stuff/FTL13-master/config/config.txt",
+		"/C/Users/bshaw/Desktop/byond/byond stuff/FTL13-master/config/game_options.txt",
+		"/C/Users/bshaw/Desktop/byond/byond stuff/FTL13-master/TGS3.json",
+		"/E/Development/Projects/Web/TJSNetworkBase/src/core/Common.js",
+		"/E/Development/Projects/Web/TJSNetworkBase/bin/sandbox.html",
+		"/E/Development/Projects/Web/anotherprophecy/442018/index.html",
+		"/E/Development/Projects/Java/workspaces/WebsocketServerV2/src/tools/php/reset.form.php",
+		"/C/Users/bshaw/Desktop/byond stuff/HippieStation-master/config/hippiestation_config.txt",
+		"/C/Users/bshaw/Desktop/byond stuff/HippieStation-master/TGS3.json",
+		"/C/Users/bshaw/Desktop/byond stuff/HippieStation-master/config/config.txt",
+		"/E/Development/Projects/Web/TJSNetworkBase/src/core/UserInterface.container.options.js",
+		"/E/Development/Projects/Web/TJSNetworkBase/src/project.json",
+		"/E/Development/Projects/Web/TJSNetworkBase/tjsnetbase.sublime-project",
+		"/C/Users/bshaw/Desktop/byond stuff/HippieStation-master/config/external_rsc_urls.txt",
+		"/C/Users/bshaw/Desktop/byond stuff/HippieStation-master/config/game_options.txt",
+		"/C/Users/bshaw/Desktop/byond stuff/HippieStation-master/config/policy.json",
+		"/C/Users/bshaw/Desktop/byond stuff/HippieStation-master/config/motd.txt",
+		"/C/Users/bshaw/Desktop/byond stuff/HippieStation-master/config/maps.txt"
+	],
+	"find":
+	{
+		"height": 36.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"default-input",
+			"login",
+			"g",
+			"virtua",
+			"ssl",
+			"italic",
+			"base",
+			"root",
+			"bin",
+			"reference",
+			"{\n",
+			"debug",
+			"metrics",
+			"this.ui",
+			"net",
+			"login",
+			"dir",
+			"/ext",
+			"php/",
+			"E:",
+			"E:/",
+			"E:\\",
+			"extension",
+			"ext",
+			"sql",
+			"php",
+			"portal-body",
+			"inherit",
+			"portal-b",
+			"content",
+			"summ",
+			"text-shadow:",
+			"text-shadow",
+			"label",
+			"text-align: center;",
+			"border: 0",
+			"status",
+			"user-form",
+			"border",
+			"margin",
+			"padding",
+			"border",
+			"443",
+			"NSV",
+			"hub",
+			"bin/",
+			"/bin/",
+			"ui-input",
+			"input",
+			"button",
+			"project.json",
+			"host",
+			"mode",
+			"secret",
+			"extended",
+			"mode",
+			"raise Exception(\"\")",
+			"Plugin",
+			"onPost",
+			"cheatEngine",
+			"v120",
+			"platform tool",
+			"random_bytes",
+			"myrandom_bytes",
+			"tilda",
+			"hide",
+			"collapse",
+			"example",
+			"collapse",
+			"overflow",
+			"textarea",
+			"ui-default-button",
+			"ui-default-title-button",
+			"ui-default-icon",
+			"ui-icon",
+			"UserInterface",
+			"UI.",
+			"(\"\")",
+			"msg.header",
+			"escape",
+			"\"/\"",
+			"fileName",
+			"getIncludedFileContent",
+			"initServer",
+			"initServer_V2",
+			"941 942 943",
+			"config",
+			"mesh",
+			"fog",
+			"parseInt",
+			"self",
+			"idle",
+			"default",
+			"2.0",
+			"camera.up",
+			"rotation",
+			"rotat",
+			"sceneObjects[0]",
+			"this.camera",
+			"scene2d",
+			"scene3d",
+			"keyboardEvent",
+			"prevent",
+			"this.redraw",
+			"setSpriteMap",
+			"redraw",
+			"sort",
+			"this.ui",
+			"save",
+			"rest",
+			"clear",
+			"camera",
+			"setsize",
+			"console.log",
+			"nosync",
+			"(msg)",
+			"shits",
+			"this.pitch",
+			"update",
+			"email",
+			"config",
+			"echo",
+			"passwordreset",
+			"$_sess",
+			"sid",
+			"new hash",
+			"findEle",
+			"chat"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"//console.log",
+			""
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "bin/controllers/controller.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 434,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 36.0
+	},
+	"input":
+	{
+		"height": 48.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 142.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "tjsnetbase_website.sublime-project",
+	"replace":
+	{
+		"height": 68.0
+	},
+	"save_all_on_build": false,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"src/core/UserInterface2.js"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 189.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

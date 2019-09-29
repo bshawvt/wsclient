@@ -3,7 +3,7 @@ function ContainerConsole(opt) {
 
 	var self = this;
 	this.game = opt.invoker.game;
-	this.invoker = opt;
+	this.invoker = opt.invoker;
 	console.log(opt);
 
 	// init the container element first
@@ -43,7 +43,7 @@ ContainerConsole.prototype.send = function(e) {
 		if (evt.key == Input.KEY_ENTER) {
 			var input = this.input.value;
 			
-			this.appendText((new ConsoleCommand(this, input)).text);
+			this.appendText((new ConsoleCommand(this.invoker, input)).text);
 
 			this.input.value = "";
 			//this.addElement({name: "br"}, this.textArea);

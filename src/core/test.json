@@ -1,0 +1,9 @@
+{
+	"size": 1, // messages size
+	"messages": [ // message container
+		{ // net messages
+			"type": 1, // chat message type
+			"message": "Hello world"
+		}
+	],
+}

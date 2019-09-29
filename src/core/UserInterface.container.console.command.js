@@ -1,20 +1,36 @@
+// invoker: 
 function ConsoleCommand(invoker, input) {
-	
+
 	this.command = "";
 	this.text = input;
 
 	if (input[0] == "/") {
-		this.command = input.split(" ")[0].toLowerCase();
-		switch(this.command) {
-			case "/help": {
-				this.text = "You have ^23423983been ^helped prolly";
-				break;
+
+		var lines = input.split(" ");
+		this.command = lines[0].toLowerCase();
+
+		if (this.command == "/help") {
+			this.text = "You have ^23423983been ^helped prolly";
+		}
+
+		else if (this.command == "/controls") {
+			new ContainerControls();
+		}
+
+		else if (this.command == "/debug") {
+			var dtype = lines[1].toLowerCase();
+			if (dtype == "auth") {
+				new ContainerAuthDebugger(invoker.net);
 			}
-			default: {
-				this.text = "Unknown input";
-				break;
+			else if (dtype == "net") {
+				new ContainerNetDebugger(invoker.net);
 			}
 		}
+
+		else {
+			this.text = "Unknown input";
+		}
+
 	}
 }
 

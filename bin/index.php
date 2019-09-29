@@ -142,13 +142,13 @@
 								<span class="clear-fix"></span>
 
 								<form method="POST" action="?controller=user&action=create" onsubmit="onsubmit_create(this, event)">
-									<input name="username" placeholder="Username"/>
-									<input name="hashword1" value="" placeholder="Password" type="Password"/>
-									<input name="hashword2" value="" placeholder="Confirm password" type="Password"/>
+									<input name="username" placeholder="Username" required/>
+									<input name="hashword1" value="" placeholder="Password" type="Password" required/>
+									<input name="hashword2" value="" placeholder="Confirm password" type="Password" required/>
 									<label>Optional</label>
 									<input name="email" placeholder="Your@email.com"/>
 									<label>What is the answer from read more? <a href="javascript:void(0);" onclick='load("views/creation.html", "content")'>Read more...</a></label>
-									<input name="secret" placeholder="Answer">
+									<input name="secret" placeholder="Answer" required/>
 									<button type="submit" >Submit</button>
 								</form>
 							</div>
@@ -160,8 +160,8 @@
 							<div class="user-form">
 								<label>Login and join the game</label>
 								<form method="POST" action="?controller=user&action=play" onsubmit="onsubmit_login(this, event)">
-									<input name="username" placeholder="Username"/>
-									<input name="hashword1" value="" placeholder="Password" type="Password"/>
+									<input name="username" placeholder="Username" required/>
+									<input name="hashword1" value="" placeholder="Password" type="Password" required/>
 									<button type="submit">Login</button>
 								</form>
 							</div>
@@ -173,7 +173,7 @@
 							<div class="user-form">
 								<label>Change password / recover your account</label>
 								<form method="POST" action="?controller=user&action=recover">
-									<input name="email" placeholder="Your recovery@email.com"/>
+									<input name="email" placeholder="Your recovery@email.com" required/>
 									<button type="submit">Send Email</button>
 								</form>
 							</div>

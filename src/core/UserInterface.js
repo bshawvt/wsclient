@@ -10,8 +10,10 @@ function UserInterface(invoker) {
 	this.elements = [];
 
 	//var metrics = new ContainerMetrics({metrics: this.invoker.metrics});
-	this.elements["console"] = new ContainerConsole({invoker: this.invoker, title: "Console", w: 275, h: 150});
-	this.elements["console"].update({snap: {center: true}});
+	var consoleOpt = {invoker: this.invoker, title: "Console", w: 350, h: 225};
+
+	this.elements["console"] = new ContainerConsole(consoleOpt);
+	this.elements["console"].update({snap: {right: true}});
 	//console.update({snap: {top: true, left: true}});
 	//var myconsole = null;
 	/*Controller.addInputEvent(Input.KEY_TAB, function() {
@@ -26,7 +28,7 @@ function UserInterface(invoker) {
 		var evt = new InputEvent(e);
 		if (evt.key == Input.TOGGLE_CONSOLE.key) {
 			if (self.elements["console"]==null || self.elements["console"].removed == true) {
-				self.elements["console"] = new ContainerConsole({invoker: self.invoker, title: "Console", w: 275, h: 150});
+				self.elements["console"] = new ContainerConsole(consoleOpt);
 			}
 			else {
 				self.elements["console"].hide();
@@ -58,7 +60,7 @@ UserInterface.prototype.get = function(name) {
 
 /* write data to a console UI element
 */
-UserInterface.prototype.output = function(msg) {
+UserInterface.prototype.console = function(msg) {
 	var out = this.get("console");
 	if (out==null) {
 		console.log(msg);
