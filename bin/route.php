@@ -1,6 +1,6 @@
 <?PHP 
 	
-	
+	require ("config.php");
 	require ("dbcontext.php");
 
 	require ("controllers/controller.php");

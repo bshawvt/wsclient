@@ -1,6 +1,4 @@
 <?PHP 
-
-
 	class Controller {
 		private $dbContext = NULL;
 		private $viewModel = NULL;

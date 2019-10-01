@@ -95,7 +95,7 @@
 			}
 
 			function onsubmit_login(e, event) {
-				event.preventDefault();
+				//event.preventDefault();
 
 				/*var hashwords = getFormPasswordElement(e);
 				var crypt = new sjcl.hash.sha256();
@@ -105,11 +105,11 @@
 				
 				hashwords.hashword1.value = hash;
 				console.log(hash);*/
-				e.submit();
+				//e.submit();
 			}
 
 			function onsubmit_create(e, event) {
-				event.preventDefault();
+				//event.preventDefault();
 
 				/*var hashwords = getFormPasswordElement(e);
 				var crypt = new sjcl.hash.sha256();
@@ -122,7 +122,7 @@
 
 				hashwords.hashword1.value = hash1;
 				hashwords.hashword2.value = hash2;*/
-				e.submit();
+				//e.submit();
 			}
 			</script>
 	</head>

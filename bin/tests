@@ -1,0 +1,35 @@
+Account creation:
+		username, password1, password2, email, answer
+	1 - testuser0, 2, 2, email@email.com, thing - succeed
+	2 - testuser0, 2, 2, email@email.com, thing - failure, in use username and email
+	3 - testuser0, 2, 2, null, thing - failure, in use username
+	4 - testuser0, 2, 2, null, nothing - failure, in use username and wrong answer
+	5 - testuser0, 2, 2, email@email.com, nothing - failure, in use username&password and wrong answer
+	6 - testuser1, 2, 2, email@email.com, thing - failure, in use email
+	7 - testuser1, 2, 2, email@email.com, nothing - failure, in use email and wrong answer
+	7 - testuser1, 2, 2, null, nothing - failure, wrong answer
+	8 - testuser1, 2, 2, email2@email.com, thing - succeed
+	9 - testuser2, 2, 2, null, thing - succeed
+	10 - testuser3, 2, 2, null, thing - succeed
+
+Login:
+	username, password
+	1 - testuser0, 2 - succeed
+	2 - testuser0, 2 - failure, user account in use
+	3 - testuser0, 1 - failure, wrong password
+	4 - testuser4, 2 - failure, no user by that name
+	5 - testuser0, 2 but 10 seconds after session token has expired - failure, invalid token
+
+Account Recovery:
+	send
+			email
+		1 - email@email.com - succeed
+		2 - email6@email.com - failure, no email
+		3 - null - failure, no email
+
+	email
+		1 - use valid recovery token & valid email after 2 hour expiration - failure, token expired
+		1 - use valid recovery token & invalid email after 2 hour expiration - failure, invalid email
+		2 - use valid recovery token & invalid email - failure, invalid token
+		3 - use invalid recovery token & invalid email - failure, invalid token and email
+		4 - use valid recovery token & valid email - succeed
