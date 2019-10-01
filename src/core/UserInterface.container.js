@@ -114,22 +114,27 @@ Container.prototype.addElement = function(opt, parent) {
 };
 Container.prototype.createNodeElement = function(opt) {
 	/* should only ever be directly used when defining this.container
+		opt properties:
+			<opt.name value='opt.value'>
 	*/
 	if (opt.name == undefined || opt.name == null)  return;
 	
-	var node = document.createElement(opt.name)
-						// if undefined set to "" cuz yes
+	var node = document.createElement(opt.name); 
 	if (opt.className !== undefined) {
 		node.className = opt.className;// !== undefined ? opt.className : "");
 	}
 
 	if (opt.attributes !== undefined) {
+		// add anything that is not covered by opt
 		for(var i = 0; i < opt.attributes.length; i++) {
 			node.setAttribute(opt.attributes[i].name, opt.attributes[i].value);
 		}
 	}
 	if (opt.id !== undefined) {
 		node.id = opt.id;
+	}
+	if (opt.value !== undefined) {
+		node.value = opt.value;
 	}
 
 	var textNode = null;
@@ -225,36 +230,7 @@ Container.prototype.addHideEvent = function(element, opt) {
 	/* hides a container and its children by adding or removing its collapsed/hidden className
 	*/
 	var self = this;
-	//this.hidden = false;
-	/*var className = "ui-default-collapsed";
-	if (opt) {
-		if (opt.className) {
-			className = opt.className;
-		}
-	}
-	var regex = new RegExp("(?:^|\\s)" + className + "(?!\\S)", 'g');
-	function hide() {
-		if (!self.hidden) {
-			self.hidden = true;
-			self.container.className += " " + className;
-			for(var i = 0; i < self.container.children.length; i++) { // hide container contents because position: absolute; and im at my breaking point with css rn
-				var chillens = self.container.children[i];
-				if (chillens.className.match('no-hide') == null) {
-					chillens.className += " ui-hide"; 
-				}
-			}
-		}
-		else {
-			self.hidden = false;
-			self.container.className = self.container.className.replace(regex , '');
-			for(var i = 0; i < self.container.children.length; i++) { // unhiding container contents
-				var chillens = self.container.children[i];
-				if (chillens.className.match('no-hide') == null) {
-					chillens.className = chillens.className.replace(/(?:^|\s)ui-hide(?!\S)/g, '');
-				}
-			}
-		}
-	}*/
+
 	function hide(opt) {
 		self.hide(opt);
 	}

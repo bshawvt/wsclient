@@ -64,6 +64,7 @@ Network.prototype.directConnect = function(args) {
 Network.prototype.onClose = function(event) {
 	this.invoker.ui.console("Disconnected: " + event.reason);
 	console.log(event);
+	this.setState(0);
 };
 Network.prototype.onError = function(event) {
 	this.invoker.ui.console("Network error!");
@@ -75,8 +76,7 @@ Network.prototype.onMessage = function(event) {
 };
 Network.prototype.onOpen = function(event) {
 	this.invoker.ui.console("Authenticating...");
-	this.state = 1;
-	console.log(event);
+	this.setState(1);
 };
 
 Network.prototype.sendFrame = function() {
@@ -84,4 +84,19 @@ Network.prototype.sendFrame = function() {
 		this.socket.send(this.frame.serialize());
 		this.frame.clear();
 	}
+};
+Network.prototype.debugSendFrame = function() {
+	if (this.socket !== null) {
+		this.socket.send(this.frame.serialize());
+		//this.frame.clear();
+	}
+};
+
+Network.prototype.setState = function(state) {
+	/* connection state
+	0: unconnected
+	1: authenticating
+	2: ready
+	*/
+	this.state = state;
 };

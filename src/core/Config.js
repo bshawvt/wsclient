@@ -6,7 +6,11 @@ var Config = {
 		build: 923191400
 	},
 	servers: {
-		game: {address: "wss://govehill.dynu.net", port: 443}
+		game: {
+			address: "wss://govehill.dynu.net",
+			//address: "wss://192.168.1.100",
+			port: 443
+		}
 	},
 
 	defaults: {

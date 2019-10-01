@@ -1,5 +1,9 @@
-function NetworkMessage(json) {
-	/* 
+function NetworkMessage(args) {
+	/*
 	*/
-	this.fuck = "yes";
+	this.args = args;
+	this.msg = args.msg;
 }
+NetworkMessage.prototype.test = function(first_argument) {
+	// body...
+};

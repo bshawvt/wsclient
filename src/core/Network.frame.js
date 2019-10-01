@@ -7,7 +7,7 @@ NetworkFrame.prototype.push = function(msg) {
 	this.size = this.messages.length;
 };
 NetworkFrame.prototype.serialize = function() {
-	return JSON.stringify(this);
+	return JSON.stringify(this); // todo
 };
 NetworkFrame.prototype.clear = function() {
 	this.messages = [];
