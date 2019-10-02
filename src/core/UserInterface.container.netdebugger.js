@@ -28,6 +28,7 @@ function ContainerNetDebugger(net) {
 	this.addElement({name: "br"}, frame);
 
 
+
 	this.addText("deserialized frame:", frame);
 	this.addElement({name: "br"}, frame);
 	
@@ -47,20 +48,23 @@ function ContainerNetDebugger(net) {
 	var frames = this.addElement({name: "textarea", className: "ui-default-textarea ui-wide", 
 		text: JSON.stringify(this.net.frame)}, frame);
 	
-	this.addElement({name: "br"}, frame);
+	//this.addElement({name: "br"}, frame);
 
 	var send = this.addElement({name: "button", text: "Send Frame", className: "ui-default-button ui-button"}, frame);
 	
 	var noClear = this.addElement({name: "input", id: "checkbox-net1", className: "", type: "checkbox"}, frame);
 		this.addElement({name: "label", text: "clear frame on send", attributes: [{name: "for", value: "checkbox-net1"}]}, frame);
 
+	this.addElement({name: "br"}, frame);
+	var asBytes = this.addElement({name: "textarea", className: "ui-default-textarea ui-wide", text: ""}, frame);
+
 	selectMsg.onchange = () => {
-		if (selectMsg.value !== "none" || selectMsg.value !== "") {			var t = eval(("new " + selectMsg.value + "({});"));
+		if (selectMsg.value !== "none" || selectMsg.value !== "") {
+			var t = eval(("new " + selectMsg.value + "({});"));
 			frameFragment.value = JSON.stringify(t);
 		}
 	}
 	addFragment.onclick = () => {
-		//var tmp = {};
 		try {
 			tmp = JSON.parse(frameFragment.value);
 			this.net.frame.push(tmp);
@@ -70,6 +74,7 @@ function ContainerNetDebugger(net) {
 		}
 		finally {
 			frames.value = JSON.stringify(this.net.frame);
+
 		}
 		
 
