@@ -11,9 +11,7 @@
 		function __destruct() {
 			
 		}
-		public function getViewModel() {
-			
-		}
+
 	}
 
 ?>
