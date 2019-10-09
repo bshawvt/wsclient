@@ -3,13 +3,14 @@ var Config = {
 	version: {
 		major: 0,
 		minor: 0,
-		build: 923191400
+		build: 1008190300
 	},
 	servers: {
 		game: {
-			address: "wss://govehill.dynu.net",
-			//address: "wss://192.168.1.100",
-			port: 443
+			//address: "wss://govehill.dynu.net",
+			//port: 443
+			address: "ws://localhost",
+			port: 8770
 		}
 	},
 

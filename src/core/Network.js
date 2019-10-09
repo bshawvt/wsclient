@@ -18,7 +18,7 @@ function Network(invoker) {
 	}
 
 	// expire the one time use session cookie 
-	document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/client/index.html";
+	//document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/client/index.html";
 	console.log(this);
 	console.log(invoker);
 	new ContainerNetDebugger(this); // debug
@@ -63,20 +63,20 @@ Network.prototype.directConnect = function(args) {
 };
 Network.prototype.onClose = function(event) {
 	this.invoker.ui.console("Disconnected: " + event.reason);
-	console.log(event);
 	this.setState(0);
 };
 Network.prototype.onError = function(event) {
 	this.invoker.ui.console("Network error!");
-	console.log(event);
 };
 Network.prototype.onMessage = function(event) {
 	this.invoker.ui.console("Network: " + event.data);
-	console.log(event);
+
+	
+
+
 };
 Network.prototype.onOpen = function(event) {
 	this.invoker.ui.console("Authenticating...");
-	this.setState(1);
 };
 
 Network.prototype.sendFrame = function() {
@@ -95,8 +95,8 @@ Network.prototype.debugSendFrame = function() {
 Network.prototype.setState = function(state) {
 	/* connection state
 	0: unconnected
-	1: authenticating
-	2: ready
+	1: authenticated
 	*/
 	this.state = state;
+	this.invoker.ui.console("state " + this.state);
 };

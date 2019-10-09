@@ -1,4 +1,4 @@
-function Profiler() {
+function Profiler(name) {
 	var self = this;
 	this.start = 0;
 	this.end = 0;
@@ -8,9 +8,11 @@ function Profiler() {
 	}
 	this.stop = function() {
 		self.end = (new Date()).getTime();
-		console.log("elapsed in ms: ", (self.end - self.start) );
+		console.log("Profiler stopped for " + name + ", time elapsed: ", 
+			(self.end - self.start) );
 	}
 }
 
 
 // console.log = function() {}; // silence console spam
+
