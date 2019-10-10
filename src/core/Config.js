@@ -7,10 +7,10 @@ var Config = {
 	},
 	servers: {
 		game: {
-			//address: "wss://govehill.dynu.net",
+			address: "wss://govehill.dynu.net",
 			//port: 443
-			address: "ws://localhost",
-			port: 8770
+			//address: "ws://localhost",
+			port: 29980
 		}
 	},
 

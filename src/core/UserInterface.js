@@ -14,6 +14,7 @@ function UserInterface(invoker) {
 
 	this.elements["console"] = new ContainerConsole(consoleOpt);
 	this.elements["console"].update({snap: {right: true}});
+	this.elements["console"].hide();
 	//console.update({snap: {top: true, left: true}});
 	//var myconsole = null;
 	/*Controller.addInputEvent(Input.KEY_TAB, function() {
