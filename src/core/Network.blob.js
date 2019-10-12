@@ -1,4 +1,4 @@
-function NetworkMessage(args) {
+function NetworkBlob(args) {
 	/*
 	*/
 	this.args = args;

@@ -69,11 +69,26 @@ Network.prototype.onError = function(event) {
 	this.invoker.ui.console("Network error!");
 };
 Network.prototype.onMessage = function(event) {
-	this.invoker.ui.console("Network: " + event.data);
+	//this.invoker.ui.console("Network: " + event.data);
+	var json = JSON.parse(event.data);
+	//console.log(json);
 
-	
-
-
+	for(var i = 0; i < json.messages.length; i++) {
+		var message = json.messages[i];
+		switch(message.type) {
+			case 0: {
+				break;
+			}
+			case 1: { // chatblob
+				//this.invoker.ui.chat(message);
+				this.invoker.ui.console(message.channelId + ": " + message.message);
+				break;
+			}
+			default: {
+				break;
+			}
+		}
+	}
 };
 Network.prototype.onOpen = function(event) {
 	this.invoker.ui.console("Authenticating...");

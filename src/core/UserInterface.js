@@ -7,14 +7,14 @@ function UserInterface(invoker) {
 	
 	window.topIndex = 0;
 
-	this.elements = [];
+	this.elements = []; // map 
 
 	//var metrics = new ContainerMetrics({metrics: this.invoker.metrics});
 	var consoleOpt = {invoker: this.invoker, title: "Console", w: 350, h: 225};
 
 	this.elements["console"] = new ContainerConsole(consoleOpt);
 	this.elements["console"].update({snap: {right: true}});
-	this.elements["console"].hide();
+	//this.elements["console"].hide();
 	//console.update({snap: {top: true, left: true}});
 	//var myconsole = null;
 	/*Controller.addInputEvent(Input.KEY_TAB, function() {

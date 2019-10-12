@@ -20,7 +20,8 @@
 
 		<!-- network -->
 		<script src="/src/core/Network.js"></script>
-		<script src="/src/core/Network.message.js"></script>
+		<script src="/src/core/Network.blob.js"></script>
+		<script src="/src/core/Network.blob.chat.js"></script>
 		<script src="/src/core/Network.frame.js"></script>
 
 		<!-- user interface -->
@@ -28,7 +29,7 @@
 		<script src="/src/core/UserInterface.container.js"></script>
 		<script src="/src/core/UserInterface.container.note.js"></script>
 		<script src="/src/core/UserInterface.container.example.js"></script>
-		<script src="/src/core/UserInterface.container.console.js"></script>
+		<script src="/src/core/UserInterface.container.console2.js"></script>
 		<script src="/src/core/UserInterface.container.console.command.js"></script>
 		<script src="/src/core/UserInterface.container.metrics.js"></script>
 		<script src="/src/core/UserInterface.container.controls.js"></script>
@@ -67,6 +68,13 @@
 		</style>
 	</head>
 	<body>
-		<script type="text/javascript">(()=>{init();})();</script>
+		<script type="text/javascript" id="init">
+			((e) => {
+				console.log("%cMagical mystical disappearing scriptical", "border-radius: 10px; border: 1px solid #000; color: #ffa500; font-size: 18px; padding: 5px; font-weight: 800;"); 
+				//console.log = (e) => {}; // remove all console spam
+				init(); // init game engine
+				document.body.removeChild(document.getElementById("init")); // remove this script element
+			})();
+		</script>
 	</body>
 </html>

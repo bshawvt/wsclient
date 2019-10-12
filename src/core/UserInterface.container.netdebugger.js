@@ -24,12 +24,13 @@ function ContainerNetDebugger(net) {
 	var frame = this.addElement({name: "div", className: "ui-default-frame"}, body);
 	var selectMsg = this.addElement({name: "select"}, frame);
 	this.addElement({name: "option", text: "none"}, selectMsg);
-	this.addElement({name: "option", text: "NetworkMessage"}, selectMsg);
+	//this.addElement({name: "option", text: "NetworkBlob"}, selectMsg);
+	this.addElement({name: "option", text: "ChatBlob"}, selectMsg);
 	this.addElement({name: "br"}, frame);
 
 
 
-	this.addText("deserialized frame:", frame);
+	this.addText("deserialized message:", frame);
 	this.addElement({name: "br"}, frame);
 	
 	var frameFragment = this.addElement({name: "input", className: "ui-default-input ui-wide", 
@@ -42,7 +43,7 @@ function ContainerNetDebugger(net) {
 		className: "ui-default-button ui-button ui-top-spaced"}, frame);
 	
 	this.addElement({name: "br"}, frame);
-	this.addText("deserialized frames:", frame);
+	this.addText("deserialized frame:", frame);
 	this.addElement({name: "br"}, frame);
 	
 	var frames = this.addElement({name: "textarea", className: "ui-default-textarea ui-wide", 
