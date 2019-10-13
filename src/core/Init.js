@@ -29,8 +29,8 @@ function Main(canvas) {
 		mobile: isMobile()
 	};
 	this.ui = new UserInterface(this);
-	this.game = new Game(this);
 	this.net = new Network(this);
+	this.game = new Game(this);
 	//Audio = new Audio();
 	Controller = new Input();
 
@@ -74,6 +74,8 @@ Main.prototype.loop = function(dt) {
 		this.metrics.update.stepTime+=33.333;
 		this.game.update(dt, this.metrics);
 		this.metrics.update.stepRate++;
+
+		//this.net.sendFrame();
 	}
 
 	// count frames per second

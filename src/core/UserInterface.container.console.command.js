@@ -32,6 +32,11 @@ function ConsoleCommand(invoker, input) {
 		}
 
 	}
+	else {
+		var blob = new ChatBlob();
+		blob.message = input;
+		invoker.net.frame.push(blob);
+	}
 }
 
 ConsoleCommand.prototype.getResult = function() {

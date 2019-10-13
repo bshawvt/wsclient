@@ -603,3 +603,77 @@ body {
 .ui-top-spaced {
 	/*margin-top: 10px;*/
 }
+
+.ui-tab-frame {
+
+	/*padding: 5px;*/
+	position: absolute;
+	overflow: auto;
+	overflow-wrap: normal;
+	overflow-x: hidden;
+	top: 4px;
+	height: 25px;
+	left: 4px;
+	right: 4px;
+	background: rgba(100, 100, 100, 0.5);
+}
+.ui-tab {
+	position: relative;
+	border: 1px solid #000;
+	/*margin: 10px 0px 10px 0px;*/
+	/*padding: 10px 0px 10px 0px;*/
+	background-color: rgba(230, 230, 230, 0.5);
+	top: 4px;
+	margin: 0px -5px 0px 5px;
+	padding: 3px;
+}
+
+.ui-body {
+	position: absolute;
+	overflow: auto;
+	width: auto;
+	/*resize: none;*/
+
+	border-radius: 0px 0px 2px 2px;
+	border: 1px solid rgb(75, 25, 50);
+	margin: 1px 1px 1px 1px;
+	/*left: 0px;*/
+	/*right: 0px;*/
+	/*top: 23px;*/
+	/*bottom: 21px;*/
+	/*top: 23px;*/
+	/*bottom: 20px;*/
+	/*padding: 5px;*/
+	padding: 5px;
+
+	background: linear-gradient(0deg, rgba(150, 150, 150, 0.5), rgba(75, 75, 75, 0.5));
+
+}
+
+.ui-body-console {
+	left: 0px;
+	right: 0px;
+	top: 23px;
+	bottom: 21px;
+}
+
+.ui-console-textarea {
+	position: absolute;
+	overflow: auto;
+	outline: none;
+	left: 4px;
+	right: 4px;
+	top: 30px;
+	bottom: 4px;
+	
+	/*border-radius: 0px 0px 2px 2px;*/
+	/*margin: 1px 1px 1px 1px;*/
+	border: none;
+	/*border: 1px solid #000;*?
+
+	/*margin: 0;*/
+	/*padding: 0px;*/
+
+	/*background: linear-gradient(0deg, rgba(150, 150, 150, 0.5), rgba(75, 75, 75, 0.5));*/
+}
+

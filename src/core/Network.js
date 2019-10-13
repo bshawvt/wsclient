@@ -2,6 +2,7 @@ function Network(invoker) {
 	
 	this.invoker = invoker;
 	this.netObjects = []; // a list of scene objects synchronized over a network
+	this.netObjects[0] = {name: "Server"};
 	this.socket = null;
 	this.state = 0;
 
@@ -71,7 +72,7 @@ Network.prototype.onError = function(event) {
 Network.prototype.onMessage = function(event) {
 	//this.invoker.ui.console("Network: " + event.data);
 	var json = JSON.parse(event.data);
-	//console.log(json);
+	console.log(json);
 
 	for(var i = 0; i < json.messages.length; i++) {
 		var message = json.messages[i];
@@ -81,7 +82,33 @@ Network.prototype.onMessage = function(event) {
 			}
 			case 1: { // chatblob
 				//this.invoker.ui.chat(message);
-				this.invoker.ui.console(message.channelId + ": " + message.message);
+				var channel = (() => {
+					switch (message.channelId) {
+						case 0: {
+							return "All";
+						}
+						default: {
+							return "All";
+						}
+					}
+				})();
+
+				var from = this.netObjects[message.from];
+				if (from === undefined) {
+					from = (this.netObjects[message.from] = {name:"unknown"});
+				};
+
+				this.invoker.ui.console(channel + ": " + from.name + ": " + message.message);
+				break;
+			}
+			case 2: { // authenticate blob
+				if (message.ready) {
+					this.setState(1);
+				}
+				break;//
+			}
+			case 3: { // authenticate
+
 				break;
 			}
 			default: {
@@ -95,7 +122,8 @@ Network.prototype.onOpen = function(event) {
 };
 
 Network.prototype.sendFrame = function() {
-	if (this.socket !== null) {
+	//console.log(this.socket, this.state);
+	if (this.socket !== null && this.state > 0 && this.frame.messages.length > 0) {
 		this.socket.send(this.frame.serialize());
 		this.frame.clear();
 	}

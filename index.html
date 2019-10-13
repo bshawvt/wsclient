@@ -5,8 +5,57 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, minimal-ui">
 		<meta name="mobile-web-app-capable" content="yes">
+		<link rel="stylesheet" type="text/css" href="/src/core/UserInterface.default.css">
 	</head>
 	<BODY>
+		<div class="ui-container ui-default-container" style="z-index: 5; width: 350px; height: 225px; left: 530px; top: 5px;">
+			<div class="no-hide ui-default-title noselect">
+				Console
+				<button class="ui-default-title-button ui-default-icon ui-default-icon-remove"></button>
+				<button class="ui-default-title-button ui-default-icon ui-default-icon-hide"></button>
+			</div>
+			<div class="ui-default-icon ui-default-icon-resize noselect"></div>
+			<div class="ui-body ui-body-console">
+				
+				<div class="ui-frame2">
+					<div class="ui-tab-frame">
+						<span class="ui-tab" user-data=0>All</span>
+						<span class="ui-tab" user-data=1>Local</span>
+						<!--<span class="ui-tab">1234567</span>
+						<span class="ui-tab">1234567</span>
+						<span class="ui-tab">1234567</span>-->
+					</div>
+					<div class="ui-console-textarea" user-data=0>
+						<span class="text-color-white ">Connecting to server...</span><br>
+						<span class="text-color-white ">Authenticating...</span><br>
+						<span class="text-color-white ">Network: {"size":0,"messages":[{"channelId":0,"message":"Hello testuser0","type":1}]}</span><br>
+						<span class="text-color-white ">0: Hello testuser0</span><br>
+						<span class="text-color-white ">Disconnected: </span><br>
+						<span class="text-color-white ">state 0</span><br>
+						<span class="text-color-white ">state 1</span><br>
+						<span class="text-color-white ">state 2</span><br>
+						<span class="text-color-white ">state 3</span><br>
+						<span class="text-color-white ">state 4</span><br>
+					</div>
+					<div class="ui-console-textarea" user-data=1>
+						<span class="text-color-white ">Connecting to server...</span><br>
+						<span class="text-color-white ">Authenticating...</span><br>
+						<span class="text-color-white ">Network: {"size":0,"messages":[{"channelId":0,"message":"Hello testuser0","type":1}]}</span><br>
+						<span class="text-color-white ">0: Hello testuser0</span><br>
+						<span class="text-color-white ">Disconnected: </span><br>
+						<span class="text-color-white ">state 0</span><br>
+						<span class="text-color-white ">state 1</span><br>
+						<span class="text-color-white ">state 2</span><br>
+						<span class="text-color-white ">state 3</span><br>
+						<span class="text-color-white ">state 4</span><br>
+					</div>
+				</div>
+			</div>
+			<span class="clear-fix"></span>
+			<div class="ui-example-footer">
+				<input class="ui-example-input" placeholder="> Press return to send">
+			</div>
+		</div>
 		
 	</BODY>
 </html>

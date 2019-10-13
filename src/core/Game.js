@@ -35,6 +35,8 @@ Game.prototype.update = function(dt, state) {
 	}
 	this.sceneManager.step({dt:dt});
 	
+	this.net.sendFrame();
+	
 };
 Game.prototype.render = function(dt) {
 

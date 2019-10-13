@@ -13,8 +13,8 @@
 	"session": false,
 	"logging": false,
 	"fs": {
-		"root": "E:\\Development\\Projects\\Web\\TJSNetworkBase",
-		"log": "E:\\Development\\Projects\\Web\\TJSNetworkBase\\logs"
+		"root": "E:\\Development\\Projects\\Web\\WSClient",
+		"log": "E:\\Development\\Projects\\Web\\WSClient\\logs"
 	},
 	"php": {
 		"path": "E:\\Programs\\php\\"
