@@ -197,10 +197,14 @@ Container.prototype.hide = function(opt) {
 	/* hide the element doi
 	*/
 	var className = "ui-default-collapsed";
-	if (opt) {
-		if (opt.className) {
+	if (opt !== undefined) {
+		if (opt.className !== undefined) {
 			className = opt.className;
 		}
+		if (opt == 1) {
+			className = "ui-hidden";
+		}
+
 	}
 	var regex = new RegExp("(?:^|\\s)" + className + "(?!\\S)", 'g');
 

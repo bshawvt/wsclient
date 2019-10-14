@@ -677,3 +677,6 @@ body {
 	/*background: linear-gradient(0deg, rgba(150, 150, 150, 0.5), rgba(75, 75, 75, 0.5));*/
 }
 
+.ui-hidden {
+	visibility: hidden;
+}

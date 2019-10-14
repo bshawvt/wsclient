@@ -141,5 +141,5 @@ Network.prototype.setState = function(state) {
 	1: authenticated
 	*/
 	this.state = state;
-	this.invoker.ui.console("state " + this.state);
+	//this.invoker.ui.console("state " + this.state);
 };
