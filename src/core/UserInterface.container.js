@@ -6,7 +6,7 @@ function Container(opt) {
 	this.title = "";
 	this.x = 5;
 	this.y = 5;
-	this.w = 125; // width and height should probably match the container min/max size values
+	this.w = 200; // width and height should probably match the container min/max size values
 	this.h = 100;
 	this.removed = false;
 	this.hidden = false;

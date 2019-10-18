@@ -3,7 +3,7 @@ function ContainerNetDebugger(net) {
 
 	var self = this;
 	this.w = 400;
-	this.h = 400;
+	this.h = 510;
 	
 	this.net = net; // Main.net reference
 
@@ -13,11 +13,11 @@ function ContainerNetDebugger(net) {
 	// addElement needs this.container to be a valid html5 element
 	// element order mostly depends on css rules i guess idk
 	var title = this.addElement({name: "div", className: "no-hide ui-default-title noselect", 
-		text: "Net Debugger"});
+		text: "Network message debugger"});
 	var remove = this.addElement({name: "button", className: "ui-default-title-button ui-default-icon ui-default-icon-remove"}, title);
 	var hide = this.addElement({name: "button", className: "ui-default-title-button ui-default-icon ui-default-icon-hide"}, title);
 	var body = this.addElement({name: "div", className: "ui-default-body"});
-	var resize = this.addElement({name: "div", className: "ui-default-icon ui-default-icon-resize noselect"})
+	//var resize = this.addElement({name: "div", className: "ui-default-icon ui-default-icon-resize noselect"})
 	
 
 
@@ -57,7 +57,7 @@ function ContainerNetDebugger(net) {
 		this.addElement({name: "label", text: "clear frame on send", attributes: [{name: "for", value: "checkbox-net1"}]}, frame);
 
 	this.addElement({name: "br"}, frame);
-	var asBytes = this.addElement({name: "textarea", className: "ui-default-textarea ui-wide", text: ""}, frame);
+	this.incoming = this.addElement({name: "textarea", className: "ui-default-textarea ui-wide", text: ""}, frame);
 
 	selectMsg.onchange = () => {
 		if (selectMsg.value !== "none" || selectMsg.value !== "") {
@@ -93,10 +93,21 @@ function ContainerNetDebugger(net) {
 	this.addDragEvent(title);
 	this.addRemoveEvent(remove);
 	this.addHideEvent(hide);
-	this.addDragEvent(resize, true);
+	//this.addDragEvent(resize, true);
 
 	this.appendContainer();
 	this.update({x: this.x, y: this.y, w: this.w, h: this.h, pushIndex: true});
+
+	var self = this;
+	Events.register("networkOnMessage", (e) => {
+		this.networkEventListener(e);
+	});
 }
 ContainerNetDebugger.prototype = Object.create(Container.prototype);
 ContainerNetDebugger.prototype.constructor = ContainerNetDebugger;
+
+
+ContainerNetDebugger.prototype.networkEventListener = function(event) {
+	this.incoming.value += "== " + ((new Date()).getTime()) + " ==\n" + event + "\n---------------\n";
+	this.incoming.scrollTop = this.incoming.scrollHeight;
+};

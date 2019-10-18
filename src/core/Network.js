@@ -73,10 +73,11 @@ Network.prototype.onMessage = function(event) {
 	//this.invoker.ui.console("Network: " + event.data);
 	var json = JSON.parse(event.data);
 	console.log(json);
-	this.invoker.ui.console("raw: " + event.data);
-
+	//this.invoker.ui.console("raw: " + event.data);
+	Events.emit("networkOnMessage", event.data);
 	for(var i = 0; i < json.messages.length; i++) {
 		var message = json.messages[i];
+
 		switch(message.type) {
 			case 0: {
 				break;
@@ -89,7 +90,7 @@ Network.prototype.onMessage = function(event) {
 							return "All";
 						}
 						default: {
-							return "All";
+							return "^";
 						}
 					}
 				})();
@@ -106,6 +107,9 @@ Network.prototype.onMessage = function(event) {
 				if (message.ready) {
 					this.setState(1);
 				}
+				
+				new ContainerCharacterSelect(this, message);
+				
 				break;//
 			}
 			case 3: { // authenticate

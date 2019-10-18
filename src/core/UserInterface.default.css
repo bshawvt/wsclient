@@ -816,7 +816,8 @@ body {
 }
 
 .ui-characterdescription {
-
+	text-align: center;
+	font-size: 12px;
 }
 
 .ui-inspection {
@@ -848,4 +849,14 @@ details {
 }
 summary {
 	outline: none;
+}
+
+
+.ui-position-initial {
+	position: initial;
+}
+
+.ui-button:disabled {
+	background: rgb(130, 130, 130);
+	cursor: not-allowed;
 }

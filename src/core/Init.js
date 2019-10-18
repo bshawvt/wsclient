@@ -1,6 +1,7 @@
 
 var Audio = null;
 var Controller = null;
+var Events = null;
 //var UI = null;
 	
 function init() {
@@ -28,6 +29,7 @@ function Main(canvas) {
 		update: {stepTime: 0.0, stepsPerSecond: 0, stepRate: 0, stepElapsedTime: 0},
 		mobile: isMobile()
 	};
+	Events = new EventEmitter(this);
 	this.ui = new UserInterface(this);
 	this.net = new Network(this);
 	this.game = new Game(this);

@@ -10,7 +10,7 @@ function UserInterface(invoker) {
 	this.elements = []; // map 
 
 	//var metrics = new ContainerMetrics({metrics: this.invoker.metrics});
-	var consoleOpt = {invoker: this.invoker, title: "Console", w: 350, h: 225};
+	var consoleOpt = {invoker: this.invoker, title: "Console", w: 450, h: 250};
 
 	this.elements["console"] = new ContainerConsole(consoleOpt);
 	this.elements["console"].update({snap: {right: true}});

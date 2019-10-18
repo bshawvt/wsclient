@@ -57,4 +57,9 @@ ContainerConsole.prototype.appendText = function(text) {
 	this.addElement({name: "br"}, this.textArea);
 
 	this.textArea.scrollTop = this.textArea.scrollHeight;
+
+};
+
+ContainerConsole.prototype.getOutput = function() {
+	return this.textArea;
 };
