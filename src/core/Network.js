@@ -73,6 +73,7 @@ Network.prototype.onMessage = function(event) {
 	//this.invoker.ui.console("Network: " + event.data);
 	var json = JSON.parse(event.data);
 	console.log(json);
+	this.invoker.ui.console("raw: " + event.data);
 
 	for(var i = 0; i < json.messages.length; i++) {
 		var message = json.messages[i];

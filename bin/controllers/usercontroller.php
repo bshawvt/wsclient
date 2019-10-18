@@ -75,7 +75,8 @@
 				$this->viewModel = new UserAccountDto($resultSet);
 				if ($this->viewModel->useraccount->sessionToken !== NULL) {
 					// redirect away from play.php when the client authenticates
-					setcookie("session", $this->viewModel->useraccount->sessionToken, time()+10, "client/index.html");
+					#setcookie("session", $this->viewModel->useraccount->sessionToken, time()+10, "client/index.html");
+					setcookie("session", $this->viewModel->useraccount->sessionToken, time()+10000, "client/index.html");
 					header("Location: client/index.html");
 				}
 			}
