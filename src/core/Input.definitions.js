@@ -1,9 +1,21 @@
 // key maps
-Input.MOVE_LEFT = {key: 65, map: "A"};
-Input.MOVE_RIGHT = {key: 68, map: "D"};
-Input.MOVE_FORWARD = {key: 87, map: "W"};
-Input.MOVE_BACKWARD = {key: 83, map: "S"};
+/*MOVE_LEFT = { 
+	key: 65, // keycode, remappable 
+	map: "A", // maps the character when key is remapped
+	bitmask: 1 // constant, network bitmask in this case used for netobject input state
+}*/
+// input state keys
+Input.MOVE_LEFT = {key: 65, map: "A", bitmask: 1};
+Input.MOVE_RIGHT = {key: 68, map: "D", bitmask: 2};
+Input.MOVE_FORWARD = {key: 87, map: "W", bitmask: 4};
+Input.MOVE_BACKWARD = {key: 83, map: "S", bitmask: 8};
+
+
+// ui 
 Input.TOGGLE_CONSOLE = {key: 9, map: "TAB"};
+Input.TOGGLE_CHAT = {key: 9, map: "TAB"};
+
+
 
 
 // a lot of these are wrong but still useful for certain instances

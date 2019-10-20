@@ -1,0 +1,3 @@
+@echo off
+echo apache webserver started...
+C:\\FolderOfFolders\\Apache24\\bin\\httpd.exe

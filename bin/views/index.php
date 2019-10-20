@@ -1,4 +1,7 @@
-<p>Hello world</p>
+<p>
+	<h1>Running on Localhost</h1>
+	todo: recovery does not send email and instead dumps email contents because localhost has not setup a mailing server
+</p>
 <!-- old site <p>
 	Please be gentle with my software! This is a pet project and very much in development.
 </p>
