@@ -76,8 +76,10 @@
 				if ($this->viewModel->useraccount->sessionToken !== NULL) {
 					// redirect away from play.php when the client authenticates
 					#setcookie("session", $this->viewModel->useraccount->sessionToken, time()+10, "client/index.html");
-					setcookie("session", $this->viewModel->useraccount->sessionToken, time()+10, "client/index.html");
-					header("Location: client/index.html");
+					//setcookie("session", $this->viewModel->useraccount->sessionToken, time()+10, "client/index.html");
+					//header("Location: client/index.html");
+					setcookie("session", $this->viewModel->useraccount->sessionToken, time()+10, Config::$gameClientUrl);
+					header("Location: " . Config::$gameClientUrl);
 				}
 			}
 			return "views/play.php"; // fallback if authentication fails

@@ -1,4 +1,8 @@
 <?PHP
+	
+	//session_id("cachetest");
+	//session_start();
+
 	require ("route.php");
 
 	$route = new Route();

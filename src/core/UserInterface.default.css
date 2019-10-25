@@ -582,7 +582,7 @@ body {
 
 .ui-wide {
 	width: 100%;
-	box-sizing : border-box;
+	/*box-sizing : border-box;*/
 }
 
 .ui-default-input {
@@ -827,8 +827,8 @@ body {
 .ui-item-name {
 	font-size: 16px;
 
-	text-align: center;
 
+	text-align: center;
 }
 .ui-item-details {
 	background-color: rgba(50, 50, 50, 0.50);
@@ -859,4 +859,8 @@ summary {
 .ui-button:disabled {
 	background: rgb(130, 130, 130);
 	cursor: not-allowed;
+}
+
+.ui-overflow-hidden {
+	overflow: hidden;
 }

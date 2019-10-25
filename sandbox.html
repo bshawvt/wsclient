@@ -7,8 +7,50 @@
 		<meta name="mobile-web-app-capable" content="yes">
 		<link href="https://fonts.googleapis.com/css?family=Roboto|Montserrat|Thasadith|Coiny" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="/src/core/UserInterface.default.css">
+		<script type="application/javascript" src="/src/core/QuadTree.js"></script>
+		<script type="application/javascript" src="/src/core/Canvas2d.js"></script>
+		<style>
+			canvas {
+				border: 1px solid;
+				background: #ffffff;
+			}
+		</style>
 	</head>
 	<BODY>
+
+		<div class="ui-container ui-default-container" style="z-index: 215; width: 415px; height: 440px; left: 30px; top: 25px;">
+			<div class="no-hide ui-default-title noselect">
+				Canvas2D
+				<button class="ui-default-title-button ui-default-icon ui-default-icon-remove"></button>
+				<button class="ui-default-title-button ui-default-icon ui-default-icon-hide"></button>
+			</div>
+			
+			<div class="ui-default-icon ui-default-icon-resize noselect"></div>
+			
+			<div class="ui-body ui-body-default show-border ui-overflow-hidden" id="canvas2d1">
+				<script type="text/javascript">
+					new craw({parent: "canvas2d1"});
+				</script>
+			</div>
+			
+		</div>
+
+		<div class="ui-container ui-default-container" style="z-index: 215; width: 415px; height: 440px; left: 480px; top: 25px;">
+			<div class="no-hide ui-default-title noselect">
+				Canvas2D(2)
+				<button class="ui-default-title-button ui-default-icon ui-default-icon-remove"></button>
+				<button class="ui-default-title-button ui-default-icon ui-default-icon-hide"></button>
+			</div>
+			
+			<div class="ui-default-icon ui-default-icon-resize noselect"></div>
+			
+			<div class="ui-body ui-body-default show-border ui-overflow-hidden" id="canvas2d2">
+				<script type="text/javascript">
+					new craw({parent: "canvas2d2"});
+				</script>
+			</div>
+			
+		</div>
 
 
 		<div class="ui-container ui-default-container" style="z-index: 15; width: 200px; height: 160px; left: 450px; top: 290px;">
