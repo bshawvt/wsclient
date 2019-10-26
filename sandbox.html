@@ -27,9 +27,9 @@
 			
 			<div class="ui-default-icon ui-default-icon-resize noselect"></div>
 			
-			<div class="ui-body ui-body-default show-border ui-overflow-hidden" id="canvas2d1">
+			<div class="ui-body ui-body-default show-border ui-overflow-hidden" id="canvas-1">
 				<script type="text/javascript">
-					new craw({parent: "canvas2d1"});
+					new craw({parent: "canvas-1", id: "canvas2d-1"});
 				</script>
 			</div>
 			
@@ -44,13 +44,31 @@
 			
 			<div class="ui-default-icon ui-default-icon-resize noselect"></div>
 			
-			<div class="ui-body ui-body-default show-border ui-overflow-hidden" id="canvas2d2">
+			<div class="ui-body ui-body-default show-border ui-overflow-hidden" id='canvas-2'>
 				<script type="text/javascript">
-					new craw({parent: "canvas2d2"});
+					new craw({parent: "canvas-2", id: "canvas2d-2"});
 				</script>
 			</div>
 			
 		</div>
+
+		<script type="application/javascript">
+			craw.set("canvas2d-1")
+			craw.clear(); 
+			var t = new QuadTree(); 
+			for(var i = 0; i < 25; i++) {
+				t.push({x: 20 + (i * 5) + 25, y: 35});
+			}
+			t.get({x: 60, y: 15, w: 75, h: 75, s: 75});
+
+			craw.set("canvas2d-2")
+			craw.clear(); 
+			var t = new QuadTree(); 
+			for(var i = 0; i < 100; i++) {
+				t.push({ x: Math.floor(Math.random() * 300), y: Math.floor(Math.random() * 300) });
+			}
+			t.get({x: 60, y: 15, w: 75, h: 75, s: 75});
+		</script>
 
 
 		<div class="ui-container ui-default-container" style="z-index: 15; width: 200px; height: 160px; left: 450px; top: 290px;">

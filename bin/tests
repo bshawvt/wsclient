@@ -33,3 +33,21 @@ Account Recovery:
 		2 - use valid recovery token & invalid email - failure, invalid token
 		3 - use invalid recovery token & invalid email - failure, invalid token and email
 		4 - use valid recovery token & valid email - succeed
+
+
+
+craw.set("canvas2d-1")
+craw.clear(); 
+var t = new QuadTree(); 
+for(var i = 0; i < 25; i++) {
+	t.push({x: 20 + (i * 5) + 25, y: 35});
+}
+t.get({x: 60, y: 15, w: 75, h: 75, s: 75});
+
+craw.set("canvas2d-2")
+craw.clear(); 
+var t = new QuadTree(); 
+for(var i = 0; i < 100; i++) {
+	t.push({ x: Math.floor(Math.random() * 300), y: Math.floor(Math.random() * 300) });
+}
+t.get({x: 60, y: 15, w: 75, h: 75, s: 75});

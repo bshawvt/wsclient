@@ -119,7 +119,7 @@ Container.prototype.createNodeElement = function(opt) {
 	*/
 	if (opt.name == undefined || opt.name == null)  return;
 	
-	var node = document.createElement(opt.name); 
+	var node = document.createElement(opt.name);
 	if (opt.className !== undefined) {
 		node.className = opt.className;// !== undefined ? opt.className : "");
 	}
