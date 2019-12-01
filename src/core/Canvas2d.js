@@ -80,6 +80,39 @@ craw.circle = function(opt) {
 	ctx.lineWidth = weight;
 	ctx.closePath();
 }
+craw.line = function(opt, to) {
+	var ctx = craw.__C2D_CONTEXT;
+	if (ctx==null) return;
+
+	opt = opt || {};
+	var x = opt.x || 0;
+	var y = opt.y || 0;
+	var x2 = to.x || 0;
+	var y2 = to.y || 0;
+	var weight = opt.weight || 1;
+	var fill = opt.f || false;
+	var color = opt.c || "#0f0f0f";
+	ctx.lineWidth = weight;	
+
+
+	ctx.beginPath();
+	ctx.moveTo(x, y);
+	ctx.lineTo(x2, y2);
+
+	/*if (fill) {
+		ctx.fillStyle = color;
+		ctx.fill();
+	}
+	else {
+		ctx.strokeStyle = color;
+		ctx.stroke();
+	}*/
+	ctx.strokeStyle = color;
+	ctx.stroke();
+	
+	ctx.lineWidth = weight;
+	ctx.closePath();
+}
 
 craw.clear = function(opt) {
 	var cnv = craw.__C2D_CANVAS;
@@ -101,7 +134,7 @@ craw.set = function(element) {
 	// don't do anything if using the same canvas
 	if (craw.__C2D_PREV === element)
 		return;
-	console.log(element);
+	//console.log(element);
 	// otherwise set the static variables to reflect new canvas
 	craw.__C2D_CANVAS = element;
 	craw.__C2D_CONTEXT = element.getContext('2d');

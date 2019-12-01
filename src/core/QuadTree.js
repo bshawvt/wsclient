@@ -6,7 +6,7 @@ function QuadTree(parent) {
 	this.s = parent.s || 400;
 
 	this.contents = [];
-	this.capacity = parent.capacity || 1;
+	this.capacity = parent.capacity || 2;
 
 	this.divisions = [null, null, null, null];
 	this.subdivided = false;
@@ -97,3 +97,20 @@ QuadTree.prototype.get = function(rect, array) {
 };
 
 //new QuadTree();
+//new QuadTree();
+
+craw.set("canvas2d-1")
+			craw.clear(); 
+			var t = new QuadTree(); 
+			for(var i = 0; i < 25; i++) {
+				t.push({x: 20 + (i * 5) + 25, y: 35});
+			}
+			t.get({x: 60, y: 15, w: 75, h: 75, s: 75});
+
+			craw.set("canvas2d-2")
+			craw.clear(); 
+			var t = new QuadTree(); 
+			for(var i = 0; i < 100; i++) {
+				t.push({ x: Math.floor(Math.random() * 300), y: Math.floor(Math.random() * 300) });
+			}
+			t.get({x: 60, y: 15, w: 75, h: 75, s: 75});

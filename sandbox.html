@@ -7,8 +7,10 @@
 		<meta name="mobile-web-app-capable" content="yes">
 		<link href="https://fonts.googleapis.com/css?family=Roboto|Montserrat|Thasadith|Coiny" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="/src/core/UserInterface.default.css">
-		<script type="application/javascript" src="/src/core/QuadTree.js"></script>
 		<script type="application/javascript" src="/src/core/Canvas2d.js"></script>
+
+		<script type="application/javascript" src="/src/core/QuadTree3.js"></script>
+		
 		<style>
 			canvas {
 				border: 1px solid;
@@ -35,7 +37,7 @@
 			
 		</div>
 
-		<div class="ui-container ui-default-container" style="z-index: 215; width: 415px; height: 440px; left: 480px; top: 25px;">
+		<div class="ui-container ui-default-container" style="z-index: 215; width: 415px; height: 440px; left: 455px; top: 25px;">
 			<div class="no-hide ui-default-title noselect">
 				Canvas2D(2)
 				<button class="ui-default-title-button ui-default-icon ui-default-icon-remove"></button>
@@ -51,25 +53,6 @@
 			</div>
 			
 		</div>
-
-		<script type="application/javascript">
-			craw.set("canvas2d-1")
-			craw.clear(); 
-			var t = new QuadTree(); 
-			for(var i = 0; i < 25; i++) {
-				t.push({x: 20 + (i * 5) + 25, y: 35});
-			}
-			t.get({x: 60, y: 15, w: 75, h: 75, s: 75});
-
-			craw.set("canvas2d-2")
-			craw.clear(); 
-			var t = new QuadTree(); 
-			for(var i = 0; i < 100; i++) {
-				t.push({ x: Math.floor(Math.random() * 300), y: Math.floor(Math.random() * 300) });
-			}
-			t.get({x: 60, y: 15, w: 75, h: 75, s: 75});
-		</script>
-
 
 		<div class="ui-container ui-default-container" style="z-index: 15; width: 200px; height: 160px; left: 450px; top: 290px;">
 			<div class="no-hide ui-default-title noselect">
@@ -164,7 +147,7 @@
 
 
 
-		<div class="ui-container ui-default-container" style="z-index: 5; width: 400px; height: 350px; left: 20px; top: 210px;">
+		<div class="ui-container ui-default-container" style="z-index: 5; width: 400px; height: 250px; left: 20px; top: 210px;">
 			<div class="no-hide ui-default-title noselect">
 				Inventory
 				<button class="ui-default-title-button ui-default-icon ui-default-icon-remove"></button>

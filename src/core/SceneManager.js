@@ -50,7 +50,8 @@ SceneManager.prototype.add = function(object) {
 	this.queue.push({object: object, remove: false});
 };
 SceneManager.prototype.remove = function(object) {
-	/* SceneManager.step() will call this method whenever a scene object has the property 'delete: true' prior to updating it
+	/* SceneManager.step() will call this method whenever a scene object 
+	* has the property 'delete: true' prior to updating it
 	*/
 	this.queue.push({object: object, remove: true});
 
