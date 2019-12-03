@@ -99,17 +99,9 @@ craw.line = function(opt, to) {
 	ctx.moveTo(x, y);
 	ctx.lineTo(x2, y2);
 
-	/*if (fill) {
-		ctx.fillStyle = color;
-		ctx.fill();
-	}
-	else {
-		ctx.strokeStyle = color;
-		ctx.stroke();
-	}*/
 	ctx.strokeStyle = color;
 	ctx.stroke();
-	
+
 	ctx.lineWidth = weight;
 	ctx.closePath();
 }
@@ -122,6 +114,8 @@ craw.clear = function(opt) {
 	var rect = cnv.getClientRects()[0];
 	ctx.clearRect(0, 0, rect.width, rect.height);
 }
+
+
 /**
 element can either be an element id string or an element object
 */
@@ -138,6 +132,7 @@ craw.set = function(element) {
 	// otherwise set the static variables to reflect new canvas
 	craw.__C2D_CANVAS = element;
 	craw.__C2D_CONTEXT = element.getContext('2d');
+	
 };
 craw.__C2D_CANVAS = null;
 craw.__C2D_CONTEXT = null;

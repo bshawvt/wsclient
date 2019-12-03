@@ -2,8 +2,7 @@ function QuadTree(opt, depth, root) {
 	
 	if (root == null) {
 		this.root = this;
-		this.root.MaxDepth = 5;
-		this.root.MaxPoints = 2;
+		this.root.MaxDepth = 6;
 	}
 
 	else {
@@ -20,12 +19,12 @@ function QuadTree(opt, depth, root) {
 	this.y = opt.y || 0;
 	this.height = opt.height || 200;
 	this.width = opt.width || 200;
-	
+	var r = 255;
+	var g = depth * 50 % 255; 
+	var b = depth * 25 & 100;
 	craw.rect({x: this.x, y: this.y, w: this.width, h: this.height,
-		c: opt.color ? opt.color : "#ff0000"}
+		c: opt.color ? opt.color : "rgb(" + r + "," + g + "," + b + ")", f: true}
 	);
-	//console.log(this.depth);
-
 };
 
 QuadTree.prototype.contains = function(point) {
@@ -95,7 +94,6 @@ QuadTree.prototype.insert = function(point) {
 	else {
 
 		this._insert(point);
-		//console.log(this);
 	}
 };
 
@@ -107,7 +105,6 @@ QuadTree.prototype.get = function(area, array, suppress) {
 
 	for(var i = 0; i < 4; i++) {
 		var div = this.divisions[i];
-		//var div = {x: 125, y: 125, width: 100, height: 100};
 
 		if (div == null) continue;
 		if (this.intersect(area, div)) {
@@ -126,14 +123,8 @@ QuadTree.prototype.get = function(area, array, suppress) {
 			}
 			if (this.subdivided) {
 				var more = div.get(area, search);
-				//console.log("ss", more);
-				//if (more.length > 0)
-					//search = search.concat(more);
 			}
 		}
-		//search = search.concat(div.contents);
-		//console.log(search, d);
-
 	}
 	return search;
 
@@ -143,13 +134,7 @@ QuadTree.prototype.intersect = function(area, div) {
 		div.width = 1;
 		div.height = 1;
 	}
-	/*if ((area.x >= div.x && area.x <= div.x + div.width ||
-			area.x + area.width >= div.x && area.x + area.width <= div.x + div.width) &&
-			(area.y >= div.y && area.y <= div.y + div.height ||
-			area.y + area.height >= div.y && area.y + area.height <= div.y + div.height)) {
-		return true;
-	}
-	return false;*/
+
 	var aMinX = area.x;
 	var aMaxX = area.x + area.width;
 	var aMinY = area.y;
@@ -161,48 +146,16 @@ QuadTree.prototype.intersect = function(area, div) {
 	var bMaxY = div.y + div.height;
 	return (aMinX <= bMaxX && aMaxX >= bMinX) && (aMinY <= bMaxY && aMaxY >= bMinY);
 };
-/*
-QuadTree.prototype.subdivide = function(depth) {
-	
-	this.subdivided = true;
-	this.divisions[0] = new QuadTree({depth: depth, root: this.root, x: this.x, 				y: this.y, 				size: this.s/2, color: "#ff0fff"});
-	this.divisions[1] = new QuadTree({depth: depth, root: this.root, x: this.x + (this.s/2), 	y: this.y, 				size: this.s/2, color: "#ff0fff"});
-	this.divisions[2] = new QuadTree({depth: depth, root: this.root, x: this.x, 				y: this.y + (this.s/2), size: this.s/2, color: "#ff0fff"});
-	this.divisions[3] = new QuadTree({depth: depth, root: this.root, x: this.x + (this.s/2), 	y: this.y + (this.s/2), size: this.s/2, color: "#ff0fff"});
 
-};*/
 
 craw.set("canvas2d-1");
 craw.clear();
 var tree = new QuadTree({width: 400, height: 400});
 
-for(var i = 0; i < 100; i++) {
-	//tree.insert({x: 250 + (i * 10), y: 220 + (i * 10)});
+for(var i = 0; i < 200; i++) {
 	tree.insert({x: Math.floor(Math.random()*400), y: Math.floor(Math.random()*400)});
 }
 
-/*tree.insert({x: 250 + (1 * 10), y: 220 + (0 * 10)});
-tree.insert({x: 250 + (2 * 10), y: 220 + (0 * 10)});*/
 
 var t = tree.get({x: 65, y: 80, width: 75, height: 75}, undefined, 0);
 console.log(t);
-/*tree.get({x: 100, y: 170, width: 45, height: 30}, undefined, 1);
-tree.get({x: 160, y: 160, width: 45, height: 30}, undefined, 1);
-tree.get({x: 200, y: 110, width: 45, height: 30}, undefined, 1);*/
-/*tree.insert({x: 250 + (3 * 10), y: 220 + (0 * 10)});
-tree.insert({x: 250 + (4 * 10), y: 220 + (0 * 10)});
-tree.insert({x: 270 + (5 * 10), y: 220 + (0 * 10)});
-
-tree.insert({x: 250 + (5 * 10), y: 220 + (0 * 10)});
-tree.insert({x: 250 + (5 * 10), y: 220 + (0 * 10)});
-tree.insert({x: 250 + (5 * 10), y: 220 + (0 * 10)});*/
-/*tree.insert({x: 250 + (5 * 10), y: 220 + (0 * 10)});
-tree.insert({x: 250 + (5 * 10), y: 220 + (0 * 10)});
-
-tree.insert({x: 250 + (5 * 10), y: 220 + (0 * 10)});
-tree.insert({x: 250 + (5 * 10), y: 220 + (0 * 10)});
-tree.insert({x: 250 + (5 * 10), y: 220 + (0 * 10)});
-tree.insert({x: 250 + (5 * 10), y: 220 + (0 * 10)});
-tree.insert({x: 250 + (5 * 10), y: 220 + (0 * 10)});*/
-
-//console.log(tree);
