@@ -14,7 +14,7 @@ function Animator(target) {
 			target.frame(self.dt);
 		}
 
-		target.render();
+		target.render(self.dt);
 		window.requestAnimationFrame(function(timestamp) {
 			self.animate(timestamp)
 		});

@@ -14,7 +14,7 @@ function craw(opt) {
 	this.canvas.style.height = this.canvas.height + "px";
 
 	this.canvas.style.zIndex = opt.z || undefined;
-	this.canvas.style.backgroundColor = opt.color || "#ffffff";
+	this.canvas.style.backgroundColor = opt.color || "rgba(0, 0, 0, 0.0)";
 
 	if (opt.parent) {
 		document.getElementById(opt.parent).append(this.canvas);
@@ -51,6 +51,20 @@ craw.rect = function(opt) {
 	}
 }
 
+craw.text = function(opt) {
+	var ctx = craw.__C2D_CONTEXT;
+	if (ctx==null) return;
+
+	ctx.font = opt.font || "8px Arial";
+	if (opt.c !== undefined) {
+		var rgb = "rgba(" + opt.c[0] + "," + opt.c[1] + "," + opt.c[2] + "," + opt.c[3] + ")";
+		//console.log(rgb);
+		ctx.fillStyle = rgb;//rgba([" + opt.c[0] + "," + opt.c[1] + "," + opt.c[2] + "," + opt.c[3] + "])";
+	}
+	//console.log(opt.c);
+	ctx.fillText((opt.text || ""), (opt.x || 0), (opt.y || 0));
+}
+
 craw.circle = function(opt) {
 	var ctx = craw.__C2D_CONTEXT;
 	if (ctx==null) return;
@@ -61,7 +75,14 @@ craw.circle = function(opt) {
 	var r = opt.r || 5;
 	var weight = opt.weight || 1;
 	var fill = opt.f || false;
-	var color = opt.c || "#0f0f0f";
+
+	var color = "#0f0f0f";
+	if (opt.c !== undefined) {
+		if (typeof opt.c === "string")
+			color = opt.c;
+		else
+			color = "rgba(" + opt.c[0] + "," + opt.c[1] + "," + opt.c[2] + "," + opt.c[3] + ")";
+	}
 	ctx.lineWidth = weight;	
 
 
@@ -132,7 +153,7 @@ craw.set = function(element) {
 	// otherwise set the static variables to reflect new canvas
 	craw.__C2D_CANVAS = element;
 	craw.__C2D_CONTEXT = element.getContext('2d');
-	
+
 };
 craw.__C2D_CANVAS = null;
 craw.__C2D_CONTEXT = null;
