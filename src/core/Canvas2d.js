@@ -58,7 +58,6 @@ craw.text = function(opt) {
 	ctx.font = opt.font || "8px Arial";
 	if (opt.c !== undefined) {
 		var rgb = "rgba(" + opt.c[0] + "," + opt.c[1] + "," + opt.c[2] + "," + opt.c[3] + ")";
-		//console.log(rgb);
 		ctx.fillStyle = rgb;//rgba([" + opt.c[0] + "," + opt.c[1] + "," + opt.c[2] + "," + opt.c[3] + "])";
 	}
 	//console.log(opt.c);

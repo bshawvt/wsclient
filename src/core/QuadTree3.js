@@ -20,8 +20,8 @@ function QuadTree(opt, depth, root) {
 	this.height = opt.height || 200;
 	this.width = opt.width || 200;
 	var r = 255;
-	var g = depth * 50 % 255; 
-	var b = depth * 25 & 100;
+	var g = 255; 
+	var b = 255;
 	craw.rect({x: this.x, y: this.y, w: this.width, h: this.height,
 		c: opt.color ? opt.color : "rgb(" + r + "," + g + "," + b + ")", f: true}
 	);
@@ -148,7 +148,7 @@ QuadTree.prototype.intersect = function(area, div) {
 };
 
 
-craw.set("canvas2d-1");
+craw.set("canvas2d-2");
 craw.clear();
 var tree = new QuadTree({width: 400, height: 400});
 

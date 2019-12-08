@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Client page </title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, minimal-ui">
+		<meta name="mobile-web-app-capable" content="yes">
+		
+
+		<!--<link href="https://fonts.googleapis.com/css?family=Roboto|Montserrat|Thasadith|Coiny" rel="stylesheet">-->
+		
+
+		<link rel="stylesheet" type="text/css" href="/src/core/sandbox.1.css">
+
+		<script type="application/javascript" src="/src/core/Loader.js"></script>
+		
+	</head>
+	<body>
+		<div id="test"></div>
+		<script type="text/javascript" id="init">
+			((e) => {
+				var sources = ["/src/core/Context.js", "/src/core/Template.js", "/src/core/Animator.js", "/src/core/BadMath.js", "/bin/client/data/gradiant.png", "/src/core/Canvas2d.js"];
+				new Loader(sources, function() {
+					(new Game()).start();
+				});
+			})();
+		</script>
+	</body>
+</html>

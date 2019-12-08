@@ -1,5 +1,8 @@
 
 function BrickBreaker(opt) {
+
+	this.timeStep = 1000/30;
+
 	this.canvas = document.getElementById("canvas2d_game");
 	this.levelRect = this.canvas.getClientRects()[0];
 	this.paddle = {x: 150, y: 350, width: 50, height: 10, color: "#ff00ff"};
@@ -127,9 +130,6 @@ BrickBreaker.prototype.frame = function(dt) {
 		this.balls.forEach(function(e) {
 			e.x += e.dir[0] * e.velocity[0];
 			e.y += e.dir[1] * e.velocity[1];
-
-			e.x = Math.floor(e.x);
-			e.y = Math.floor(e.y);
 			//e.z += e.dir[2];
 
 			self.checkBallCollision(e);
@@ -140,9 +140,6 @@ BrickBreaker.prototype.frame = function(dt) {
 		this.powerups.forEach(function(e) {
 
 			e.y+= e.velocity[1];
-
-			e.x = Math.floor(e.x);
-			e.y = Math.floor(e.y);
 
 			if (self.intersectRR(e, self.paddle)) {
 				if (!e.destroyed) {
@@ -241,7 +238,7 @@ BrickBreaker.prototype.frame = function(dt) {
 	}
 
 	else if (this.started == false && !this.gameover) {
-		console.log(this.balls.length);
+		//console.log(this.balls.length);
 		if (this.balls.length == 0) return;
 		this.balls[0].x = Controller.getCursorPosition().x - rect.x;
 		this.balls[0].y = 335;
@@ -268,6 +265,9 @@ BrickBreaker.prototype.frame = function(dt) {
 
 
 };
+BrickBreaker.prototype.flush = function() {
+	// body...
+};
 BrickBreaker.prototype.render = function(dt) {
 	var self = this;
 	craw.set("canvas2d_game");
@@ -290,29 +290,39 @@ BrickBreaker.prototype.render = function(dt) {
 
 		var newc = "rgba(" + red + "," + green  + "," + blue + "," + alpha + ")";
 
-		craw.rect({x: e.x, y: e.y, w: e.width, h: e.height, c: newc, f: true});
+		// canvas performs better when its using whole numbers
+		var bX = Math.floor(e.x);
+		var bY = Math.floor(e.y);
+		var bWidth = Math.floor(e.width);
+		var bHeight = Math.floor(e.height);
+
+		craw.rect({x: bX, y: bY, w: bWidth, h: bHeight, c: newc, f: true});
 
 		// show edges
-		craw.rect({x: e.x, y: e.y, w: 1, h: e.height}); // left
-		craw.rect({x: e.x, y: e.y, w: e.width, h: 1}); // top 
-		craw.rect({x: e.x + e.width - 1, y: e.y, w: 1, h: e.height}); // right
-		craw.rect({x: e.x, y: e.y + e.height - 1, w: e.width, h: 1}); // bottom
+		craw.rect({x: bX, y: bY, w: 1, h: bHeight}); // left
+		craw.rect({x: bX, y: bY, w: bWidth, h: 1}); // top 
+		craw.rect({x: bX + bWidth - 1, y: bY, w: 1, h: bHeight}); // right
+		craw.rect({x: bX, y: bY + bHeight - 1, w: bWidth, h: 1}); // bottom
 
 	});
 
 	this.powerups.forEach(function(e) {
-		craw.circle({x: e.x, y: e.y, r: e.radius, c: e.color, f: false});
+		var bX = Math.floor(e.x);
+		var bY = Math.floor(e.y);
+		craw.circle({x: bX, y: bY, r: e.radius, c: e.color, f: false});
 	});
 
 	this.balls.forEach(function(e) {
-		craw.circle({x: e.x, y: e.y, r: e.radius, c: e.color, f: true });
+		var bX = Math.floor(e.x);
+		var bY = Math.floor(e.y);
+		craw.circle({x: bX, y: bY, r: e.radius, c: e.color, f: true });
 
 		// show edges
 		/*var rads = e.radius/2;
 		craw.rect({x: e.x - rads, y: e.y - rads, w: e.radius, h: e.radius});*/
 	});
 
-	craw.rect({x: this.paddle.x, y: this.paddle.y, w: this.paddle.width, h: this.paddle.height, c: "#ff00ff", f: true})
+	craw.rect({x: Math.floor(this.paddle.x), y: Math.floor(this.paddle.y), w: Math.floor(this.paddle.width), h: Math.floor(this.paddle.height), c: "#ff00ff", f: true})
 	
 	craw.text({x: 5, y: 378, text: "Score: " + this.score, font: "18px Impact", c: [0, this.gc, this.bc, 1.0]});
 	craw.text({x: 5, y: 395, text: "Continues: " + this.continues, font: "18px Impact", c: [0, this.gc, this.bc, 1.0]});
@@ -541,7 +551,7 @@ BrickBreaker.prototype.intersectRR = function(area, div) {
 	debug.init();
 }, 100);*/
 
-if (debug!==undefined)
+/*if (debug!==undefined)
 	debug.quit();
 
 new craw({parent: "canvas-1", id: "canvas2d_game"});
@@ -550,3 +560,33 @@ var opt = { level: "404a" };
 //var opt = {};
 var debug = new BrickBreaker(opt);
 debug.init();
+*/
+
+/*if (typeof app !=="undefined") {
+	app.stop();
+}
+
+setTimeout(function() {
+
+	new craw({parent: "canvas-1", id: "canvas2d_game"});
+
+	var opt = { canvas: "canvas2d_game" };
+	var app = new BrickBreaker(opt);
+	app.init();
+
+}, 100);*/
+
+// attempt to load app
+if (typeof app !=="undefined") {
+	app.quit();
+}
+var app = undefined;
+setTimeout(function() {
+
+	new craw({parent: "canvas-1", id: "canvas2d_game"});
+
+	var opt = { canvas: "canvas2d_game" };
+	app = new BrickBreaker(opt);
+	app.init();
+
+}, 100);
