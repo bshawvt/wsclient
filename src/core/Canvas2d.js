@@ -134,8 +134,24 @@ craw.clear = function(opt) {
 	var rect = cnv.getClientRects()[0];
 	ctx.clearRect(0, 0, rect.width, rect.height);
 }
+craw.img = function(img, opt) {
+	var cnv = craw.__C2D_CANVAS;
+	var ctx = craw.__C2D_CONTEXT;
+	if (ctx==null) return;
 
+	var x = opt.x || 0;
+	var y = opt.y || 0;
+	var w = opt.w || 200;
+	var h = opt.h || 200;
 
+	var ox = opt.ox || 0;
+	var oy = opt.oy || 0;
+	var sw = opt.sw || w;
+	var sh = opt.sh || h;
+
+	ctx.drawImage(img, ox, oy, sw, sh, x, y, w, h);
+
+}
 /**
 element can either be an element id string or an element object
 */
