@@ -9,3 +9,7 @@ body {
 	top: 0;
 
 }
+canvas {
+	background: #0ff;
+	border-right: 0px solid #f00;
+}

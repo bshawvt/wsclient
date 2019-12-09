@@ -7,21 +7,25 @@
 		<meta name="mobile-web-app-capable" content="yes">
 		
 
-		<!--<link href="https://fonts.googleapis.com/css?family=Roboto|Montserrat|Thasadith|Coiny" rel="stylesheet">-->
+		<!--<link href="https://fonts.googleapis.com/css?family=Roboto|Montserrat|Thasadith|Coiny" rel="stylesheet">
 		
 
-		<link rel="stylesheet" type="text/css" href="/src/core/sandbox.1.css">
+		<link rel="stylesheet" type="text/css" href="/src/core/sandbox.1.css">-->
 
 		<script type="application/javascript" src="/src/core/Loader.js"></script>
 		
 	</head>
 	<body>
-		<div id="test"></div>
 		<script type="text/javascript" id="init">
 			((e) => {
-				var sources = ["/src/core/Context.js", "/src/core/Template.js", "/src/core/Animator.js", "/src/core/BadMath.js", "/bin/client/data/gradiant.png", "/src/core/Canvas2d.js"];
-				new Loader(sources, function() {
-					(new Game()).start();
+				var sources = ["/src/core/Context.js", "/src/core/Template.js", "/src/core/Animator.js", "/src/core/BadMath.js", "/bin/client/data/floors.png", "/src/core/Canvas2d.js", "\\src/core\\sandbox.1.css"];
+
+				var loader = new Loader(sources, function(done, asset) {
+					if (done) {
+						console.log(loader);
+						var app = new Game({resources: loader.resource });
+						app.start();
+					}
 				});
 			})();
 		</script>

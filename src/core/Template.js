@@ -4,8 +4,12 @@ function Game(opt) {
 	var opt = opt || {};
 	this.TimeStep = opt.timeStep || 1000/30; // used by animator, here for convenience
 	this.network = null; 
-	this.animator = null; // not instantiated here because looping begins immediately
+	this.animator = null; // not instanced here because looping begins immediately
 	this.context = new Context({ callback: this.resize });
+
+	// opt.resources for preloaded assets
+	this.resource = opt.resources || [];//{ images: [], sounds: [], models: [] };
+	console.log(opt);
 }
 
 /* begins main loop */
@@ -16,7 +20,7 @@ Game.prototype.start = function() {
 
 /* game logic */
 Game.prototype.frame = function(dt) {
-	console.log(true);
+	//console.log(true);
 };
 
 /* animator will try to execute render as fast as possible
@@ -24,8 +28,11 @@ Game.prototype.frame = function(dt) {
 	can also be used */
 Game.prototype.render = function(dt) {
 	var self = this;
-	/*craw.set(this.context.id);
-	craw.clear();*/
+	craw.set(this.context.canvas.id);
+	craw.clear();
+
+	var img = this.resource.images["floors.png"];
+	craw.img(img, {x: 0, y: 0, w: 200, h: 200, sw: 200, sh: 200});
 
 };
 
@@ -40,10 +47,10 @@ Game.prototype.stop = function() {
 	if (this.animator!==null)
 		this.animator.stop();
 };
-// a callback called when context has been resized
+/* a callback called when context has been resized */
 Game.prototype.resize = function(context) {
 	//context.resize(window.innerWidth - 30, window.innerHeight - 30);
-	context.resize(window.innerWidth, window.innerHeight);
+	context.resize(window.innerWidth - 1, window.innerHeight - 1);
 };
 
 /*
