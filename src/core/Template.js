@@ -8,19 +8,37 @@ function Game(opt) {
 	this.context = new Context({ callback: this.resize });
 
 	// opt.resources for preloaded assets
-	this.resource = opt.resources || [];//{ images: [], sounds: [], models: [] };
+	this.resource = opt.resources || { images: [], sounds: [], models: [] };
 	console.log(opt);
 }
 
-/* begins main loop */
+/* begins main loop 
+	should be used to */
 Game.prototype.start = function() {
 	var self = this;
+	if (this.animator !== null) {
+		console.error();
+	}
 	this.animator = new Animator(this);
+};
+/* cleanup */
+Game.prototype.stop = function() {
+	if (this.animator!==null)
+		this.animator.stop();
 };
 
 /* game logic */
 Game.prototype.frame = function(dt) {
+	var self = this;
 	//console.log(true);
+	if (Math.floor(Math.random() * 200) == 1) {
+		if (this.resource.images["gradiant.png"] === undefined) {
+			var load = new Loader([ "/bin/client/data/gradiant.png" ], function(done, asset) {
+				self.resource.images.push(load.resource.images);
+			});
+
+		}
+	}
 };
 
 /* animator will try to execute render as fast as possible
@@ -31,7 +49,8 @@ Game.prototype.render = function(dt) {
 	craw.set(this.context.canvas.id);
 	craw.clear();
 
-	var img = this.resource.images["floors.png"];
+	var img = this.resource.images["gradiant.png"];
+	if (img)
 	craw.img(img, {x: 0, y: 0, w: 200, h: 200, sw: 200, sh: 200});
 
 };
@@ -40,12 +59,6 @@ Game.prototype.render = function(dt) {
 	animator calls this before stepping frames */
 Game.prototype.flush = function() {
 	
-};
-
-/* cleanup */
-Game.prototype.stop = function() {
-	if (this.animator!==null)
-		this.animator.stop();
 };
 /* a callback called when context has been resized */
 Game.prototype.resize = function(context) {

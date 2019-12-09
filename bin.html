@@ -12,15 +12,16 @@
 
 		<link rel="stylesheet" type="text/css" href="/src/core/sandbox.1.css">-->
 
-		<script type="application/javascript" src="/src/core/Loader.js"></script>
+		<script type="application/javascript" src="/src/engine/Loader.js"></script>
 		
 	</head>
 	<body>
 		<script type="text/javascript" id="init">
 			((e) => {
-				var sources = ["/src/core/Context.js", "/src/core/Template.js", "/src/core/Animator.js", "/src/core/BadMath.js", "/bin/client/data/floors.png", "/src/core/Canvas2d.js", "\\src/core\\sandbox.1.css"];
 
+				var sources = ["/src/engine/Context.js", "/src/engine/ResourceManager.js", "/src/engine/Template.js", "/src/engine/Animator.js", "/src/engine/BadMath.js", "/bin/client/data/floors.png", "/src/engine/Canvas2d.js", "\\src/engine\\sandbox.1.css"];
 				var loader = new Loader(sources, function(done, asset) {
+					// preload resources before starting
 					if (done) {
 						console.log(loader);
 						var app = new Game({resources: loader.resource });
