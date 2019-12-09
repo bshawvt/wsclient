@@ -44,8 +44,8 @@ Context.prototype.resize = function(width, height) {
 	this.canvas.width = width;
 	this.canvas.height = height;
 
-	//this.canvas.style.width = width/16 + "em";
-	//this.canvas.style.height = height/16 + "em";
+	this.canvas.style.width = width/16 + "em";
+	this.canvas.style.height = height/16 + "em";
 
 	//this.canvas.style.width = width + "px";
 	//this.canvas.style.height = height + "px";
