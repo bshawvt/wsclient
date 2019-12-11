@@ -29,12 +29,14 @@ function Loader(sources, callback) {
 				var img = document.createElement('img');
 				img.onload = function() {
 					//console.log(this);
-					var loadedFilename = this.src.split(/\/|\\/g);
+					//var loadedFilename = this.src.split(/\/|\\/g);
+					var url = this.src.split(/[?#&]/g)[0];
+					var loadedFilename = url.split(/\/|\\/g);
 					loadedFilename = loadedFilename[loadedFilename.length - 1];
 					self.onLoad(callback, this, loadedFilename);
 				}
 				this.resource[filename] = img;
-				img.src = sources[i];
+				img.src = sources[i] + "?v=" + (new Date()).getTime();
 				html.appendChild(img);
 				break;
 			}
@@ -42,7 +44,8 @@ function Loader(sources, callback) {
 				var snd = document.createElement('audio');
 
 				snd.onload = function() {
-					var loadedFilename = this.src.split(/\/|\\/g);
+					var url = this.src.split(/[?#&]/g)[0];
+					var loadedFilename = url.split(/\/|\\/g);
 					loadedFilename = loadedFilename[loadedFilename.length - 1];
 					self.onLoad(callback, this, loadedFilename);
 				}
@@ -56,12 +59,14 @@ function Loader(sources, callback) {
 				link.type = "text/css";
 
 				link.onload = function() {
-					var loadedFilename = this.href.split(/\/|\\/g);
+					//var loadedFilename = this.href.split(/\/|\\/g);
+					var url = this.href.split(/[?#&]/g)[0];
+					var loadedFilename = url.split(/\/|\\/g);
 					loadedFilename = loadedFilename[loadedFilename.length - 1];
 					self.onLoad(callback, this, loadedFilename);
 				}
 
-				link.href = sources[i];
+				link.href = sources[i] + "?v=" + (new Date()).getTime();
 				document.head.appendChild(link);
 				break;
 			}
@@ -71,18 +76,32 @@ function Loader(sources, callback) {
 				script.type = "application/javascript";
 
 				script.onload = function() {
-					var loadedFilename = this.src.split(/\/|\\/g);
+					//var loadedFilename = this.src.split(/\/|\\/g);
+					var url = this.src.split(/[?#&]/g)[0];
+					var loadedFilename = url.split(/\/|\\/g);
 					loadedFilename = loadedFilename[loadedFilename.length - 1];
 					self.onLoad(callback, this, loadedFilename);
 				}
 
-				script.src = sources[i];
+				script.src = sources[i] + "?v=" + (new Date()).getTime();
 				html.appendChild(script);
 				break;
 			}
 			default: {
-				// todo: 
-				throw "Loader error: unknown file type";
+				var req = new XMLHttpRequest();
+				req.open('GET', sources[i] + "?v=" + (new Date()).getTime());
+				req.onreadystatechange = function(a, b, c) {
+					console.log(req);
+					if (req.readyState === 4 && req.status === 200) {
+						var url = req.responseURL.split(/[?#&]/g)[0];
+						var loadedFilename = url.split(/\/|\\/g);
+						loadedFilename = loadedFilename[loadedFilename.length - 1];
+						var asset = {data: req.response, raw: req.responseText};
+						self.resource[loadedFilename] = asset;
+						self.onLoad(callback, asset, loadedFilename);
+					}
+				}
+				req.send();
 				break;
 			}
 		}
@@ -107,7 +126,7 @@ Loader.prototype.clean = function() {
 Loader.prototype.onLoad = function(callback, asset, key) {
 	this.loads++;
 	asset.isReady = true;
-
+	console.log(asset, key);
 	callback((this.loads>=this.loadCount), asset, key);
 	if (this.loads>=this.loadCount) 
 		this.clean();

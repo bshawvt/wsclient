@@ -24,8 +24,8 @@ Game.prototype.start = function() {
 	this.animator = new Animator(this);
 	this.startTime = this.animator.dt;
 	
-	this.dynamicObjects = [ {x: 5, y: 5, width: 100, height: 100, res: "gradiant.png"} ];//,
-	//{x: 200, y: 5, width: 200, height: 200, res: "gradiant.png"}]
+	this.dynamicObjects = [ {x: 5, y: 5, width: 100, height: 100, res: "gradiant.png"},
+	{x: 200, y: 5, width: 200, height: 200, res: "4096x4096.png"}]
 	//this.dynamicObjects.push({x: 5, y: 5, width: 100, height: 100, res: "4096x4096.png"});
 
 };

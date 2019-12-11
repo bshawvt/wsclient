@@ -20,7 +20,7 @@
 		<script type="text/javascript">
 			((e) => {
 
-				var sources = [/*"/bin/client/data/4096x4096.png",*/ "/src/engine/Context.js", "/src/engine/ResourceManager.js", "/src/engine/Template.js", "/src/engine/Animator.js", "/src/engine/BadMath.js", "/src/engine/Canvas2d.js", "\\src/engine\\sandbox.1.css"];
+				var sources = ["/bin/client/data/4096x4096.png", "/src/engine/Context.js", "/src/engine/ResourceManager.js", "/src/engine/Template.js", "/src/engine/Animator.js", "/src/engine/BadMath.js", "/src/engine/Canvas2d.js", "\\src/engine\\sandbox.1.css", "/bin/client/data/test.xtt"];
 				var loader = new Loader(sources, function(done, asset, key) {
 					var d = document.getElementById("loader");
 					d.innerText = (loader.loads / loader.loadCount * 100) + "%";
