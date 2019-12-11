@@ -1,8 +1,7 @@
 /* context class should try to handle most canvas related things such as resizing
 	or generating a canvas for the main application to use
 	if opt has a callback function then the class will call it each time the window sends
-	a resize event
-*/
+	a resize event */
 function Context(opt) {
 	var self = this;
 
@@ -44,8 +43,8 @@ Context.prototype.resize = function(width, height) {
 	this.canvas.width = width;
 	this.canvas.height = height;
 
-	this.canvas.style.width = width/16 + "em";
-	this.canvas.style.height = height/16 + "em";
+	//this.canvas.style.width = width/16 + "em";
+	//this.canvas.style.height = height/16 + "em";
 
 	//this.canvas.style.width = width + "px";
 	//this.canvas.style.height = height + "px";

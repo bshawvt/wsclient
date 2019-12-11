@@ -24,6 +24,7 @@ function Animator(target) {
 		while (self.dt < now) {
 			target.frame(self.dt);
 			self.dt += target.TimeStep;
+			//console.log("??");
 		}
 
 		target.render(self.dt);

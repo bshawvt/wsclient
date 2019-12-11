@@ -1,7 +1,7 @@
 
 function BrickBreaker(opt) {
 
-	this.timeStep = 1000/30;
+	this.TimeStep = 1000/30;
 
 	this.canvas = document.getElementById("canvas2d_game");
 	this.levelRect = this.canvas.getClientRects()[0];
@@ -89,7 +89,7 @@ function BrickBreaker(opt) {
 		{x: 20 + (9 * 35), y: 35 + (5 * 25), width: 30, height: 20, color: [f3[0], f3[1], f3[2], f3[3]], hits: 2, maxHits: 2},
 	];
 
-	if (opt.level !== undefined) {
+	//if (opt.level !== undefined) {
 		if (opt.level === "404") {
 			for(var i = 0; i < this.level["404"].length; i++) {
 				var element = this.level["404"][i];
@@ -103,7 +103,7 @@ function BrickBreaker(opt) {
 				this.blocks.push({x: 25 + (i%10) * 35, y: yoffset, width: 30, height: 20, color: [f3[0], f3[1], f3[2], f3[3]], hits: 2, maxHits: 2}); 
 			}
 		}
-	}
+	//}
 }
 BrickBreaker.prototype.init = function() {
 	var self = this;
@@ -115,7 +115,7 @@ BrickBreaker.prototype.quit = function() {
 };
 BrickBreaker.prototype.frame = function(dt) {
 	var rect = this.canvas.getClientRects()[0];
-
+	console.log("asdasdasd");
 
 	if (this.started)  {
 		if (this.blocks.length == 0) {

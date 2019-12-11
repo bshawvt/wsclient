@@ -1,113 +1,99 @@
-/* expects opt to have property with canvas id
-	a canvas element must exist before the game object can be created */
+/* params: opt - 
+	timeStep = kind of pointless,
+	resources = should be an array array from Loader.js or similar for adding preloaded assets
+		to ResourceManager */
 function Game(opt) {
 	var opt = opt || {};
 	this.TimeStep = opt.timeStep || 1000/30; // used by animator, here for convenience
 	this.network = null; 
 	this.animator = null; // not instanced here because looping begins immediately
-	this.context = new Context({ callback: this.resize });
+	this.context = new Context({ width: window.innerWidth, height: window.innerHeight, callback: this.resize });
 
 	// opt.resources for preloaded assets
-	this.resource = new ResourceManager(opt.resources)//opt.resources || new Array();// { images: [], sounds: [], models: [] };
-	//console.log(this.resource, this.resource.images, this.resource.images["floors.png"]);
-	this.tiles = [{x: 5, y: 5, width: 100, height: 100, res: "gradiant.png"}];
+	this.resource = new ResourceManager(opt.resources);
+	this.dynamicObjects = [];
+	this.startTime = 0xffffffffffffff;
 }
-
-/* begins main loop 
-	should be used to */
+/* begins main loop because of animator
+	should be used to initialize things */
 Game.prototype.start = function() {
 	var self = this;
-	if (this.animator !== null) {
-		console.error();
-	}
+
+	if (this.animator !== null && !this.animator.done)
+		throw "error: animator is already active";
 	this.animator = new Animator(this);
+	this.startTime = this.animator.dt;
+	
+	this.dynamicObjects = [ {x: 5, y: 5, width: 100, height: 100, res: "gradiant.png"} ];//,
+	//{x: 200, y: 5, width: 200, height: 200, res: "gradiant.png"}]
+	//this.dynamicObjects.push({x: 5, y: 5, width: 100, height: 100, res: "4096x4096.png"});
+
 };
 /* cleanup */
 Game.prototype.stop = function() {
-	if (this.animator!==null)
-		this.animator.stop();
+	if (this.animator==null) return;
+	this.animator.stop();
+
+	this.animator = null;
+	this.dynamicObjects = [];
+
 };
 
 /* game logic */
 Game.prototype.frame = function(dt) {
 	var self = this;
 
-	this.tiles.forEach(function(e) {
-		e.x = Math.floor(Math.random() * 200);
-		e.y = Math.floor(Math.random() * 200);
+	this.dynamicObjects.forEach(function(e) {
+		if (Math.floor(Math.random() * 7) == 5) {
+			//self.start();
+			//e.x = Math.floor(Math.random() * window.innerWidth);
+			//e.y = Math.floor(Math.random() * window.innerHeight);
+		}
 	});
 
-	if (Math.floor(Math.random() * 25) == 2)
-	if (this.resource.get('gradiant.png') == null) {
-		var load = new Loader([ "/bin/client/data/gradiant.png" ], (done, asset, key) => {
-			//if (done) {
-			console.log("???", key);
-			//}
-			self.resource.add(key, asset);
-			//this.resource[key] = asset;
-			//console.log(this.resource);
-		});
-
-	} 
-	// dynamic resource load test
-	/*if (Math.floor(Math.random() * 100) == 1) {
-		//console.log(this.resource.images["gradiant.png"]);
-		if (this.resource["gradiant.png"] === undefined) {
-			var load = new Loader([ "/bin/client/data/gradiant.png", "/bin/client/data/floors.png" ], (done, asset, key) => {
-				//if (done) {
-					console.log(key);
-				//}
-				//this.resource[key] = asset;
-				//console.log(this.resource);
-			});*/
-			/*function(done, asset) {
-				//console.log(load.resource.images);
-				if (done) {
-					console.log(self.resource, load.resource);
-					var t = load.resource.concat(self.resource);
-					console.log(t);
-					//self.resource = self.resource.concat(load.resource);
-					//console.log(self.resource);
-				}
-			});*/
-
-		/*}
-	}*/
+	if (this._tmpInit === undefined)
+		if (dt  - this.startTime > 5000) {
+			// load a new asset into the game if it doesn't already exist in the resource manager
+			var load = new Loader([ "/bin/client/data/gradiant.png" ], (done, asset, key) => {
+				self.resource.add(key, asset);
+			});
+			this._tmpInit = 1;
+			console.log("asdasd");
+		}
 };
 
 /* animator will try to execute render as fast as possible
-	in most web browsers it will be limited at 60fps
-	can also be used */
+	in most web browsers it will be limited at 60fps */
 Game.prototype.render = function(dt) {
 	var self = this;
 	craw.set(this.context.canvas.id);
 	craw.clear();
 
-	this.tiles.forEach(function(e) {
+	this.dynamicObjects.forEach(function(e) {
 		var img = self.resource.get(e.res);
-		if (img == null) img = self.resource.get("default");
-		craw.img(img, {x: e.x, y: e.x, w: e.width, h: e.height, sw: e.width, sh: e.height});
+		if (img == null) img = self.resource.get("default_img");
+		//console.log(img);
+		
+		craw.img(img, {  x: e.x,  y: e.y,  w: img.width,  h: img.height, 
+						sx: 0, sy: 0, sw: img.width, sh: img.height });//, sw: e.width, sh: e.height});
+		//craw.rect({		 x: e.x,  y: e.y,  w: img.width,  h: img.height });
+		//craw.img(img, {x: e.x, y: e.y, w: e.width * 2, h: e.height * 2, sw: e.width, sh: e.height});
 	});
-	/*var img = this.resource.get("gradiant.png");//this.resource["gradiant.png"];
-	if (img)
-	craw.img(img, {x: 0, y: 0, w: 200, h: 200, sw: 200, sh: 200});*/
 
 };
 
-/* functions exactly as render, except 
-	animator calls this before stepping frames */
+/* functions exactly as render, except animator calls this 
+	before stepping frames */
 Game.prototype.flush = function() {
 	
 };
-/* a callback called when context has been resized */
+/* a callback called when context has been resized 
+	doesn't really need to be here, but whatever */
 Game.prototype.resize = function(context) {
-	//context.resize(window.innerWidth - 30, window.innerHeight - 30);
-	context.resize(window.innerWidth - 1, window.innerHeight - 1);
+	context.resize(window.innerWidth, window.innerHeight);
 };
 
-/*
-// attempt to load app
-if (typeof app !=="undefined") {
+/*if (typeof app !=="undefined") {
 	app.stop();
 	console.log(app);
 }

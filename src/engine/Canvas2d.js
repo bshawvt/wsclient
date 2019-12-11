@@ -1,7 +1,5 @@
-/**
-	static method that creates a new canvas element
-	and makes it the default canvas to draw on
-*/
+/* static methods to draw with or creates a new canvas elements
+	also keeps a record of the canvas */
 function craw(opt) {
 
 	opt = opt || {};
@@ -26,7 +24,12 @@ function craw(opt) {
 	//this.canvas.
 	this.context = craw.__C2D_CONTEXT = this.canvas.getContext('2d');
 }
-
+/* params: opt - 
+	x, y = position
+	w, h = width and height
+	weight = line width 
+	f = fill or stroke, true/false
+	c = fill/stroke color */
 craw.rect = function(opt) {
 	var ctx = craw.__C2D_CONTEXT;
 	if (ctx==null) return;
@@ -39,16 +42,17 @@ craw.rect = function(opt) {
 	var weight = opt.weight || 1;
 	var fill = opt.f || false;
 	var color = opt.c || "#0f0f0f";
+	var strokeColor = opt.sc || color;
 	ctx.lineWidth = weight;
 
 	if (fill)  {
 		ctx.fillStyle = color;
 		ctx.fillRect(x, y, w, h);
 	}
-	else {
-		ctx.strokeStyle = color;
-		ctx.strokeRect(x, y, w, h);
-	}
+
+	ctx.strokeStyle = strokeColor;
+	ctx.strokeRect(x, y, w, h);
+
 }
 
 craw.text = function(opt) {
@@ -114,7 +118,6 @@ craw.line = function(opt, to) {
 	var color = opt.c || "#0f0f0f";
 	ctx.lineWidth = weight;	
 
-
 	ctx.beginPath();
 	ctx.moveTo(x, y);
 	ctx.lineTo(x2, y2);
@@ -144,17 +147,18 @@ craw.img = function(img, opt) {
 	var w = opt.w || 200;
 	var h = opt.h || 200;
 
-	var ox = opt.ox || 0;
-	var oy = opt.oy || 0;
+	var sx = opt.sx || 0;
+	var sy = opt.sy || 0;
 	var sw = opt.sw || w;
 	var sh = opt.sh || h;
+	var scale = opt.s || 1;
 
-	ctx.drawImage(img, ox, oy, sw, sh, x, y, w, h);
+	//console.log(x, y, w, h, sx, sy, sw, sh);
+	ctx.drawImage(img, sx, sy, sw, sh, x, y, w * scale, h * scale);
 
 }
-/**
-element can either be an element id string or an element object
-*/
+/* sets the canvas that each drawing method will use
+	param: element - can either be an element id string or an element object */
 craw.set = function(element) {
 
 	// check if input is a string or object 

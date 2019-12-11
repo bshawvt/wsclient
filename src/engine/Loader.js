@@ -1,12 +1,16 @@
-/* loader class 
-	loads a list of stuff and then does a thing when it's done */
+/* loader class that loads a list of stuff and then does a thing when it's done 
+	if an asset is anything but html/css/javascript then the asset will be saved 
+	in the resource property
+
+	params: sources - an array of full filename paths that will be loaded
+		callback - a function that is called each time a resource has finished loading */
 function Loader(sources, callback) {
 	var self = this;
 	var html = document.createElement('div');
-	//html.style.display = "hidden";
+	html.style.display = "none";
 	document.body.appendChild(html);
 
-	this.resource = new Array(); // will contain assets that have finished loading
+	this.resource = new Array(); // will only contain assets that have finished loading
 
 	this.loads = 0;
 	this.loadCount = sources.length;
@@ -21,8 +25,7 @@ function Loader(sources, callback) {
 		switch (type) {
 			case "jpg":
 			case "jpeg":  
-			case "png": {
-				
+			case "png": {				
 				var img = document.createElement('img');
 				img.onload = function() {
 					//console.log(this);
@@ -35,11 +38,13 @@ function Loader(sources, callback) {
 				html.appendChild(img);
 				break;
 			}
-			case "mp3": {
+			case "mp3": { // todo:
 				var snd = document.createElement('audio');
 
 				snd.onload = function() {
-					self.onLoad(callback, this);
+					var loadedFilename = this.src.split(/\/|\\/g);
+					loadedFilename = loadedFilename[loadedFilename.length - 1];
+					self.onLoad(callback, this, loadedFilename);
 				}
 
 				html.appendChild(snd);
@@ -51,11 +56,13 @@ function Loader(sources, callback) {
 				link.type = "text/css";
 
 				link.onload = function() {
-					self.onLoad(callback, this);
+					var loadedFilename = this.href.split(/\/|\\/g);
+					loadedFilename = loadedFilename[loadedFilename.length - 1];
+					self.onLoad(callback, this, loadedFilename);
 				}
 
 				link.href = sources[i];
-				html.appendChild(link);
+				document.head.appendChild(link);
 				break;
 			}
 			case "json":
@@ -64,7 +71,9 @@ function Loader(sources, callback) {
 				script.type = "application/javascript";
 
 				script.onload = function() {
-					self.onLoad(callback, this);
+					var loadedFilename = this.src.split(/\/|\\/g);
+					loadedFilename = loadedFilename[loadedFilename.length - 1];
+					self.onLoad(callback, this, loadedFilename);
 				}
 
 				script.src = sources[i];
@@ -80,19 +89,25 @@ function Loader(sources, callback) {
 	}
 
 	this.html = html; // lazy
-
-	// doing cleanup now that the scripts/stylesheets have been loaded
-	//document.body.removeChild(html);
 };
+/* the only thing it doesn't remove is css links because that bjorks things */
 Loader.prototype.clean = function() {
-	// body...
 	document.body.removeChild(this.html);
 };
 /* onLoad is called each time a source has finished loading
-	it will attempt to execute callback after all sources are loaded */
+	it will attempt to execute callback after all sources are loaded 
+	params: callback ...
+		asset - an html element
+		key - the filename that was loaded 
+
+	onload will push three arguments through
+		done - true if the last resource in the set has loaded 
+		asset - an html element
+		key - the filename that was loaded */
 Loader.prototype.onLoad = function(callback, asset, key) {
 	this.loads++;
 	asset.isReady = true;
+
 	callback((this.loads>=this.loadCount), asset, key);
 	if (this.loads>=this.loadCount) 
 		this.clean();

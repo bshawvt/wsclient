@@ -1,11 +1,10 @@
-/*	oddwarg loop! 
-	param: target - expects an object with a frame, render and flush method 
-	will also generate a canvas element if target context does not have one */
+/* oddwarg loop! 
+	param: target - expects an object with a frame, render and flush method */
 function Animator(target) {
 	var self = this;
 
 	if (target.render === undefined || target.frame === undefined || target.flush === undefined) {
-		throw "Animator error: target is missing required frame, flush and/or render methods ";
+		throw "error: Animator's target is missing required frame, flush and/or render methods ";
 	}
 
 	this.dt = (new Date()).getTime();
