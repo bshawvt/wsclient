@@ -49,6 +49,27 @@ function Input() {
 		self.buttonStates[e.keyCode].state = false;
 	}
 
+	this.touchstart = function(e) {
+		//console.log("touchstart", e);
+		for(var i = 0; i < e.targetTouches.length; i++) {
+			var touch = e.targetTouches[i];
+			craw.circle({x: touch.clientX, y: touch.clientY, r: 5, f: true});
+		}
+	}
+	this.touchend = function(e) {
+		//console.log("touchend", e);
+	}
+	this.touchcancel = function(e) {
+		//console.log("touchcancel", e);
+	}
+	this.touchmove = function(e) {
+		//console.log("touchmove", e);
+	}
+
+	window.addEventListener('touchstart', this.touchstart);
+	window.addEventListener('touchend', this.touchend);
+	window.addEventListener('touchcancel', this.touchcancel);
+	window.addEventListener('touchmove', this.touchmove);
 
 	window.addEventListener('mousedown', this.mousedown);
 	window.addEventListener('mouseup', this.mouseup);
@@ -75,12 +96,18 @@ Input.prototype.addInputEvent = function(input, callback, preventDefault) {
 	}
 };
 Input.prototype.clean = function() { 
-	// i dont know if listeners are overwritten or not so gonna remove them up just to be safe
+	// i dont know if listeners are overwritten or not so gonna remove them just to be safe
 	window.removeEventListener('mousedown', this.mousedown);
 	window.removeEventListener('mouseup', this.mouseup);
 	window.removeEventListener('mousemove', this.mousemove);
 	window.removeEventListener('keydown', this.keydown);
 	window.removeEventListener('keyup', this.keyup);
+
+	window.removeEventListener('touchstart', this.touchstart);
+	window.removeEventListener('touchend', this.touchend);
+	window.removeEventListener('touchcancel', this.touchcancel);
+	window.removeEventListener('touchmove', this.touchmove);
+
 };
 
 if (Controller !== undefined)

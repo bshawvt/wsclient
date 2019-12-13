@@ -17,12 +17,13 @@ function Animator(target) {
 		if (now - self.dt > 1000) {
 			console.error("sKiPPing fRAmeS");
 			self.dt = now;
+			// todo: game should be notified of skips for reasons such as multiplayer
 		}
 
 		target.flush();
 		while (self.dt < now) {
-			target.frame(self.dt);
 			self.dt += target.TimeStep;
+			target.frame(self.dt);
 		}
 
 		target.render(self.dt);

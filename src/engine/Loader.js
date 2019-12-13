@@ -40,6 +40,8 @@ function Loader(sources, callback) {
 				html.appendChild(img);
 				break;
 			}
+			case "wav":
+			case "ogg":
 			case "mp3": { // todo:
 				var snd = document.createElement('audio');
 
@@ -91,11 +93,12 @@ function Loader(sources, callback) {
 				var req = new XMLHttpRequest();
 				req.open('GET', sources[i] + "?v=" + (new Date()).getTime());
 				req.onreadystatechange = function(a, b, c) {
-					console.log(req);
+					//console.log(req);
 					if (req.readyState === 4 && req.status === 200) {
 						var url = req.responseURL.split(/[?#&]/g)[0];
 						var loadedFilename = url.split(/\/|\\/g);
 						loadedFilename = loadedFilename[loadedFilename.length - 1];
+						
 						var asset = {data: req.response, raw: req.responseText};
 						self.resource[loadedFilename] = asset;
 						self.onLoad(callback, asset, loadedFilename);

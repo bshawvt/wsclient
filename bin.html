@@ -16,18 +16,20 @@
 		
 	</head>
 	<body>
-		<span id="loader" style="left:50%;"></span>
+		<!-- #loader receives loading text -->
+		<span id="loader"><span></span></span>
 		<script type="text/javascript">
 			((e) => {
 
-				var sources = ["/bin/client/data/4096x4096.png", "/src/engine/Context.js", "/src/engine/ResourceManager.js", "/src/engine/Template.js", "/src/engine/Animator.js", "/src/engine/BadMath.js", "/src/engine/Canvas2d.js", "\\src/engine\\sandbox.1.css", "/bin/client/data/test.xtt"];
+				var sources = ["\\src/engine\\default.phone.css", "\\src/engine\\default.desktop.css", "\\src/engine\\default.tablet.css", "/src/engine/Context.js", "/src/engine/ResourceManager.js", "/src/engine/Template.js", "/src/engine/Animator.js", "/src/engine/BadMath.js", "/src/engine/Canvas2d.js", "/bin/client/data/test.xtt", "/src/engine/Common.js", "/src/engine/Config.js", "/src/engine/Input.js"];
 				var loader = new Loader(sources, function(done, asset, key) {
 					var d = document.getElementById("loader");
-					d.innerText = (loader.loads / loader.loadCount * 100) + "%";
+					console.log(d);
+					d.children[0].innerText = "Initial load: " + Math.floor(loader.loads / loader.loadCount * 100) + "%";
 
 					// preload resources before starting
 					if (done) {
-						document.body.removeChild(d); // remove the loading thing
+						//document.body.removeChild(d); // remove the loading thing
 						var app = new Game({resources: loader.resource });
 						app.start();
 					}

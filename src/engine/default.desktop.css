@@ -1,0 +1,36 @@
+/* desktop */
+body {
+	background-color: rgb(200, 200, 200);
+	position: initial;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+
+	left: 0;
+	top: 0;
+
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+
+}
+canvas {
+	background: #0ff;
+	border-right: 0px solid #f00;
+}
+
+#loader {
+
+}
+
+#loader > span {
+	position: fixed;
+	left: 0.00em;
+	right: 0.00em;
+
+	border: 0.24em solid #ff0;
+	text-align: center;
+}

@@ -1,7 +1,9 @@
 /* context class should try to handle most canvas related things such as resizing
 	or generating a canvas for the main application to use
 	if opt has a callback function then the class will call it each time the window sends
-	a resize event */
+	a resize event 
+
+	for mobile devices it will lock orientation to either landscape or portrait */
 function Context(opt) {
 	var self = this;
 
@@ -17,12 +19,21 @@ function Context(opt) {
 	//this.canvas.style.width = this.canvas.width/16 + "em";
 	//this.canvas.style.height = this.canvas.height/16 + "em";
 
-	var parent = document.body;
-	if (opt.parent !== undefined) {
-		console.log(opt.parent);
-		parent = opt.parent;
+	// for mobiles i'm just going to be greedy and take screen resolution by going straight to fullscreen
+	if (isMobile()) {
+		//console.log("context has found its way into mobileland");
+		this.canvas.onclick = function() {
+			ToggleFullscreen(null, true);
+			// to not waste time on setting orientation when it doesn't need to be changed
+			if (Config.orientation!==undefined && GetOrientation() !== Config.orientation) {
+				MobileOrientation(Config.orientation);
+			}
+		}
 	}
 
+	var parent = document.body;
+	if (opt.parent !== undefined)
+		parent = opt.parent;
 	parent.appendChild(this.canvas);
 
 	if (typeof opt.callback === "function") {
@@ -45,7 +56,4 @@ Context.prototype.resize = function(width, height) {
 
 	//this.canvas.style.width = width/16 + "em";
 	//this.canvas.style.height = height/16 + "em";
-
-	//this.canvas.style.width = width + "px";
-	//this.canvas.style.height = height + "px";
 };

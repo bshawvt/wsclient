@@ -7,12 +7,17 @@ function Game(opt) {
 	this.TimeStep = opt.timeStep || 1000/30; // used by animator, here for convenience
 	this.network = null; 
 	this.animator = null; // not instanced here because looping begins immediately
-	this.context = new Context({ width: window.innerWidth, height: window.innerHeight, callback: this.resize });
+
+	this.context = new Context({ orientation: "portrait", 
+		width: window.innerWidth, height: window.innerHeight, 
+		callback: this.resize 
+	});
 
 	// opt.resources for preloaded assets
 	this.resource = new ResourceManager(opt.resources);
 	this.dynamicObjects = [];
 	this.startTime = 0xffffffffffffff;
+
 }
 /* begins main loop because of animator
 	should be used to initialize things */
@@ -67,7 +72,7 @@ Game.prototype.frame = function(dt) {
 Game.prototype.render = function(dt) {
 	var self = this;
 	craw.set(this.context.canvas.id);
-	craw.clear();
+	//craw.clear();
 
 	this.dynamicObjects.forEach(function(e) {
 		var img = self.resource.get(e.res);
