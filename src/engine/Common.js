@@ -11,7 +11,7 @@ function int2rgb(v) {
 
 	var str = "rgb("+ r + "," 
 					+ g + ","
-					+ b + ");";
+					+ b + ")";
 	return str;
 }
 function clamp(val, min, max) {

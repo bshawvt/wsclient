@@ -3,11 +3,12 @@ body {
 	background-color: rgb(200, 200, 200);
 	position: initial;
 	overflow: hidden;
-	margin: 0;
-	padding: 0;
 
-	left: 0;
-	top: 0;
+	margin: 0.00em;
+	padding: 0.00em;
+
+	left: 0.00em;
+	top: 0.00em;
 
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
@@ -18,19 +19,33 @@ body {
 
 }
 canvas {
-	background: #0ff;
-	border-right: 0px solid #f00;
+	border: 0.00em solid #000;
 }
 
-#loader {
+#app-content {
+	position: absolute;
+	/*top: 15%;*/
+	/*left: 25%;*/
+	/*width: 500px;*/
+	/*height: 500px;*/
 
-}
-
-#loader > span {
-	position: fixed;
 	left: 0.00em;
 	right: 0.00em;
+	top: 0.00em;
+	bottom: 0.00em;
 
-	border: 0.24em solid #ff0;
+	border: 0.00em solid #f00;
+}
+#app-loading {
+	position: absolute;
+	font-weight: bolder;
+	font-size: 2em;
+	border: 10px solid #ff0;
 	text-align: center;
+	
+	pointer-events: none;
+	left: 0.00em;
+	right: 0.00em;
+	top: 45%;
+	vertical-align: bottom;
 }

@@ -43,16 +43,67 @@ function Loader(sources, callback) {
 			case "wav":
 			case "ogg":
 			case "mp3": { // todo:
+				/*console.log("???")
 				var snd = document.createElement('audio');
-
+				snd.load();
 				snd.onload = function() {
 					var url = this.src.split(/[?#&]/g)[0];
 					var loadedFilename = url.split(/\/|\\/g);
 					loadedFilename = loadedFilename[loadedFilename.length - 1];
+					console.log("fuk");
 					self.onLoad(callback, this, loadedFilename);
-				}
 
-				html.appendChild(snd);
+				}
+				snd.src = sources[i] + "?v=" + (new Date()).getTime();
+				html.appendChild(snd);*/
+				/*var snd = new AudioContext();//(sources[i] + "?v=" + (new Date()).getTime());
+				
+				var url = sources[i].split(/[?#&]/g)[0];
+				var loadedFilename = url.split(/\/|\\/g);
+				loadedFilename = loadedFilename[loadedFilename.length - 1];
+
+				// audio doesnt seem to have an onload so pray the audio was found
+				this.loads++;
+				snd.isReady = true;
+				//console.log(asset, key);
+				//console.log(this.loads, this.loadCount);
+				callback((this.loads>=this.loadCount), snd, loadedFilename);*/
+
+				//console.log(url, loadedFilename);
+				//this.onLoad(callback, snd, loadedFilename);
+				//var snd = new AudioContext();
+				var req = new XMLHttpRequest();
+				req.open('GET', sources[i] + "?v=" + (new Date()).getTime(), true);
+				req.responseType = "arraybuffer";
+				//if (type !== "wav" || type !== "ogg" || type !== "mp3")
+				req.onload = function(a, b, c) {
+					console.log(a, b, c);
+					//if (req.readyState === 4 && req.status === 200) {
+					var url = req.responseURL.split(/[?#&]/g)[0];
+					var loadedFilename = url.split(/\/|\\/g);
+					loadedFilename = loadedFilename[loadedFilename.length - 1];
+					
+					var asset = {data: req.response};//, raw: req.responseText};
+					self.resource[loadedFilename] = asset;
+					self.onLoad(callback, asset, loadedFilename);
+					//}
+					/*snd.decodeAudioData(req.response, function(buffer) {
+						console.log(buffer);
+					});*/
+				}
+				req.send();
+				
+				//console.log(snd);
+
+				/*
+				snd.onload = function() {
+					var url = this.src.split(/[?#&]/g)[0];
+					var loadedFilename = url.split(/\/|\\/g);
+					loadedFilename = loadedFilename[loadedFilename.length - 1];
+					console.log("fuk");
+					self.onLoad(callback, this, loadedFilename);
+
+				}*/
 				break;
 			}
 			case "css": {
@@ -91,7 +142,9 @@ function Loader(sources, callback) {
 			}
 			default: {
 				var req = new XMLHttpRequest();
-				req.open('GET', sources[i] + "?v=" + (new Date()).getTime());
+				req.open('GET', sources[i] + "?v=" + (new Date()).getTime(), true);
+				
+				//if (type !== "wav" || type !== "ogg" || type !== "mp3")
 				req.onreadystatechange = function(a, b, c) {
 					//console.log(req);
 					if (req.readyState === 4 && req.status === 200) {
@@ -114,7 +167,7 @@ function Loader(sources, callback) {
 };
 /* the only thing it doesn't remove is css links because that bjorks things */
 Loader.prototype.clean = function() {
-	document.body.removeChild(this.html);
+	//document.body.removeChild(this.html);
 };
 /* onLoad is called each time a source has finished loading
 	it will attempt to execute callback after all sources are loaded 
@@ -130,7 +183,9 @@ Loader.prototype.onLoad = function(callback, asset, key) {
 	this.loads++;
 	asset.isReady = true;
 	console.log(asset, key);
+	//console.log(this.loads, this.loadCount);
 	callback((this.loads>=this.loadCount), asset, key);
-	if (this.loads>=this.loadCount) 
+	if (this.loads>=this.loadCount) {
 		this.clean();
+	}
 };

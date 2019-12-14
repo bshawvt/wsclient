@@ -49,11 +49,19 @@ function Input() {
 		self.buttonStates[e.keyCode].state = false;
 	}
 
+
+	var touchCanvas = craw({w: window.innerWidth - 4, h: window.innerHeight - 4});
+	touchCanvas.style.position = "absolute";
+	touchCanvas.style.border = "0.12em solid #fff";
+	touchCanvas.style.pointerEvents = "none";
+
 	this.touchstart = function(e) {
 		//console.log("touchstart", e);
+		craw.set(touchCanvas);
 		for(var i = 0; i < e.targetTouches.length; i++) {
 			var touch = e.targetTouches[i];
-			craw.circle({x: touch.clientX, y: touch.clientY, r: 5, f: true});
+			var c = "rgb("+ (Math.floor(Math.random() * 255)) + ", " + (Math.floor(Math.random() * 255)) + ", " + (Math.floor(Math.random() * 255)) + ")";
+			craw.circle({x: touch.clientX, y: touch.clientY, r: 5, f: true, c: c});
 		}
 	}
 	this.touchend = function(e) {

@@ -5,14 +5,14 @@ function ResourceManager(preloaded) {
 	this.resources = preloaded || new Array();
 	this.generateDefaults();
 
-	this.resourceSet = new Set();
+	//this.resourceSet = new Set();
 
 	console.log(this);
 }
 /* only returns assets when they are full loaded 
 	otherwise it returns null since resources can be many things 
 
-	if null is received, the resource type can be set to one of the default*/
+	if null is received, the resource type can be set to one of the default */
 ResourceManager.prototype.get = function(key) {
 	if (this.resources[key] !== undefined && this.resources[key].isReady)
 		return this.resources[key];

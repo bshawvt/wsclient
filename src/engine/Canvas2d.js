@@ -7,6 +7,7 @@ function craw(opt) {
 	this.canvas.id = opt.id || undefined;
 	this.canvas.width = opt.w || 400;
 	this.canvas.height = opt.h || 400;
+	
 
 	//this.canvas.style.width = this.canvas.width + "px";
 	//this.canvas.style.height = this.canvas.height + "px";
@@ -23,6 +24,7 @@ function craw(opt) {
 	
 	//this.canvas.
 	this.context = craw.__C2D_CONTEXT = this.canvas.getContext('2d');
+	return this.canvas;
 }
 /* params: opt - 
 	x, y = position

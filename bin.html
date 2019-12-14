@@ -16,26 +16,51 @@
 		
 	</head>
 	<body>
-		<!-- #loader receives loading text -->
-		<span id="loader"><span></span></span>
-		<script type="text/javascript">
-			((e) => {
+		<div id="app-content">
+			<span id="app-loading"></span>
+			<script type="text/javascript">
 
-				var sources = ["\\src/engine\\default.phone.css", "\\src/engine\\default.desktop.css", "\\src/engine\\default.tablet.css", "/src/engine/Context.js", "/src/engine/ResourceManager.js", "/src/engine/Template.js", "/src/engine/Animator.js", "/src/engine/BadMath.js", "/src/engine/Canvas2d.js", "/bin/client/data/test.xtt", "/src/engine/Common.js", "/src/engine/Config.js", "/src/engine/Input.js"];
-				var loader = new Loader(sources, function(done, asset, key) {
-					var d = document.getElementById("loader");
-					console.log(d);
-					d.children[0].innerText = "Initial load: " + Math.floor(loader.loads / loader.loadCount * 100) + "%";
+				((e) => {
+					var contentContainer = document.getElementById("app-content");
 
-					// preload resources before starting
-					if (done) {
-						//document.body.removeChild(d); // remove the loading thing
-						var app = new Game({resources: loader.resource });
-						app.start();
-					}
+					// list of resources to preload
+					var sources = [/*"/bin/client/data/496757__erokia__ambient-wave-48-tribute.wav", */"\\src/engine\\default.phone.css", "\\src/engine\\default.desktop.css", "\\src/engine\\default.tablet.css", "/src/engine/Context.js", "/src/engine/ResourceManager.js", "/src/engine/Template.js", "/src/engine/Animator.js", "/src/engine/BadMath.js", "/src/engine/Canvas2d.js", "/bin/client/data/test.xtt", "/src/engine/Common.js", "/src/engine/Config.js", "/src/engine/Input.js", "/bin/client/data/gradiant.png", "/src/engine/EventManager.js"];
+					//var loader = null;
+					var loader = new Loader(sources, function(done, asset, key) {
+						console.log(loader);
+						//if (loader === null) return; // 
+						// app-loading is used for displaying information about initial load state
+						var d = document.getElementById("app-loading");
+												
+						//console.log(loader);
+						//d.innerText = "Doing things first... " + Math.floor(loader.loads / loader.loadCount * 100) + "%";
 
-				});
-			})();
-		</script>
+						// preload all sources before starting
+						if (done) {
+							d.innerText = "Click to start";
+							var rect = contentContainer.getClientRects()[0];
+							var opt = { parent: contentContainer, 
+								resources: loader.resource,
+								initialWidth: rect.width,
+								initialHeight: rect.height
+							};
+							var app = new Game(opt);
+							// user has found and attacked the canvas, clean up and start
+							app.context.onactive.addListener("activated", function(e) {
+								// remove app-loading element
+								contentContainer.removeChild(d);
+								app.start();
+							}, true); 
+
+						}
+						else {
+							if (loader !== undefined)
+								d.innerText = "Doing things first... " + Math.floor(loader.loads / loader.loadCount * 100) + "%";
+						}
+
+					});
+				})();
+			</script>
+		</div>
 	</body>
 </html>
