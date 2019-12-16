@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
 		<title> Client page </title>
 		<meta charset="utf-8">
@@ -20,14 +20,53 @@
 			<span id="app-loading"></span>
 			<script type="text/javascript">
 
-				((e) => {
+				(function() {
 					var contentContainer = document.getElementById("app-content");
 
 					// list of resources to preload
-					var sources = [/*"/bin/client/data/496757__erokia__ambient-wave-48-tribute.wav", */"\\src/engine\\default.phone.css", "\\src/engine\\default.desktop.css", "\\src/engine\\default.tablet.css", "/src/engine/Context.js", "/src/engine/ResourceManager.js", "/src/engine/Template.js", "/src/engine/Animator.js", "/src/engine/BadMath.js", "/src/engine/Canvas2d.js", "/bin/client/data/test.xtt", "/src/engine/Common.js", "/src/engine/Config.js", "/src/engine/Input.js", "/bin/client/data/gradiant.png", "/src/engine/EventManager.js"];
+					var sources = [
+					// audio loading tests
+					/*"/bin/client/data/496757__erokia__ambient-wave-48-tribute.wav",
+					"/bin/client/data/test1.wav",
+					"/bin/client/data/test2.wav",
+					"/bin/client/data/test3.wav",
+					"/bin/client/data/test4.wav",
+					"/bin/client/data/test5.wav",
+					"/bin/client/data/test6.wav",
+					"/bin/client/data/test7.wav",
+					"/bin/client/data/test8.wav",
+					"/bin/client/data/test9.wav",
+					"/bin/client/data/test10.wav",*/
+					/*"/bin/client/data/song1.mp3",
+					"/bin/client/data/song2.mp3",
+					"/bin/client/data/song3.mp3",
+					"/bin/client/data/song4.mp3",
+					"/bin/client/data/song5.mp3",
+					"/bin/client/data/song6.mp3",
+					"/bin/client/data/song7.mp3",
+					"/bin/client/data/song8.mp3",
+					"/bin/client/data/song9.mp3",
+					"/bin/client/data/song10.mp3",*/
+
+					// image loading tests
+					//"/bin/client/data/4096x4096.png", 
+					//"/bin/client/data/1024x1024.png",
+
+					// unknown file type load tests
+					/*"/bin/client/data/test1.xtt",
+					"/bin/client/data/test2.xtt",
+					"/bin/client/data/test3.ttt",*/
+
+					// css loading tests
+					"\\src/engine\\default.phone.css", 
+					"/src/engine/default.desktop.css", 
+					"/src/engine/default.tablet.css", 
+
+					// javascript loading tests
+					"/src/engine/Context.js", "/src/engine/ResourceManager.js", "/src/engine/Template.js", "/src/engine/Animator.js", "/src/engine/BadMath.js", "/src/engine/Canvas2d.js", "/src/engine/Common.js", "/src/engine/Config.js", "/src/engine/Input.js", "/src/engine/EventManager.js"];
 					//var loader = null;
 					var loader = new Loader(sources, function(done, asset, key) {
-						console.log(loader);
+						//console.log(loader);
 						//if (loader === null) return; // 
 						// app-loading is used for displaying information about initial load state
 						var d = document.getElementById("app-loading");
@@ -36,7 +75,7 @@
 						//d.innerText = "Doing things first... " + Math.floor(loader.loads / loader.loadCount * 100) + "%";
 
 						// preload all sources before starting
-						if (done) {
+						if (done >= 1) {
 							d.innerText = "Click to start";
 							var rect = contentContainer.getClientRects()[0];
 							var opt = { parent: contentContainer, 
@@ -54,8 +93,9 @@
 
 						}
 						else {
-							if (loader !== undefined)
-								d.innerText = "Doing things first... " + Math.floor(loader.loads / loader.loadCount * 100) + "%";
+							//if (loader !== undefined)
+								//d.innerText = "Doing things first... " + Math.floor(loader.loads / loader.loadCount * 100) + "%";
+							d.innerText = "Doing things first... " + Math.floor(done * 100) + "%";
 						}
 
 					});

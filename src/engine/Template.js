@@ -76,30 +76,23 @@ Game.prototype.frame = function(dt) {
 	if (this._tmpInit === undefined)
 		if (dt  - this.startTime > 1000) {
 			// load a new asset into the game if it doesn't already exist in the resource manager
-			var load = new Loader([ "/bin/client/data/496757__erokia__ambient-wave-48-tribute.wav" ], (done, asset, key) => {
+		
+			var load = new Loader([ "/bin/client/data/test1.wav" ], (done, asset, key) => {
+			//var load = new Loader([ "/bin/client/data/song1.mp3" ], (done, asset, key) => {
 				self.resource.add(key, asset);
-			
-				console.log(asset);
+				//asset.play();
 				console.log("dynamic load test has finished loading %s", key);
 
 				var snd = new AudioContext();
-				var src = snd.createBufferSource();
-				var buffer = snd.decodeAudioData(asset.data, function(buf) {
-					buffer = buf;
-				}, function(e){
-					console.log(e);
-				});
-				src.buffer = buffer;
-				src.connect(snd.destination);
-				src.start(0);
-
-
+				resource = asset;
+				audiocontext = snd;
 			});
 			this._tmpInit = 1;
 			console.log("dynamic load test has started...");
 		}
 };
-
+var audiocontext = 0;
+var resource = 0;
 function rend(dt, objs, res) {
 	var res = res; //= this.resource;
 	objs.forEach(function(e) {

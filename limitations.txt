@@ -1,0 +1,39 @@
+Minimum browser target support:
+
+WebGL
+		Desktop / Mac:
+	Chrome 				- v9
+	Firefox				- v4
+	Internet Explorer 	- v11
+	Edge 				- v12
+
+		Mobile:
+	Chrome 				- v25
+	Firefox 			- v?
+	Safari 				- v8
+	WebView 			- v?
+
+Web Audio API, AudioContext
+		Desktop / Mac:
+	Chrome 				- v35
+	Firefox				- v25
+	Internet Explorer 	- unsupported
+	Edge 				- v12
+
+		Mobile:
+	Chrome 				- v35
+	Firefox 			- v26
+	Safari 				- v?
+	WebView 			- v?
+
+
+
+
+Android Chrome 	- v49
+Android Firefox - v44
+iPhone Safari 	- v10
+
+Desktop Firefox - v44
+Desktop Chrome	- v49
+Mac Safari		- v10
+Internet Expl.	- v11

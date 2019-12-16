@@ -1,5 +1,6 @@
 /* some static functions that do thigns */
 
+/**/
 function int2rgb(v) {
 	/* expects a value like 0x00ff00 or 65280 and returns
 	the CSS styling text 'rgb(0, 255, 0);'
@@ -114,7 +115,7 @@ function MobileOrientation(orientation) {
 		window.screen.lockOrientation(orientation);
 	}
 }
-/* returns returns */
+/* returns mobile orientation */
 function GetOrientation() {
 	var orientation;// = "landscape";
 	if (window.screen.orientation !== undefined) {
@@ -139,4 +140,11 @@ function GetOrientation() {
 	else {
 		return "portrait";
 	}
+}
+
+function TypedArray2Array(arr) {
+	var n = [];
+	for(var i = 0; i < arr.length; i++)
+		n.push(arr[i]);
+	return n;
 }

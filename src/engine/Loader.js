@@ -11,7 +11,7 @@ function Loader(sources, callback) {
 	document.body.appendChild(html);
 
 	this.resource = new Array(); // will only contain assets that have finished loading
-
+	this.sources = [];// = sources;
 	this.loads = 0;
 	this.loadCount = sources.length;
 
@@ -42,68 +42,44 @@ function Loader(sources, callback) {
 			}
 			case "wav":
 			case "ogg":
-			case "mp3": { // todo:
-				/*console.log("???")
-				var snd = document.createElement('audio');
-				snd.load();
-				snd.onload = function() {
+			case "mp3": { // todo: 
+				var audio = document.createElement('audio');
+				audio.oncanplaythrough = function() {
 					var url = this.src.split(/[?#&]/g)[0];
 					var loadedFilename = url.split(/\/|\\/g);
 					loadedFilename = loadedFilename[loadedFilename.length - 1];
-					console.log("fuk");
 					self.onLoad(callback, this, loadedFilename);
-
+					//console.error("???");
 				}
-				snd.src = sources[i] + "?v=" + (new Date()).getTime();
-				html.appendChild(snd);*/
-				/*var snd = new AudioContext();//(sources[i] + "?v=" + (new Date()).getTime());
-				
-				var url = sources[i].split(/[?#&]/g)[0];
-				var loadedFilename = url.split(/\/|\\/g);
-				loadedFilename = loadedFilename[loadedFilename.length - 1];
+				this.resource[filename] = audio;
+				audio.src = sources[i];// + "?v=" + (new Date()).getTime();
+				html.appendChild(audio);
+				console.warn("Warning: if a load stalls it's probably this: " + filename);
 
-				// audio doesnt seem to have an onload so pray the audio was found
-				this.loads++;
-				snd.isReady = true;
-				//console.log(asset, key);
-				//console.log(this.loads, this.loadCount);
-				callback((this.loads>=this.loadCount), snd, loadedFilename);*/
+				//this.sources[i] = new XMLHttpRequest();
+				/*(function () {
 
-				//console.log(url, loadedFilename);
-				//this.onLoad(callback, snd, loadedFilename);
-				//var snd = new AudioContext();
-				var req = new XMLHttpRequest();
-				req.open('GET', sources[i] + "?v=" + (new Date()).getTime(), true);
-				req.responseType = "arraybuffer";
-				//if (type !== "wav" || type !== "ogg" || type !== "mp3")
-				req.onload = function(a, b, c) {
-					console.log(a, b, c);
-					//if (req.readyState === 4 && req.status === 200) {
-					var url = req.responseURL.split(/[?#&]/g)[0];
-					var loadedFilename = url.split(/\/|\\/g);
-					loadedFilename = loadedFilename[loadedFilename.length - 1];
+					var reqAudio = new XMLHttpRequest();//this.sources[i];
+
+					reqAudio.open('GET', sources[i] + "?v=" + (new Date()).getTime(), true);
+					reqAudio.responseType = "arraybuffer";
+
+					reqAudio.onload = function(a, b, c) {
 					
-					var asset = {data: req.response};//, raw: req.responseText};
-					self.resource[loadedFilename] = asset;
-					self.onLoad(callback, asset, loadedFilename);
-					//}
-					/*snd.decodeAudioData(req.response, function(buffer) {
-						console.log(buffer);
-					});*/
-				}
-				req.send();
-				
-				//console.log(snd);
+						var url = reqAudio.responseURL.split(/[?#&]/g)[0];
+						var loadedFilename = url.split(/\/|\\/g);
+						loadedFilename = loadedFilename[loadedFilename.length - 1];
+					
+						console.log(a, b, c, reqAudio, this, loadedFilename);
 
-				/*
-				snd.onload = function() {
-					var url = this.src.split(/[?#&]/g)[0];
-					var loadedFilename = url.split(/\/|\\/g);
-					loadedFilename = loadedFilename[loadedFilename.length - 1];
-					console.log("fuk");
-					self.onLoad(callback, this, loadedFilename);
+						var asset = {data: reqAudio.response};//, raw: req.responseText};
+						self.resource[loadedFilename] = asset;
+						self.onLoad(callback, asset, loadedFilename);
+					}
+					reqAudio.send();
 
-				}*/
+				})();*/
+
 				break;
 			}
 			case "css": {
@@ -141,23 +117,37 @@ function Loader(sources, callback) {
 				break;
 			}
 			default: {
-				var req = new XMLHttpRequest();
-				req.open('GET', sources[i] + "?v=" + (new Date()).getTime(), true);
 				
-				//if (type !== "wav" || type !== "ogg" || type !== "mp3")
-				req.onreadystatechange = function(a, b, c) {
-					//console.log(req);
-					if (req.readyState === 4 && req.status === 200) {
-						var url = req.responseURL.split(/[?#&]/g)[0];
-						var loadedFilename = url.split(/\/|\\/g);
-						loadedFilename = loadedFilename[loadedFilename.length - 1];
-						
-						var asset = {data: req.response, raw: req.responseText};
-						self.resource[loadedFilename] = asset;
-						self.onLoad(callback, asset, loadedFilename);
-					}
+				/*var reqDefault = document.createElement('source');
+
+				reqDefault.onloadeddata = function() {
+					var url = this.src.split(/[?#&]/g)[0];
+					var loadedFilename = url.split(/\/|\\/g);
+					loadedFilename = loadedFilename[loadedFilename.length - 1];
+					console.log("has loaded")
+					self.onLoad(callback, this, loadedFilename);
 				}
-				req.send();
+				console.log(reqDefault)
+				reqDefault.src = sources[i] + "?v=" + (new Date()).getTime();
+				html.appendChild(reqDefault);*/
+				// xmlhttprequest scope is funked so that's why these are wrapped in a function
+				(function() {
+					var reqDefault = new XMLHttpRequest();//this.sources[i];
+					reqDefault.open('GET', sources[i] + "?v=" + (new Date()).getTime(), true);
+					reqDefault.responseType = "arraybuffer";
+					reqDefault.onreadystatechange = function(a, b, c) {
+						if (reqDefault.readyState === 4 && reqDefault.status === 200) {
+							var url = reqDefault.responseURL.split(/[?#&]/g)[0];
+							var loadedFilename = url.split(/\/|\\/g);
+							loadedFilename = loadedFilename[loadedFilename.length - 1];
+							
+							var asset = {data: reqDefault.response};//, raw: reqDefault.responseText};
+							self.resource[loadedFilename] = asset;
+							self.onLoad(callback, asset, loadedFilename);
+						}
+					}
+					reqDefault.send();
+				})();
 				break;
 			}
 		}
@@ -176,15 +166,15 @@ Loader.prototype.clean = function() {
 		key - the filename that was loaded 
 
 	onload will push three arguments through
-		done - true if the last resource in the set has loaded 
+		done - value between 0 and 1, it's 1 if the last resource in the set has loaded 
 		asset - an html element
 		key - the filename that was loaded */
 Loader.prototype.onLoad = function(callback, asset, key) {
 	this.loads++;
 	asset.isReady = true;
-	console.log(asset, key);
+	//console.log(asset, key);
 	//console.log(this.loads, this.loadCount);
-	callback((this.loads>=this.loadCount), asset, key);
+	callback(this.loads / this.loadCount, asset, key);
 	if (this.loads>=this.loadCount) {
 		this.clean();
 	}

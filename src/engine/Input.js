@@ -50,7 +50,7 @@ function Input() {
 	}
 
 
-	var touchCanvas = craw({w: window.innerWidth - 4, h: window.innerHeight - 4});
+	var touchCanvas = new craw({id: "input", w: window.innerWidth - 4, h: window.innerHeight - 4});
 	touchCanvas.style.position = "absolute";
 	touchCanvas.style.border = "0.12em solid #fff";
 	touchCanvas.style.pointerEvents = "none";

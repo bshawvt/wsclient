@@ -11,20 +11,21 @@ body {
 	background-color: rgb(175, 175, 175);
 }
 a {
-	color: #e74444;
+	color: rgb(200, 100, 0);
 	text-decoration: none;
+	text-shadow: 0px 0px 0px #f00;
 }
 a:link {
-	color: #e74444;
+	color: rgb(79, 38, 61);/*#e74444;*/
 }
 a:visited {
-	color: #e74444;
+	color: rgb(79, 38, 61);/*#e74444;*/
 }
 a:hover {
-	color: #ff3030;
+	color: rgb(179, 68, 91);/*#ff3030;*/
 }
 a:active {
-	color: #b06d6d;
+	color: rgb(79, 38, 61);/*#b06d6d;*/
 }
 label {
 	font-style: italic;

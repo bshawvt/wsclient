@@ -10,10 +10,16 @@
 	$view = $controller; // todo: 
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, minimal-ui">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0, minimal-ui">
+		
+		<link rel="manifest" href="manifest.json">
+
+		<title>Portal</title>
+		<meta name="Description" content="Some nerdy projects are found here.">
+
 		<link rel="stylesheet" type="text/css" href="desktop.css">
 		<script type="text/javascript" src="sjcl.js"></script>
 		
@@ -142,19 +148,22 @@
 						<details>
 							<summary>Create</summary>
 							<div class="user-form">
-								<label>Create your account</label>
-								<span class="clear-fix"></span>
+								<label>Create your account
+									<span class="clear-fix"></span>
 
-								<form method="POST" action="?controller=user&action=create" onsubmit="onsubmit_create(this, event)">
-									<input name="username" placeholder="Username" required/>
-									<input name="hashword1" value="" placeholder="Password" type="Password" required/>
-									<input name="hashword2" value="" placeholder="Confirm password" type="Password" required/>
-									<label>Optional</label>
-									<input name="email" placeholder="Your@email.com"/>
-									<label>What is the answer from read more? <a href="javascript:void(0);" onclick='load("views/creation.html", "content")'>Read more...</a></label>
-									<input name="secret" placeholder="Answer" required/>
-									<button type="submit" >Submit</button>
-								</form>
+									<form method="POST" action="?controller=user&action=create" onsubmit="onsubmit_create(this, event)">
+										<input name="username" placeholder="Username" required/>
+										<input name="hashword1" value="" placeholder="Password" type="Password" required/>
+										<input name="hashword2" value="" placeholder="Confirm password" type="Password" required/>
+										<label>Optional
+											<input name="email" placeholder="Your@email.com"/>
+										</label>
+										<label>What is the answer from read more? <a href="javascript:void(0);" onclick='load("views/creation.html", "content")'>Read more...</a>
+											<input name="secret" placeholder="Answer" required/>
+										</label>
+										<button type="submit" >Submit</button>
+									</form>
+								</label>
 							</div>
 						</details>
 					</div>
@@ -162,12 +171,13 @@
 						<details>
 							<summary>Play</summary>
 							<div class="user-form">
-								<label>Login and join the game</label>
-								<form method="POST" action="?controller=user&action=play" onsubmit="onsubmit_login(this, event)">
-									<input name="username" placeholder="Username" required/>
-									<input name="hashword1" value="" placeholder="Password" type="Password" required/>
-									<button type="submit">Login</button>
-								</form>
+								<label>Login and join the game
+									<form method="POST" action="?controller=user&action=play" onsubmit="onsubmit_login(this, event)">
+										<input name="username" placeholder="Username" required/>
+										<input name="hashword1" value="" placeholder="Password" type="Password" required/>
+										<button type="submit">Login</button>
+									</form>
+								</label>
 							</div>
 						</details>
 					</div>
@@ -175,11 +185,12 @@
 						<details>
 							<summary>Recover</summary>
 							<div class="user-form">
-								<label>Change password / recover your account</label>
-								<form method="POST" action="?controller=user&action=recover">
-									<input name="email" placeholder="Your recovery@email.com" required/>
-									<button type="submit">Send Email</button>
-								</form>
+								<label>Change password / recover your account
+									<form method="POST" action="?controller=user&action=recover">
+										<input name="email" placeholder="Your recovery@email.com" required/>
+										<button type="submit">Send Email</button>
+									</form>
+								</label>
 							</div>
 						</details>
 					</div>
