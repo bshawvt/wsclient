@@ -10,8 +10,8 @@ function Loader(sources, callback) {
 	html.style.display = "none";
 	document.body.appendChild(html);
 
-	this.resource = new Array(); // will only contain assets that have finished loading
-	this.sources = [];// = sources;
+	// css/js/html are not added to resource array
+	this.resource = new Array(); // {data: Object, isLoaded: undefined, type: 'buf'}; or ResourceManager.MakeAsset
 	this.loads = 0;
 	this.loadCount = sources.length;
 
@@ -22,20 +22,20 @@ function Loader(sources, callback) {
 		var path = sources[i].split(/\/|\\/g);
 		var filename = path[path.length - 1];
 
+		// todo: ResourceManager.GetResourceType uses the same types as this switch and should be adapted if it's ever used
 		switch (type) {
 			case "jpg":
 			case "jpeg":  
 			case "png": {				
 				var img = document.createElement('img');
 				img.onload = function() {
-					//console.log(this);
-					//var loadedFilename = this.src.split(/\/|\\/g);
 					var url = this.src.split(/[?#&]/g)[0];
 					var loadedFilename = url.split(/\/|\\/g);
 					loadedFilename = loadedFilename[loadedFilename.length - 1];
+					self.resource[loadedFilename] = { data: this, type: 'img', isLoaded: true };
 					self.onLoad(callback, this, loadedFilename);
 				}
-				this.resource[filename] = img;
+				//this.resource[filename] = {data: img, isLoaded: true, type: 'img'};
 				img.src = sources[i] + "?v=" + (new Date()).getTime();
 				html.appendChild(img);
 				break;
@@ -43,43 +43,41 @@ function Loader(sources, callback) {
 			case "wav":
 			case "ogg":
 			case "mp3": { // todo: 
-				var audio = document.createElement('audio');
-				audio.oncanplaythrough = function() {
-					var url = this.src.split(/[?#&]/g)[0];
-					var loadedFilename = url.split(/\/|\\/g);
-					loadedFilename = loadedFilename[loadedFilename.length - 1];
-					self.onLoad(callback, this, loadedFilename);
-					//console.error("???");
-				}
-				this.resource[filename] = audio;
-				audio.src = sources[i];// + "?v=" + (new Date()).getTime();
-				html.appendChild(audio);
-				console.warn("Warning: if a load stalls it's probably this: " + filename);
-
-				//this.sources[i] = new XMLHttpRequest();
-				/*(function () {
-
-					var reqAudio = new XMLHttpRequest();//this.sources[i];
-
-					reqAudio.open('GET', sources[i] + "?v=" + (new Date()).getTime(), true);
-					reqAudio.responseType = "arraybuffer";
-
-					reqAudio.onload = function(a, b, c) {
-					
-						var url = reqAudio.responseURL.split(/[?#&]/g)[0];
+				//if (!isMobile())
+					/*(function() {
+						var reqDefault = new XMLHttpRequest();
+						reqDefault.open('POST', sources[i] + "?v=" + (new Date()).getTime(), true);
+						reqDefault.responseType = "arraybuffer";
+						
+						reqDefault.onreadystatechange = function(a, b, c) {
+							if (reqDefault.readyState === 4 && reqDefault.status === 200) {
+								var url = reqDefault.responseURL.split(/[?#&]/g)[0];
+								var loadedFilename = url.split(/\/|\\/g);
+								loadedFilename = loadedFilename[loadedFilename.length - 1];
+								
+								var asset = {data: reqDefault.response, type: 'snd', isLoaded: true};
+								self.resource[loadedFilename] = asset;
+								self.onLoad(callback, asset, loadedFilename);
+							}
+						}
+						reqDefault.send();
+					})();*/
+				/*else {*/
+					var audio = document.createElement('audio');
+					audio.oncanplaythrough = function() {
+						var url = this.src.split(/[?#&]/g)[0];
 						var loadedFilename = url.split(/\/|\\/g);
 						loadedFilename = loadedFilename[loadedFilename.length - 1];
-					
-						console.log(a, b, c, reqAudio, this, loadedFilename);
-
-						var asset = {data: reqAudio.response};//, raw: req.responseText};
-						self.resource[loadedFilename] = asset;
-						self.onLoad(callback, asset, loadedFilename);
+						this.play(); // 
+						this.pause();
+						self.resource[loadedFilename] = { data: this, type: 'snd', isLoaded: true };
+						self.onLoad(callback, this, loadedFilename);
 					}
-					reqAudio.send();
-
-				})();*/
-
+					//this.resource[filename] = {data: audio, type:'snd'};//audio;
+					audio.src = sources[i];// + "?v=" + (new Date()).getTime();
+					html.appendChild(audio);
+					console.warn("Warning: if a load stalls it's probably this: " + filename);
+				/*}*/
 				break;
 			}
 			case "css": {
@@ -88,7 +86,6 @@ function Loader(sources, callback) {
 				link.type = "text/css";
 
 				link.onload = function() {
-					//var loadedFilename = this.href.split(/\/|\\/g);
 					var url = this.href.split(/[?#&]/g)[0];
 					var loadedFilename = url.split(/\/|\\/g);
 					loadedFilename = loadedFilename[loadedFilename.length - 1];
@@ -105,7 +102,6 @@ function Loader(sources, callback) {
 				script.type = "application/javascript";
 
 				script.onload = function() {
-					//var loadedFilename = this.src.split(/\/|\\/g);
 					var url = this.src.split(/[?#&]/g)[0];
 					var loadedFilename = url.split(/\/|\\/g);
 					loadedFilename = loadedFilename[loadedFilename.length - 1];
@@ -117,31 +113,18 @@ function Loader(sources, callback) {
 				break;
 			}
 			default: {
-				
-				/*var reqDefault = document.createElement('source');
-
-				reqDefault.onloadeddata = function() {
-					var url = this.src.split(/[?#&]/g)[0];
-					var loadedFilename = url.split(/\/|\\/g);
-					loadedFilename = loadedFilename[loadedFilename.length - 1];
-					console.log("has loaded")
-					self.onLoad(callback, this, loadedFilename);
-				}
-				console.log(reqDefault)
-				reqDefault.src = sources[i] + "?v=" + (new Date()).getTime();
-				html.appendChild(reqDefault);*/
-				// xmlhttprequest scope is funked so that's why these are wrapped in a function
 				(function() {
-					var reqDefault = new XMLHttpRequest();//this.sources[i];
-					reqDefault.open('GET', sources[i] + "?v=" + (new Date()).getTime(), true);
+					var reqDefault = new XMLHttpRequest();
+					reqDefault.open('POST', sources[i] + "?v=" + (new Date()).getTime(), true);
 					reqDefault.responseType = "arraybuffer";
+
 					reqDefault.onreadystatechange = function(a, b, c) {
 						if (reqDefault.readyState === 4 && reqDefault.status === 200) {
 							var url = reqDefault.responseURL.split(/[?#&]/g)[0];
 							var loadedFilename = url.split(/\/|\\/g);
 							loadedFilename = loadedFilename[loadedFilename.length - 1];
 							
-							var asset = {data: reqDefault.response};//, raw: reqDefault.responseText};
+							var asset = {data: reqDefault.response, type: 'buf', isLoaded: true};
 							self.resource[loadedFilename] = asset;
 							self.onLoad(callback, asset, loadedFilename);
 						}
@@ -153,7 +136,7 @@ function Loader(sources, callback) {
 		}
 	}
 
-	this.html = html; // lazy
+	this.html = html; // im lazy
 };
 /* the only thing it doesn't remove is css links because that bjorks things */
 Loader.prototype.clean = function() {
@@ -171,9 +154,9 @@ Loader.prototype.clean = function() {
 		key - the filename that was loaded */
 Loader.prototype.onLoad = function(callback, asset, key) {
 	this.loads++;
-	asset.isReady = true;
-	//console.log(asset, key);
-	//console.log(this.loads, this.loadCount);
+	//if (this.resource[key] !== undefined) // html/css/js arent added to resource array
+	//	this.resource[key].isLoaded = true;
+	console.log(asset);
 	callback(this.loads / this.loadCount, asset, key);
 	if (this.loads>=this.loadCount) {
 		this.clean();

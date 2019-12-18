@@ -14,7 +14,8 @@ function ResourceManager(preloaded) {
 
 	if null is received, the resource type can be set to one of the default */
 ResourceManager.prototype.get = function(key) {
-	if (this.resources[key] !== undefined && this.resources[key].isReady)
+	//console.log(this.resources[key]);
+	if (this.resources[key] !== undefined && this.resources[key].isLoaded)
 		return this.resources[key];
 	return null;
 };
@@ -23,12 +24,11 @@ ResourceManager.prototype.get = function(key) {
 ResourceManager.prototype.add = function(key, asset) {
 	this.resources[key] = asset;
 };
-/* */
+/* creates default resources that the application 
+	can use	as a fallback */
 ResourceManager.prototype.generateDefaults = function() {
 
-	// create a default image to use
-	this.resources['default_img'] = new Image();
-	this.resources['default_img'].isReady = true;
+	this.resources['default_img'] = {data: new Image(), isLoaded: true, type: 'img'};
 
 	if (this.tmpCanvas === undefined)
 		this.tmpCanvas = document.createElement("canvas");
@@ -51,6 +51,16 @@ ResourceManager.prototype.generateDefaults = function() {
 	ctx.fillRect(16, 16, 16, 16);
 
 	ctx.closePath();
-	this.resources['default_img'].src = this.tmpCanvas.toDataURL();
+	this.resources['default_img'].data.src = this.tmpCanvas.toDataURL();
 
 };
+/* returns an object with type, data and isLoaded properties */
+ResourceManager.GetResourceType = function(key) {
+	var split = key.split(".");
+	var type = split[split.length - 1];
+	if (type==="png"||type==="jpg"||type==="jpeg")
+		return "img";
+	else if (type==="wav"||type==="ogg"||type==="mp3")
+		return "snd";
+	return 'buf';
+}

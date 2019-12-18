@@ -12,7 +12,6 @@ function Context(opt) {
 	this.canvas.id = (new Date()).getTime();
 	//this.parent = opt.parent || window;
 
-
 	this.canvas.width = opt.width || 400;
 	this.canvas.height = opt.height || 400;
 
@@ -25,47 +24,23 @@ function Context(opt) {
 	// using em because it seems to give the best results for desktop and mobile
 	//this.canvas.style.width = this.canvas.width/16 + "em";
 	//this.canvas.style.height = this.canvas.height/16 + "em";
+
 	this.activate = function() {
 		self.onActivate();
 	}
 	this.canvas.onclick = this.activate;
-	//if (isMobile()) {
-		//console.log("context has found its way into mobileland");
-		// force mobile devices into fullscreen when they tap the canvas
-		/*this.canvas.onclick = function() {
-			ToggleFullscreen(null, true);
-			// to not waste time on setting orientation when it doesn't need to be changed
-			if (Config.orientation!==undefined && GetOrientation() !== Config.orientation) {
-				MobileOrientation(Config.orientation);
-			}
-			self.onActivate();
-			//if (self.hasActivated) return;
-			//self.hasActivated = true;
-			//self.onactive.emit("activated");
-		}*/
-	/*}
-
-	else {
-		this.canvas.onclick = this.onActivate;*/
-		/*this.canvas.onclick = function() {
-			//self.onActivate();
-			//if (self.hasActivated) return;
-			//self.hasActivated = true;
-			// activated is emitted to tell things that the user has focused on the canvas and is ready to start
-			//self.onactive.emit("activated");
-		}*/
-	//}
 
 	this.parent = document.body;
 	if (opt.parent !== undefined)
 		this.parent = opt.parent;
 	this.parent.appendChild(this.canvas);
 
-	if (typeof opt.callback === "function") {
-		this.callback = function() {
-			opt.callback(self);
+	// some of my projects don't need to be have a resizeable canvas
+	if (typeof opt.onresize === "function") {
+		this.onresize = function() {
+			opt.onresize(self);
 		}
-		window.addEventListener('resize', self.callback);
+		window.addEventListener('resize', self.onresize);
 	}
 
 }

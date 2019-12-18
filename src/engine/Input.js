@@ -1,4 +1,4 @@
-function Input() {
+function InputController() {
 	var self = this;
 	this.buttonStates = [];
 	this.mouseStates = [];
@@ -86,24 +86,24 @@ function Input() {
 	window.addEventListener('keyup', this.keyup);
 
 };
-Input.prototype.getCursorPosition = function() {
+InputController.prototype.getCursorPosition = function() {
 	return this.cursorPosition;
 };
-Input.prototype.getMouseStates = function(button) {
+InputController.prototype.getMouseStates = function(button) {
 	return this.mouseStates[button];
 };
-Input.prototype.getMouseState = function(button) {
+InputController.prototype.getMouseState = function(button) {
 	return this.mouseStates[button] ? this.mouseStates[button].state : false;
 };
-Input.prototype.getButtonState = function(button) {
+InputController.prototype.getButtonState = function(button) {
 	return this.buttonStates[button] ? this.buttonStates[button].state : false;
 };
-Input.prototype.addInputEvent = function(input, callback, preventDefault) {
+InputController.prototype.addInputEvent = function(input, callback, preventDefault) {
 	if (typeof this.buttonStates[input] === 'undefined') {
 		this.buttonStates[input] = {state: false, callback: callback, preventDefault: preventDefault};
 	}
 };
-Input.prototype.clean = function() { 
+InputController.prototype.clean = function() { 
 	// i dont know if listeners are overwritten or not so gonna remove them just to be safe
 	window.removeEventListener('mousedown', this.mousedown);
 	window.removeEventListener('mouseup', this.mouseup);
@@ -118,6 +118,6 @@ Input.prototype.clean = function() {
 
 };
 
-if (Controller !== undefined)
+/*if (Controller !== undefined)
 	Controller.clean();
-var Controller = new Input();
+var Controller = new InputController();*/
