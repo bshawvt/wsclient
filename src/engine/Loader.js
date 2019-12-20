@@ -6,8 +6,13 @@
 		callback - a function that is called each time a resource has finished loading */
 function Loader(sources, callback) {
 	var self = this;
-	var html = document.createElement('div');
+	var html = document.getElementById('dynamic-loads');
+	if (html === undefined || html === null) {
+		html = document.createElement('div');
+		html.setAttribute('id', 'dynamic-loads');
+	}
 	html.style.display = "none";
+
 	document.body.appendChild(html);
 
 	// css/js/html are not added to resource array

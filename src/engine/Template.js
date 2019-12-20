@@ -20,13 +20,13 @@ function Game(opt) {
 	this.context = new Context(context);
 
 	this.TimeStep = opt.timeStep || 1000/30; // used by animator, here for convenience
-	this.network = null; 
+	this.network = null;
 	this.animator = null; // not instanced here because looping begins immediately
 	this.soundManager = null; // not instanced here because most browsers and mobile flip out 
+	this.controller = null;
 
 	this.dynamicObjects = [];
 	this.startTime = 0xffffffffffffff; // crazy number because it becomes dt after animator starts
-
 }
 
 /* begins main loop because of animator
@@ -40,9 +40,10 @@ Game.prototype.start = function() {
 	if (this.animator !== null && !this.animator.done)
 		throw "error: animator is already active";
 	this.soundsManager = new SoundManager();
-		
+	this.controller = new InputController();
+
 	this.dynamicObjects = [ {x: 5, y: 5, width: 100, height: 100, res: "gradiant.png", dir: [1, 1, 0], spd: [2.0, 2.0, 0]},
-	{x: 200, y: 5, width: 200, height: 200, res: "4096x4096.png", dir: [1, 1, 0], spd: [1.0, 1.0, 0]}];
+	{x: 200, y: 5, width: 200, height: 200, res: "gradiant.png", dir: [1, 1, 0], spd: [1.0, 1.0, 0]}];
 	
 	// i don't know if it matters but it's probably better to start animator after the other things
 	this.animator = new Animator(this);
@@ -64,6 +65,7 @@ Game.prototype.stop = function() {
 /* game logic */
 Game.prototype.frame = function(dt) {
 	var self = this;
+	var In = this.controller; 
 
 	this.dynamicObjects.forEach(function(e) {
 		if (e.res === "gradiant.png" || Math.floor(Math.random() * 5) == 1) {
@@ -71,6 +73,12 @@ Game.prototype.frame = function(dt) {
 			e.y += e.dir[1];
 		}
 	});
+
+	if (In.getButtonState(InputController.TEST_MOBILE.key)) {
+		this.dynamicObjects[0].x = 0.0;
+		this.dynamicObjects[0].y = 0.0;
+
+	}
 
 	if (this._tmpInit === undefined)
 		if (dt  - this.startTime > 1000) {

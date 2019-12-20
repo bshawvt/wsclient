@@ -8,61 +8,39 @@ function InputController() {
 	this.pointerLock = false;
 	
 	this.mousedown = function(e) {
-		// todo: mobile should go into fullscreen on touch
-		if (typeof self.mouseStates[e.button] === 'undefined') {
-			self.mouseStates[e.button] = {state: true, previousActiveTime: 0, activeTime: 0};
-		}
-		self.mouseStates[e.button].state = true;
-		self.mouseStates[e.button].previousActiveTime = self.mouseStates[e.button].activeTime;
-		self.mouseStates[e.button].activeTime = (new Date()).getTime();
+		self._mouseDown(e);
 	};
 	this.mouseup = function(e) {
-		if (typeof self.mouseStates[e.button] === 'undefined') {
-			self.mouseStates[e.button] = {state: true};
-		}
-		self.mouseStates[e.button].state = false;
+		self._mouseUp(e);
 	};
 	this.mousemove = function(e) {
-		if (self.pointerLock) {
-			// todo: mouse positions in pointerlock rely on screenX/Y
-			return;
-		}
-		self.cursorPosition.x = e.pageX;
-		self.cursorPosition.y = e.pageY;
+		self._mouseMove(e);
 	}
 	this.keydown = function(e) {
-		if (typeof self.buttonStates[e.keyCode] === 'undefined') {
-			self.buttonStates[e.keyCode] = {state: true};
-		} 
-		self.buttonStates[e.keyCode].state = true;
-		if (typeof self.buttonStates[e.keyCode].callback === 'function') {
-			self.buttonStates[e.keyCode].callback(e);
-		}
-		if (self.buttonStates[e.keyCode].preventDefault == 1) {
-			e.preventDefault();
-		}
+		self._keyDown(e);
 	}
 	this.keyup = function(e) {
-		if (typeof self.buttonStates[e.keyCode] === 'undefined') {
-			self.buttonStates[e.keyCode] = {state: false};
-		}
-		self.buttonStates[e.keyCode].state = false;
+		self._keyUp(e);
 	}
 
 
-	var touchCanvas = new craw({id: "input", w: window.innerWidth - 4, h: window.innerHeight - 4});
+	/*var touchCanvas = new craw({id: "input", w: window.innerWidth - 4, h: window.innerHeight - 4});
 	touchCanvas.style.position = "absolute";
 	touchCanvas.style.border = "0.12em solid #fff";
-	touchCanvas.style.pointerEvents = "none";
+	touchCanvas.style.pointerEvents = "none";*/
+	var analogs = [{classNames: "app-bottom app-left", type: 'analog'}, {classNames: "app-bottom app-right app-controller-analog-dpad"}];//[{classNames: "app-bottom app-center-horz"}];
+	var keys = [{map: InputController.TEST_MOBILE}];
+	console.log(keys);
+	this.showController({keys: keys, analogs: analogs});
 
-	this.touchstart = function(e) {
+	/*this.touchstart = function(e) {
 		//console.log("touchstart", e);
-		craw.set(touchCanvas);
-		for(var i = 0; i < e.targetTouches.length; i++) {
-			var touch = e.targetTouches[i];
-			var c = "rgb("+ (Math.floor(Math.random() * 255)) + ", " + (Math.floor(Math.random() * 255)) + ", " + (Math.floor(Math.random() * 255)) + ")";
-			craw.circle({x: touch.clientX, y: touch.clientY, r: 5, f: true, c: c});
-		}
+		//craw.set(touchCanvas);
+		//for(var i = 0; i < e.targetTouches.length; i++) {
+			//var touch = e.targetTouches[i];
+			//var c = "rgb("+ (Math.floor(Math.random() * 255)) + ", " + (Math.floor(Math.random() * 255)) + ", " + (Math.floor(Math.random() * 255)) + ")";
+			//craw.circle({x: touch.clientX, y: touch.clientY, r: 5, f: true, c: c});
+		//}
 	}
 	this.touchend = function(e) {
 		//console.log("touchend", e);
@@ -77,7 +55,7 @@ function InputController() {
 	window.addEventListener('touchstart', this.touchstart);
 	window.addEventListener('touchend', this.touchend);
 	window.addEventListener('touchcancel', this.touchcancel);
-	window.addEventListener('touchmove', this.touchmove);
+	window.addEventListener('touchmove', this.touchmove);*/
 
 	window.addEventListener('mousedown', this.mousedown);
 	window.addEventListener('mouseup', this.mouseup);
@@ -86,6 +64,52 @@ function InputController() {
 	window.addEventListener('keyup', this.keyup);
 
 };
+InputController.prototype._mouseMove = function(e) {
+	if (this.pointerLock) {
+		// todo: mouse positions in pointerlock rely on screenX/Y
+		return;
+	}
+	this.cursorPosition.x = e.pageX;
+	this.cursorPosition.y = e.pageY;
+};
+InputController.prototype._mouseUp = function(e) {
+	if (typeof this.mouseStates[e.button] === 'undefined') {
+		this.mouseStates[e.button] = {state: true};
+	}
+	this.mouseStates[e.button].state = false;
+};
+InputController.prototype._mouseDown = function(e) {
+	// todo: mobile should go into fullscreen on touch
+	if (typeof this.mouseStates[e.button] === 'undefined') {
+		this.mouseStates[e.button] = {state: true, previousActiveTime: 0, activeTime: 0};
+	}
+	this.mouseStates[e.button].state = true;
+	this.mouseStates[e.button].previousActiveTime = this.mouseStates[e.button].activeTime;
+	this.mouseStates[e.button].activeTime = (new Date()).getTime();
+};
+InputController.prototype._keyDown = function(e) {
+	var keyCode = e.keyCode || e;
+
+	if (typeof this.buttonStates[keyCode] === 'undefined') {
+		this.buttonStates[keyCode] = {state: true};
+	} 
+	this.buttonStates[keyCode].state = true;
+	if (typeof this.buttonStates[keyCode].callback === 'function') {
+		this.buttonStates[keyCode].callback(e);
+	}
+	if (this.buttonStates[keyCode].preventDefault == 1) {
+		e.preventDefault();
+	}
+};
+InputController.prototype._keyUp = function(e) {
+	var keyCode = e.keyCode || e;
+	if (typeof this.buttonStates[keyCode] === 'undefined') {
+		this.buttonStates[keyCode] = {state: false};
+	}
+	this.buttonStates[keyCode].state = false;
+};
+
+
 InputController.prototype.getCursorPosition = function() {
 	return this.cursorPosition;
 };
@@ -118,6 +142,293 @@ InputController.prototype.clean = function() {
 
 };
 
-/*if (Controller !== undefined)
-	Controller.clean();
-var Controller = new InputController();*/
+InputController.prototype.showController = function(opts) {
+	var self = this;
+
+	var html = document.createElement('div');
+	html.setAttribute("id", "app-controller");
+
+	var edit = document.createElement('div');
+	edit.setAttribute("class", "app-controller-edit app-right");
+	//edit
+	html.appendChild(edit);
+
+
+	for(var i = 0; i < opts.keys.length; i++) {
+		var key = {};
+
+		var o = opts.keys[i];
+		console.log(opts);
+		(function(opt) {
+			key = document.createElement('div');
+			key.setAttribute('class', 'app-controller-key app-bottom app-center-horz');
+			key.style.right = (60 * i) + "px";
+			//console.log(opts.keys[i], opts.keys);
+			//console.log(opt);
+			key.innerText = opt.map.map;//opts.keys[i];
+			
+			/* i dont think these listeners need to be removed since they're attached to an element */
+			key.addEventListener('touchstart', function(e) {
+				self._keyDown(opt.map.key);
+			});
+
+			key.addEventListener('touchend', function(e) {
+				self._keyUp(opt.map.key);
+			});
+
+			html.appendChild(key);
+		})(o);
+		//var result = r(o);
+		//html.appendChild(result);
+	}
+
+
+	for(var i = 0; i < opts.analogs.length; i++) {
+
+		var o = opts.analogs[i];
+		(function(opt) {
+			var classNames = ["app-controller-analog"];
+			classNames.push(opt.classNames);
+			classNames = classNames.join(" ");
+			
+			analog = document.createElement('div');
+			analog.setAttribute('class', classNames);
+
+			var rect = analog.getClientRects()[0];
+
+
+
+			var imprint = document.createElement('div');
+			imprint.setAttribute('class', 'app-controller-analog-imprint');
+			
+
+			analog.addEventListener('touchstart', function(e) {
+				// targetTouches is getting lost some how.. i don't want to fix this, i want it to suffer
+				//alert((this.getClientRects()[0].x + " " + this.getClientRects()[0].y));
+				var rect = this.getClientRects()[0];
+				var touches = [];
+				touches[0] = e.targetTouches[0] !== undefined ? { x: e.targetTouches[0].clientX, y:  e.targetTouches[0].clientY } : undefined;
+				touches[1] = e.targetTouches[1] !== undefined ? { x: e.targetTouches[1].clientX, y:  e.targetTouches[1].clientY } : undefined;
+				touches[2] = e.targetTouches[2] !== undefined ? { x: e.targetTouches[2].clientX, y:  e.targetTouches[2].clientY } : undefined;
+				touches[3] = e.targetTouches[3] !== undefined ? { x: e.targetTouches[3].clientX, y:  e.targetTouches[3].clientY } : undefined;
+				touches[4] = e.targetTouches[4] !== undefined ? { x: e.targetTouches[4].clientX, y:  e.targetTouches[4].clientY } : undefined;
+				touches[5] = e.targetTouches[5] !== undefined ? { x: e.targetTouches[5].clientX, y:  e.targetTouches[5].clientY } : undefined;
+				touches[6] = e.targetTouches[6] !== undefined ? { x: e.targetTouches[6].clientX, y:  e.targetTouches[6].clientY } : undefined;
+				touches[7] = e.targetTouches[7] !== undefined ? { x: e.targetTouches[7].clientX, y:  e.targetTouches[7].clientY } : undefined;
+				touches[8] = e.targetTouches[8] !== undefined ? { x: e.targetTouches[8].clientX, y:  e.targetTouches[8].clientY } : undefined;
+				touches[9] = e.targetTouches[9] !== undefined ? { x: e.targetTouches[9].clientX, y:  e.targetTouches[9].clientY } : undefined;
+
+				for(var i = 0; i < touches.length; i++) {
+					if (touches[i] === undefined) continue;
+					//alert(Math.floor(touches[i].x - rect.x) + "px")
+					this.children[0].style.left = Math.floor((touches[i].x - 8) - rect.left) + "px";
+					this.children[0].style.top = Math.floor((touches[i].y - 8) - rect.top) + "px";
+				}
+			});
+			analog.addEventListener('touchend', function(e) {
+				var rect = this.getClientRects()[0];
+				console.log(e.target);
+				this.children[0].style.left = Math.floor((rect.width - 16)/2) + "px"
+				this.children[0].style.top = Math.floor((rect.height - 16)/2) + "px"
+			});
+			analog.addEventListener('touchcancel', function(e) {
+				console.log(e);
+			});
+
+			//if (('ontouchmove' in document.documentElement) !== false)
+				analog.addEventListener('touchmove', function(e) {
+					//alert("asdasd");
+					var rect = this.getClientRects()[0];
+					
+					var touches = [];
+					touches[0] = e.targetTouches[0] !== undefined ? { x: e.targetTouches[0].clientX, y:  e.targetTouches[0].clientY } : undefined;
+					touches[1] = e.targetTouches[1] !== undefined ? { x: e.targetTouches[1].clientX, y:  e.targetTouches[1].clientY } : undefined;
+					touches[2] = e.targetTouches[2] !== undefined ? { x: e.targetTouches[2].clientX, y:  e.targetTouches[2].clientY } : undefined;
+					touches[3] = e.targetTouches[3] !== undefined ? { x: e.targetTouches[3].clientX, y:  e.targetTouches[3].clientY } : undefined;
+					touches[4] = e.targetTouches[4] !== undefined ? { x: e.targetTouches[4].clientX, y:  e.targetTouches[4].clientY } : undefined;
+					touches[5] = e.targetTouches[5] !== undefined ? { x: e.targetTouches[5].clientX, y:  e.targetTouches[5].clientY } : undefined;
+					touches[6] = e.targetTouches[6] !== undefined ? { x: e.targetTouches[6].clientX, y:  e.targetTouches[6].clientY } : undefined;
+					touches[7] = e.targetTouches[7] !== undefined ? { x: e.targetTouches[7].clientX, y:  e.targetTouches[7].clientY } : undefined;
+					touches[8] = e.targetTouches[8] !== undefined ? { x: e.targetTouches[8].clientX, y:  e.targetTouches[8].clientY } : undefined;
+					touches[9] = e.targetTouches[9] !== undefined ? { x: e.targetTouches[9].clientX, y:  e.targetTouches[9].clientY } : undefined;
+
+					for(var i = 0; i < touches.length; i++) {
+						if (touches[i] === undefined) continue;
+						//alert(Math.floor(touches[i].x - rect.x) + "px")
+						console.log((((rect.left + (rect.width / 2)) - touches[i].x)/rect.width) * 2);
+						this.children[0].style.left = Math.floor((touches[i].x - 8) - rect.left) + "px";
+						this.children[0].style.top = Math.floor((touches[i].y - 8) - rect.top) + "px";
+					}
+				});
+			/*else
+				analog.addEventListener('mousemove', function(e) {
+					//alert("asdasd");
+					var rect = this.getClientRects()[0];
+					
+					var touches = [];
+					touches[0] = e.targetTouches[0] !== undefined ? { x: e.targetTouches[0].clientX, y:  e.targetTouches[0].clientY } : undefined;
+					touches[1] = e.targetTouches[1] !== undefined ? { x: e.targetTouches[1].clientX, y:  e.targetTouches[1].clientY } : undefined;
+					touches[2] = e.targetTouches[2] !== undefined ? { x: e.targetTouches[2].clientX, y:  e.targetTouches[2].clientY } : undefined;
+					touches[3] = e.targetTouches[3] !== undefined ? { x: e.targetTouches[3].clientX, y:  e.targetTouches[3].clientY } : undefined;
+					touches[4] = e.targetTouches[4] !== undefined ? { x: e.targetTouches[4].clientX, y:  e.targetTouches[4].clientY } : undefined;
+					touches[5] = e.targetTouches[5] !== undefined ? { x: e.targetTouches[5].clientX, y:  e.targetTouches[5].clientY } : undefined;
+					touches[6] = e.targetTouches[6] !== undefined ? { x: e.targetTouches[6].clientX, y:  e.targetTouches[6].clientY } : undefined;
+					touches[7] = e.targetTouches[7] !== undefined ? { x: e.targetTouches[7].clientX, y:  e.targetTouches[7].clientY } : undefined;
+					touches[8] = e.targetTouches[8] !== undefined ? { x: e.targetTouches[8].clientX, y:  e.targetTouches[8].clientY } : undefined;
+					touches[9] = e.targetTouches[9] !== undefined ? { x: e.targetTouches[9].clientX, y:  e.targetTouches[9].clientY } : undefined;
+
+					for(var i = 0; i < touches.length; i++) {
+						if (touches[i] === undefined) continue;
+						//alert(Math.floor(touches[i].x - rect.x) + "px")
+						this.children[0].style.left = Math.floor(touches[i].x - rect.x) + "px";
+						this.children[0].style.top = Math.floor(touches[i].y - rect.y) + "px";
+					}
+				});*/
+
+			analog.appendChild(imprint);
+			html.appendChild(analog);
+
+		})(o);
+
+	}
+
+	document.body.appendChild(html);
+
+};
+
+InputController.MOVE_LEFT = {key: 65, map: "A", bitmask: 1};
+InputController.MOVE_RIGHT = {key: 68, map: "D", bitmask: 2};
+InputController.MOVE_FORWARD = {key: 87, map: "W", bitmask: 4};
+InputController.MOVE_BACKWARD = {key: 83, map: "S", bitmask: 8};
+
+
+// ui 
+InputController.TOGGLE_CONSOLE = {key: 9, map: "TAB"};
+InputController.TOGGLE_CHAT = {key: 9, map: "TAB"};
+
+
+
+// more debugs
+InputController.TEST_MOBILE = {key: 32, map: "SPACE"};
+
+
+
+
+// a lot of these are wrong but still useful for certain instances
+InputController.MOUSE_LEFT = 0;
+InputController.MOUSE_MIDDLE = 1;
+InputController.MOUSE_RIGHT = 2;
+InputController.MOUSE_EX1 = 3;
+InputController.MOUSE_EX2 = 4;
+InputController.MOUSE_EX3 = 5;
+InputController.MOUSE_EX4 = 6;
+InputController.MOUSE_EX5 = 7;
+
+InputController.KEY_BACKSPACE = 8;
+InputController.KEY_TAB = 9;
+InputController.KEY_ENTER = 13;
+InputController.KEY_SHIFT = 16;
+InputController.KEY_CTRL = 17;
+InputController.KEY_ALT = 18;
+InputController.KEY_PAUSE = 19;
+InputController.KEY_CAPSLOCK = 20;
+InputController.KEY_ESCAPE = 27;
+InputController.KEY_SPACE = 32;
+InputController.KEY_PAGEUP = 33;
+InputController.KEY_PAGEDOWN = 34;
+InputController.KEY_END = 35;
+InputController.KEY_HOME = 36;
+
+InputController.KEY_ARROW_LEFT = 37;
+InputController.KEY_ARROW_UP = 38;
+InputController.KEY_ARROW_RIGHT = 39;
+InputController.KEY_ARROW_DOWN = 40;
+
+InputController.KEY_INSERT = 45;
+InputController.KEY_DELETE = 46;
+
+InputController.KEY_0 = 48;
+InputController.KEY_1 = 49;
+InputController.KEY_2 = 50;
+InputController.KEY_3 = 51;
+InputController.KEY_4 = 52;
+InputController.KEY_5 = 53;
+InputController.KEY_6 = 54;
+InputController.KEY_7 = 55;
+InputController.KEY_8 = 56;
+InputController.KEY_9 = 57;
+
+InputController.KEY_A = 65;
+InputController.KEY_B = 66;
+InputController.KEY_C = 67;
+InputController.KEY_D = 68;
+InputController.KEY_E = 69;
+InputController.KEY_F = 70;
+InputController.KEY_G = 71;
+InputController.KEY_H = 72;
+InputController.KEY_I = 73;
+InputController.KEY_J = 74;
+InputController.KEY_K = 75;
+InputController.KEY_L = 76;
+InputController.KEY_M = 77;
+InputController.KEY_N = 78;
+InputController.KEY_O = 79;
+InputController.KEY_P = 80;
+InputController.KEY_Q = 81;
+InputController.KEY_R = 82;
+InputController.KEY_S = 83;
+InputController.KEY_T = 84;
+InputController.KEY_U = 85;
+InputController.KEY_V = 86;
+InputController.KEY_W = 87;
+InputController.KEY_X = 88;
+InputController.KEY_Y = 89;
+InputController.KEY_Z = 90;
+
+InputController.KEY_LWINDOWKEY = 91;
+InputController.KEY_RWINDOWKEY = 92;
+InputController.KEY_SELECT = 93;
+
+InputController.KEY_NUMPAD_0 = 96;
+InputController.KEY_NUMPAD_1 = 97;
+InputController.KEY_NUMPAD_2 = 98;
+InputController.KEY_NUMPAD_3 = 99;
+InputController.KEY_NUMPAD_4 = 100;
+InputController.KEY_NUMPAD_5 = 101;
+InputController.KEY_NUMPAD_6 = 102;
+InputController.KEY_NUMPAD_7 = 103;
+InputController.KEY_NUMPAD_8 = 104;
+InputController.KEY_NUMPAD_9 = 105;
+
+InputController.KEY_MULTIPLY = 106;
+InputController.KEY_ADD = 107;
+InputController.KEY_SUBTRACT = 109;
+InputController.KEY_DECIMAL = 110;
+InputController.KEY_DIVIDE = 111;
+
+InputController.KEY_F1 = 112;
+InputController.KEY_F2 = 113;
+InputController.KEY_F3 = 114;
+InputController.KEY_F4 = 115;
+InputController.KEY_F5 = 116;
+InputController.KEY_F6 = 117;
+InputController.KEY_F7 = 118;
+InputController.KEY_F8 = 119;
+InputController.KEY_F9 = 120;
+InputController.KEY_F10 = 121;
+InputController.KEY_F11 = 122;
+InputController.KEY_F12 = 123;
+
+InputController.KEY_NUMLOCK = 144;
+InputController.KEY_SCROLLOCK = 145;
+InputController.KEY_SEMICOLON = 186;
+InputController.KEY_EQUAL = 187;
+InputController.KEY_COMMA = 188;
+InputController.KEY_DASH = 189;
+InputController.KEY_PERIOD = 190;
+InputController.KEY_FORWARDSLASH = 191;
+InputController.KEY_GRAVE = 192;
+InputController.KEY_OPENBRACKET = 219;
+InputController.KEY_BACKSLASH = 220;
+InputController.KEY_CLOSEBRACKET = 221;
+InputController.KEY_QUOTE = 222;

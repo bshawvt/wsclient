@@ -17,6 +17,11 @@ InputController.TOGGLE_CHAT = {key: 9, map: "TAB"};
 
 
 
+// more debugs
+InputController.TEST_MOBILE = {key: 32, map: "SPACE"};
+
+
+
 
 // a lot of these are wrong but still useful for certain instances
 InputController.MOUSE_LEFT = 0;

@@ -49,3 +49,72 @@ canvas {
 	top: 45%;
 	vertical-align: bottom;
 }
+#app-controller {
+	position: absolute;
+	border: 1px solid #f00;
+	z-index: 1000000000;
+	left: 0.00em;
+	right: 0.00em;
+	top: 0.00em;
+	bottom: 0.00em;
+}
+.app-controller-key {
+	/*float: left;*/
+	position: absolute;
+	width: 25px;
+	height: 25px;
+	border: 5px solid #ff0;
+	margin: 5px;
+}
+.app-controller-analog {
+	position: absolute;
+	width: 9.0em;
+	height: 9.0em;
+	border-radius: 100%;
+	margin: 1.5em;
+
+}
+.app-controller-edit {
+	position: absolute;
+	border: 10px solid #ff0;
+	width: 50px;
+	height: 50px;
+}
+
+.app-top {
+	border: 0.07em solid #ff0;
+	top: 0.00em;
+}
+.app-bottom {
+	border: 0.07em solid #ff0;
+	bottom: 0.00em;
+}
+.app-left {
+	border: 0.07em solid #0ff;
+	left: 0.00em;
+}
+.app-right {
+	border: 0.07em solid #0ff;
+	right: 0.00em;
+}
+
+.app-center-horz {
+	border: 0.07em solid #f0f;
+	left: 50%;
+	margin-left: -5.0em;
+}
+
+.app-controller-analog-dpad {
+	background: url(/bin/client/data/spritesheet_1024x1024.png);
+	background-position: 0.5em 0.5em;
+
+}
+
+.app-controller-analog-imprint {
+	position: absolute;
+	width: 0.312em;
+	height: 0.312em;
+	border: 0.343em solid #f0f;
+	border-radius: 100%;
+
+}
