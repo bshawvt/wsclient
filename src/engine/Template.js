@@ -68,7 +68,7 @@ Game.prototype.frame = function(dt) {
 	var In = this.controller; 
 
 	this.dynamicObjects.forEach(function(e) {
-		if (e.res === "gradiant.png" || Math.floor(Math.random() * 5) == 1) {
+		if (e.res !== "gradiant.png" && Math.floor(Math.random() * 5) == 1) {
 			e.x += e.dir[0];
 			e.y += e.dir[1];
 		}
@@ -77,8 +77,11 @@ Game.prototype.frame = function(dt) {
 	if (In.getButtonState(InputController.TEST_MOBILE.key)) {
 		this.dynamicObjects[0].x = 0.0;
 		this.dynamicObjects[0].y = 0.0;
-
 	}
+
+	console.log(In.getCursorPosition());
+	this.dynamicObjects[0].x = In.getCursorPosition().x;
+	this.dynamicObjects[0].y = In.getCursorPosition().y;
 
 	if (this._tmpInit === undefined)
 		if (dt  - this.startTime > 1000) {

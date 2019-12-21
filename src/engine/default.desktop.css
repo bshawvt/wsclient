@@ -66,7 +66,7 @@ canvas {
 	border: 5px solid #ff0;
 	margin: 5px;
 }
-.app-controller-analog {
+.app-controller-thumbs {
 	position: absolute;
 	width: 9.0em;
 	height: 9.0em;
@@ -104,17 +104,21 @@ canvas {
 	margin-left: -5.0em;
 }
 
-.app-controller-analog-dpad {
+.app-controller-thumbs-dpad {
 	background: url(/bin/client/data/spritesheet_1024x1024.png);
 	background-position: 0.5em 0.5em;
-
+}
+.app-controller-thumbs-vec {
+	background: url(/bin/client/data/spritesheet_1024x1024.png);
+	background-position: -7.5em 0.5em;
 }
 
-.app-controller-analog-imprint {
+.app-controller-thumbs-imprint {
 	position: absolute;
 	width: 0.312em;
 	height: 0.312em;
 	border: 0.343em solid #f0f;
 	border-radius: 100%;
+	
 
 }

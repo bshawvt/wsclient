@@ -5,6 +5,10 @@ function InputController() {
 
 	this.cursorPosition = {x: 0, y: 0};
 
+	this.touchKeys = [{map: InputController.TEST_MOBILE}]; //
+	this.touchSticks = [{classNames: "app-bottom app-left app-controller-thumbs-dpad", type: 0}, 
+						{classNames: "app-bottom app-right app-controller-thumbs-vec", type: 1}]; // {classNames: '', type: ''}
+
 	this.pointerLock = false;
 	
 	this.mousedown = function(e) {
@@ -28,10 +32,10 @@ function InputController() {
 	touchCanvas.style.position = "absolute";
 	touchCanvas.style.border = "0.12em solid #fff";
 	touchCanvas.style.pointerEvents = "none";*/
-	var analogs = [{classNames: "app-bottom app-left", type: 'analog'}, {classNames: "app-bottom app-right app-controller-analog-dpad"}];//[{classNames: "app-bottom app-center-horz"}];
-	var keys = [{map: InputController.TEST_MOBILE}];
-	console.log(keys);
-	this.showController({keys: keys, analogs: analogs});
+	//var analogs = [{classNames: "app-bottom app-left app-controller-thumbs-vec", type: 'analog'}, {classNames: "app-bottom app-right app-controller-thumbs-dpad"}];//[{classNames: "app-bottom app-center-horz"}];
+	//var keys = [{map: InputController.TEST_MOBILE}];
+	//console.log(keys);
+	this.showController({keys: this.touchKeys, sticks: this.touchSticks});//{keys: keys, sticks: this.touchSticks});
 
 	/*this.touchstart = function(e) {
 		//console.log("touchstart", e);
@@ -153,6 +157,8 @@ InputController.prototype.showController = function(opts) {
 	//edit
 	html.appendChild(edit);
 
+	var imprintOffset = 9; // accumulation of each elements border sizes and thumb element
+
 
 	for(var i = 0; i < opts.keys.length; i++) {
 		var key = {};
@@ -183,11 +189,11 @@ InputController.prototype.showController = function(opts) {
 	}
 
 
-	for(var i = 0; i < opts.analogs.length; i++) {
+	for(var i = 0; i < opts.sticks.length; i++) {
 
-		var o = opts.analogs[i];
+		var o = opts.sticks[i];
 		(function(opt) {
-			var classNames = ["app-controller-analog"];
+			var classNames = ["app-controller-thumbs"];
 			classNames.push(opt.classNames);
 			classNames = classNames.join(" ");
 			
@@ -199,7 +205,7 @@ InputController.prototype.showController = function(opts) {
 
 
 			var imprint = document.createElement('div');
-			imprint.setAttribute('class', 'app-controller-analog-imprint');
+			imprint.setAttribute('class', 'app-controller-thumbs-imprint');
 			
 
 			analog.addEventListener('touchstart', function(e) {
@@ -207,7 +213,104 @@ InputController.prototype.showController = function(opts) {
 				//alert((this.getClientRects()[0].x + " " + this.getClientRects()[0].y));
 				var rect = this.getClientRects()[0];
 				var touches = [];
-				touches[0] = e.targetTouches[0] !== undefined ? { x: e.targetTouches[0].clientX, y:  e.targetTouches[0].clientY } : undefined;
+				for(var i1 = 0; i1 < 10; i1++) {
+					touches[i1] = e.targetTouches[i1] !== undefined ? { x: e.targetTouches[i1].clientX, y:  e.targetTouches[i1].clientY } : undefined;
+					/*touches[0] = e.targetTouches[0] !== undefined ? { x: e.targetTouches[0].clientX, y:  e.targetTouches[0].clientY } : undefined;
+					touches[1] = e.targetTouches[1] !== undefined ? { x: e.targetTouches[1].clientX, y:  e.targetTouches[1].clientY } : undefined;
+					touches[2] = e.targetTouches[2] !== undefined ? { x: e.targetTouches[2].clientX, y:  e.targetTouches[2].clientY } : undefined;
+					touches[3] = e.targetTouches[3] !== undefined ? { x: e.targetTouches[3].clientX, y:  e.targetTouches[3].clientY } : undefined;
+					touches[4] = e.targetTouches[4] !== undefined ? { x: e.targetTouches[4].clientX, y:  e.targetTouches[4].clientY } : undefined;
+					touches[5] = e.targetTouches[5] !== undefined ? { x: e.targetTouches[5].clientX, y:  e.targetTouches[5].clientY } : undefined;
+					touches[6] = e.targetTouches[6] !== undefined ? { x: e.targetTouches[6].clientX, y:  e.targetTouches[6].clientY } : undefined;
+					touches[7] = e.targetTouches[7] !== undefined ? { x: e.targetTouches[7].clientX, y:  e.targetTouches[7].clientY } : undefined;
+					touches[8] = e.targetTouches[8] !== undefined ? { x: e.targetTouches[8].clientX, y:  e.targetTouches[8].clientY } : undefined;
+					touches[9] = e.targetTouches[9] !== undefined ? { x: e.targetTouches[9].clientX, y:  e.targetTouches[9].clientY } : undefined;*/
+				}
+				for(var i2 = 0; i2 < touches.length; i2++) {
+					if (touches[i2] === undefined) continue;
+					//alert(Math.floor(touches[i].x - rect.x) + "px")
+					var rect2 = {
+						x: rect.left, 
+						y: rect.top, 
+						width: rect.width, 
+						height: rect.height, 
+						centerx: rect.left + (rect.width/2),
+						centery: rect.top + (rect.height/2)
+					};
+					console.log( touches[i2].x - rect2.centerx );
+					this.children[0].style.left = Math.floor((touches[i2].x - imprintOffset) - rect2.width) + "px";
+					this.children[0].style.top	= Math.floor((touches[i2].y - imprintOffset) - rect2.height) + "px";
+
+					/*this.children[0].style.left = Math.floor((touches[i2].x + imprintOffset) - rect.left) + "px";
+					this.children[0].style.top	= Math.floor((touches[i2].y + imprintOffset) - rect.top) + "px";*/
+				}
+			});
+			analog.addEventListener('touchend', function(e) {
+				var rect = this.getClientRects()[0];
+				var rect2 = {
+					x: rect.left, 
+					y: rect.top, 
+					width: rect.width, 
+					height: rect.height, 
+					centerx: rect.left + (rect.width/2),
+					centery: rect.top + (rect.height/2)
+				};
+				// 1 + because the thumb imprint thing is bothering me
+				this.children[0].style.left = Math.floor((rect2.width/2) - imprintOffset) + "px";
+				this.children[0].style.top = Math.floor((rect2.height/2) - imprintOffset) + "px";
+			});
+			analog.addEventListener('touchcancel', function(e) {
+				console.log(e);
+			});
+
+			//if (('ontouchmove' in document.documentElement) !== false)
+			analog.addEventListener('touchmove', function(e) {
+				//alert("asdasd");
+				var rect = this.getClientRects()[0];
+				
+				var touches = [];
+				for(var i1 = 0; i1 < 10; i1++) {
+					touches[i1] = e.targetTouches[i1] !== undefined ? { x: e.targetTouches[i1].clientX, y:  e.targetTouches[i1].clientY } : undefined;
+					/*touches[0] = e.targetTouches[0] !== undefined ? { x: e.targetTouches[0].clientX, y:  e.targetTouches[0].clientY } : undefined;
+					touches[1] = e.targetTouches[1] !== undefined ? { x: e.targetTouches[1].clientX, y:  e.targetTouches[1].clientY } : undefined;
+					touches[2] = e.targetTouches[2] !== undefined ? { x: e.targetTouches[2].clientX, y:  e.targetTouches[2].clientY } : undefined;
+					touches[3] = e.targetTouches[3] !== undefined ? { x: e.targetTouches[3].clientX, y:  e.targetTouches[3].clientY } : undefined;
+					touches[4] = e.targetTouches[4] !== undefined ? { x: e.targetTouches[4].clientX, y:  e.targetTouches[4].clientY } : undefined;
+					touches[5] = e.targetTouches[5] !== undefined ? { x: e.targetTouches[5].clientX, y:  e.targetTouches[5].clientY } : undefined;
+					touches[6] = e.targetTouches[6] !== undefined ? { x: e.targetTouches[6].clientX, y:  e.targetTouches[6].clientY } : undefined;
+					touches[7] = e.targetTouches[7] !== undefined ? { x: e.targetTouches[7].clientX, y:  e.targetTouches[7].clientY } : undefined;
+					touches[8] = e.targetTouches[8] !== undefined ? { x: e.targetTouches[8].clientX, y:  e.targetTouches[8].clientY } : undefined;
+					touches[9] = e.targetTouches[9] !== undefined ? { x: e.targetTouches[9].clientX, y:  e.targetTouches[9].clientY } : undefined;*/
+				}
+				for(var i2 = 0; i2 < touches.length; i2++) {
+					if (touches[i2] === undefined) continue;
+					
+					//console.log((((rect.left + (rect.width / 2)) - touches[i2].x)/rect.width) * 2);
+					//console.log((((rect.top + (rect.height / 2)) - touches[i2].y)/rect.height) * 2);
+					//console.log((((touches[i2].x)/rect.width) - (rect.left + (rect.width / 2))) * 2);
+					//console.log((((rect.top + (rect.height / 2)) - touches[i2].y)/rect.height) * 2);
+
+					var rect2 = {
+						x: rect.left, 
+						y: rect.top, 
+						width: rect.width, 
+						height: rect.height, 
+						centerx: rect.left + (rect.width/2),
+						centery: rect.top + (rect.height/2)
+					};
+					//console.log((( touches[i2].x - rect2.centerx ) / rect2.width) * 2 );
+					//console.log((( touches[i2].y - rect2.centery ) / rect2.height) * 2 );
+
+					if (opt.type == 1) {
+						self.cursorPosition.x += ((( touches[i2].x - rect2.centerx ) / rect2.width) * 2 );
+						self.cursorPosition.y += ((( touches[i2].y - rect2.centery ) / rect2.height) * 2 );
+					}
+					// update position 
+					this.children[0].style.left = Math.floor((touches[i2].x - imprintOffset) - rect2.x) + "px";
+					this.children[0].style.top = Math.floor((touches[i2].y - imprintOffset) - rect2.y) + "px";
+
+				}
+				/*touches[0] = e.targetTouches[0] !== undefined ? { x: e.targetTouches[0].clientX, y:  e.targetTouches[0].clientY } : undefined;
 				touches[1] = e.targetTouches[1] !== undefined ? { x: e.targetTouches[1].clientX, y:  e.targetTouches[1].clientY } : undefined;
 				touches[2] = e.targetTouches[2] !== undefined ? { x: e.targetTouches[2].clientX, y:  e.targetTouches[2].clientY } : undefined;
 				touches[3] = e.targetTouches[3] !== undefined ? { x: e.targetTouches[3].clientX, y:  e.targetTouches[3].clientY } : undefined;
@@ -221,45 +324,17 @@ InputController.prototype.showController = function(opts) {
 				for(var i = 0; i < touches.length; i++) {
 					if (touches[i] === undefined) continue;
 					//alert(Math.floor(touches[i].x - rect.x) + "px")
+
+					//var t = (((rect.left + (rect.width / 2)) - touches[i].x)/rect.width) * 2;
+					//self.controllerSticks
+
+
+					console.log((((rect.left + (rect.width / 2)) - touches[i].x)/rect.width) * 2);
+					console.log((((rect.top + (rect.height / 2)) - touches[i].y)/rect.height) * 2);
 					this.children[0].style.left = Math.floor((touches[i].x - 8) - rect.left) + "px";
 					this.children[0].style.top = Math.floor((touches[i].y - 8) - rect.top) + "px";
-				}
+				}*/
 			});
-			analog.addEventListener('touchend', function(e) {
-				var rect = this.getClientRects()[0];
-				console.log(e.target);
-				this.children[0].style.left = Math.floor((rect.width - 16)/2) + "px"
-				this.children[0].style.top = Math.floor((rect.height - 16)/2) + "px"
-			});
-			analog.addEventListener('touchcancel', function(e) {
-				console.log(e);
-			});
-
-			//if (('ontouchmove' in document.documentElement) !== false)
-				analog.addEventListener('touchmove', function(e) {
-					//alert("asdasd");
-					var rect = this.getClientRects()[0];
-					
-					var touches = [];
-					touches[0] = e.targetTouches[0] !== undefined ? { x: e.targetTouches[0].clientX, y:  e.targetTouches[0].clientY } : undefined;
-					touches[1] = e.targetTouches[1] !== undefined ? { x: e.targetTouches[1].clientX, y:  e.targetTouches[1].clientY } : undefined;
-					touches[2] = e.targetTouches[2] !== undefined ? { x: e.targetTouches[2].clientX, y:  e.targetTouches[2].clientY } : undefined;
-					touches[3] = e.targetTouches[3] !== undefined ? { x: e.targetTouches[3].clientX, y:  e.targetTouches[3].clientY } : undefined;
-					touches[4] = e.targetTouches[4] !== undefined ? { x: e.targetTouches[4].clientX, y:  e.targetTouches[4].clientY } : undefined;
-					touches[5] = e.targetTouches[5] !== undefined ? { x: e.targetTouches[5].clientX, y:  e.targetTouches[5].clientY } : undefined;
-					touches[6] = e.targetTouches[6] !== undefined ? { x: e.targetTouches[6].clientX, y:  e.targetTouches[6].clientY } : undefined;
-					touches[7] = e.targetTouches[7] !== undefined ? { x: e.targetTouches[7].clientX, y:  e.targetTouches[7].clientY } : undefined;
-					touches[8] = e.targetTouches[8] !== undefined ? { x: e.targetTouches[8].clientX, y:  e.targetTouches[8].clientY } : undefined;
-					touches[9] = e.targetTouches[9] !== undefined ? { x: e.targetTouches[9].clientX, y:  e.targetTouches[9].clientY } : undefined;
-
-					for(var i = 0; i < touches.length; i++) {
-						if (touches[i] === undefined) continue;
-						//alert(Math.floor(touches[i].x - rect.x) + "px")
-						console.log((((rect.left + (rect.width / 2)) - touches[i].x)/rect.width) * 2);
-						this.children[0].style.left = Math.floor((touches[i].x - 8) - rect.left) + "px";
-						this.children[0].style.top = Math.floor((touches[i].y - 8) - rect.top) + "px";
-					}
-				});
 			/*else
 				analog.addEventListener('mousemove', function(e) {
 					//alert("asdasd");
