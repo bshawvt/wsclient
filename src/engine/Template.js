@@ -40,10 +40,19 @@ Game.prototype.start = function() {
 	if (this.animator !== null && !this.animator.done)
 		throw "error: animator is already active";
 	this.soundsManager = new SoundManager();
-	this.controller = new InputController();
 
-	this.dynamicObjects = [ {x: 5, y: 5, width: 100, height: 100, res: "gradiant.png", dir: [1, 1, 0], spd: [2.0, 2.0, 0]},
-	{x: 200, y: 5, width: 200, height: 200, res: "gradiant.png", dir: [1, 1, 0], spd: [1.0, 1.0, 0]}];
+	InputController.MAP_LEFT = {key: 65, map: "A", bitmask: 1};
+	InputController.MAP_RIGHT = {key: 68, map: "D", bitmask: 2};
+	InputController.MAP_FORWARD = {key: 87, map: "W", bitmask: 4};
+	InputController.MAP_BACKWARD = {key: 83, map: "S", bitmask: 8};
+
+	var keyMaps = [{ initial: {bottom: true, right: true}, map: InputController.MAP_ACCELERATE = {key: 32, map: "SPACE", bitbask: 16} }];
+	var touchMaps = [{ initial: {bottom: true, center: false}, type: 1, vm: true }];
+	this.controller = new InputController();
+	this.controller.showController({keys: keyMaps, sticks: touchMaps});
+
+	this.dynamicObjects = [ {x: 5, y: 5, width: 50, height: 50, res: "gradiant.png", dir: [0, 0, 0], spd: [0.0, 0.0, 0]},
+	/*{x: 200, y: 5, width: 200, height: 200, res: "gradiant.png", dir: [0, 0, 0], spd: [0.0, 0.0, 0]}*/];
 	
 	// i don't know if it matters but it's probably better to start animator after the other things
 	this.animator = new Animator(this);
@@ -74,14 +83,41 @@ Game.prototype.frame = function(dt) {
 		}
 	});
 
-	if (In.getButtonState(InputController.TEST_MOBILE.key)) {
+	/*if (In.getButtonState(InputController.TEST_MOBILE.key)) {
 		this.dynamicObjects[0].x = 0.0;
 		this.dynamicObjects[0].y = 0.0;
-	}
+	}*/
 
-	console.log(In.getCursorPosition());
-	this.dynamicObjects[0].x = In.getCursorPosition().x;
-	this.dynamicObjects[0].y = In.getCursorPosition().y;
+	//console.log(In.getCursorPosition());
+	if (In.getButtonState(InputController.MAP_ACCELERATE.key)) {
+		this.dynamicObjects[0].spd[0] += 0.05;
+		this.dynamicObjects[0].spd[1] += 0.05;
+		this.dynamicObjects[0].spd[0] = Clamp(this.dynamicObjects[0].spd[0], 0, 2);
+		this.dynamicObjects[0].spd[1] = Clamp(this.dynamicObjects[0].spd[1], 0, 2);
+		console.log(this.dynamicObjects[0].spd[0], this.dynamicObjects[0].spd[1]);
+		//if (this.dynamicObjects[0].spd[0] >= 0.0) this.dynamicObjects[0].spd[0] = 10.0;
+		//if (this.dynamicObjects[0].spd[1] >= 0.0) this.dynamicObjects[0].spd[1] = 10.0;
+	}
+	else {
+		this.dynamicObjects[0].spd[0] -= 0.15;
+		this.dynamicObjects[0].spd[1] -= 0.15;
+		this.dynamicObjects[0].spd[0] = Clamp(this.dynamicObjects[0].spd[0], 0, 2);
+		this.dynamicObjects[0].spd[1] = Clamp(this.dynamicObjects[0].spd[1], 0, 2);
+		//if (this.dynamicObjects[0].spd[0] <= 0.0) this.dynamicObjects[0].spd[0] = 0.0;
+		//if (this.dynamicObjects[0].spd[1] <= 0.0) this.dynamicObjects[0].spd[1] = 0.0;
+	}
+	var pos = In.getCursorPosition();
+	this.dynamicObjects[0].dir[0] = Clamp(In.virtualMouseVec[0], -1.0, 1.0);//Clamp(pos.x, -1.0, 1.0);//pos.x;//Clamp(In.virtualMouseVec[0], -1.0, 1.0);//pos.x;
+	this.dynamicObjects[0].dir[1] = Clamp(In.virtualMouseVec[1], -1.0, 1.0);//Clamp(pos.y, -1.0, 1.0);//Clamp(In.virtualMouseVec[1], -1.0, 1.0);//pos.y;
+	//console.log(pos);
+
+
+
+	this.dynamicObjects[0].x += this.dynamicObjects[0].dir[0] * this.dynamicObjects[0].spd[0];
+	this.dynamicObjects[0].y += this.dynamicObjects[0].dir[1] * this.dynamicObjects[0].spd[1];
+
+		//this.dynamicObjects[0].y = In.getCursorPosition().y;
+	
 
 	if (this._tmpInit === undefined)
 		if (dt  - this.startTime > 1000) {

@@ -5,10 +5,10 @@ function InputController() {
 
 	this.cursorPosition = {x: 0, y: 0};
 
-	this.touchKeys = [{map: InputController.TEST_MOBILE}]; //
-	this.touchSticks = [{classNames: "app-bottom app-left app-controller-thumbs-dpad", type: 0}, 
-						{classNames: "app-bottom app-right app-controller-thumbs-vec", type: 1}]; // {classNames: '', type: ''}
-
+	this.touchKeys = [];//[{map: InputController.TEST_MOBILE}]; //
+	this.touchSticks = [];//[/*{classNames: "app-bottom app-left app-controller-thumbs-dpad", type: 0}, */
+						//{classNames: "app-bottom app-right app-controller-thumbs-vec", type: 1}]; // {classNames: '', type: ''}
+	this.virtualMouseVec = [0.0, 0.0]; // 2d vector that is zero when the touch thing isnt active
 	this.pointerLock = false;
 	
 	this.mousedown = function(e) {
@@ -115,6 +115,8 @@ InputController.prototype._keyUp = function(e) {
 
 
 InputController.prototype.getCursorPosition = function() {
+	this.cursorPosition.x += this.virtualMouseVec[0];
+	this.cursorPosition.y += this.virtualMouseVec[1];
 	return this.cursorPosition;
 };
 InputController.prototype.getMouseStates = function(button) {
@@ -167,7 +169,19 @@ InputController.prototype.showController = function(opts) {
 		console.log(opts);
 		(function(opt) {
 			key = document.createElement('div');
-			key.setAttribute('class', 'app-controller-key app-bottom app-center-horz');
+
+			var classNames = ['app-controller-key'];
+			if (opt.initial !== undefined) {
+				if (opt.initial.top) classNames.push("app-top");
+				if (opt.initial.bottom) classNames.push("app-bottom");
+				if (opt.initial.left) classNames.push("app-left");
+				if (opt.initial.right) classNames.push("app-right");
+				if (opt.initial.center) classNames.push("app-center-horz");
+			}
+
+			//classNames = classNames.join(" ");
+			key.setAttribute('class', classNames.join(" "));
+
 			key.style.right = (60 * i) + "px";
 			//console.log(opts.keys[i], opts.keys);
 			//console.log(opt);
@@ -194,11 +208,25 @@ InputController.prototype.showController = function(opts) {
 		var o = opts.sticks[i];
 		(function(opt) {
 			var classNames = ["app-controller-thumbs"];
-			classNames.push(opt.classNames);
-			classNames = classNames.join(" ");
+			if (opt.initial !== undefined) {
+				if (opt.initial.top) classNames.push("app-top");
+				if (opt.initial.bottom) classNames.push("app-bottom");
+				if (opt.initial.left) classNames.push("app-left");
+				if (opt.initial.right) classNames.push("app-right");
+				if (opt.initial.center) classNames.push("app-center-horz");
+			}
+
+			if (opt.type == 1) {
+				classNames.push("app-controller-thumbs-vec");
+			}
+			else {
+				classNames.push("app-controller-thumbs-dpad");
+			}
+
+			//classNames = classNames.join(" ");
 			
 			analog = document.createElement('div');
-			analog.setAttribute('class', classNames);
+			analog.setAttribute('class', classNames.join(" "));
 
 			var rect = analog.getClientRects()[0];
 
@@ -215,16 +243,6 @@ InputController.prototype.showController = function(opts) {
 				var touches = [];
 				for(var i1 = 0; i1 < 10; i1++) {
 					touches[i1] = e.targetTouches[i1] !== undefined ? { x: e.targetTouches[i1].clientX, y:  e.targetTouches[i1].clientY } : undefined;
-					/*touches[0] = e.targetTouches[0] !== undefined ? { x: e.targetTouches[0].clientX, y:  e.targetTouches[0].clientY } : undefined;
-					touches[1] = e.targetTouches[1] !== undefined ? { x: e.targetTouches[1].clientX, y:  e.targetTouches[1].clientY } : undefined;
-					touches[2] = e.targetTouches[2] !== undefined ? { x: e.targetTouches[2].clientX, y:  e.targetTouches[2].clientY } : undefined;
-					touches[3] = e.targetTouches[3] !== undefined ? { x: e.targetTouches[3].clientX, y:  e.targetTouches[3].clientY } : undefined;
-					touches[4] = e.targetTouches[4] !== undefined ? { x: e.targetTouches[4].clientX, y:  e.targetTouches[4].clientY } : undefined;
-					touches[5] = e.targetTouches[5] !== undefined ? { x: e.targetTouches[5].clientX, y:  e.targetTouches[5].clientY } : undefined;
-					touches[6] = e.targetTouches[6] !== undefined ? { x: e.targetTouches[6].clientX, y:  e.targetTouches[6].clientY } : undefined;
-					touches[7] = e.targetTouches[7] !== undefined ? { x: e.targetTouches[7].clientX, y:  e.targetTouches[7].clientY } : undefined;
-					touches[8] = e.targetTouches[8] !== undefined ? { x: e.targetTouches[8].clientX, y:  e.targetTouches[8].clientY } : undefined;
-					touches[9] = e.targetTouches[9] !== undefined ? { x: e.targetTouches[9].clientX, y:  e.targetTouches[9].clientY } : undefined;*/
 				}
 				for(var i2 = 0; i2 < touches.length; i2++) {
 					if (touches[i2] === undefined) continue;
@@ -237,7 +255,7 @@ InputController.prototype.showController = function(opts) {
 						centerx: rect.left + (rect.width/2),
 						centery: rect.top + (rect.height/2)
 					};
-					console.log( touches[i2].x - rect2.centerx );
+					//console.log( touches[i2].x - rect2.centerx );
 					this.children[0].style.left = Math.floor((touches[i2].x - imprintOffset) - rect2.width) + "px";
 					this.children[0].style.top	= Math.floor((touches[i2].y - imprintOffset) - rect2.height) + "px";
 
@@ -255,12 +273,44 @@ InputController.prototype.showController = function(opts) {
 					centerx: rect.left + (rect.width/2),
 					centery: rect.top + (rect.height/2)
 				};
-				// 1 + because the thumb imprint thing is bothering me
+				var touches = [];
+				for(var i1 = 0; i1 < 10; i1++) {
+					touches[i1] = e.targetTouches[i1] !== undefined ? { x: e.targetTouches[i1].clientX, y:  e.targetTouches[i1].clientY } : undefined;
+				}
+				for(var i2 = 0; i2 < touches.length; i2++) {
+					if (touches[i2] === undefined) continue;
+					
+					// a 'normal' virtual stick
+					if (opt.type == 1) {
+
+					}
+					// virtual mouse thing
+					else if (opt.type == 2) {
+						//this.virtualMouseVec[0] = vector[0];
+						//this.virtualMouseVec[1] = vector[1];
+						//self.cursorPosition.x += ((( touches[i2].x - rect2.centerx ) / rect2.width) * 2 );
+						//self.cursorPosition.y += ((( touches[i2].y - rect2.centery ) / rect2.height) * 2 );
+					}
+					// a dpad
+					else {
+
+					}
+					if (opt.vm) {
+						self.virtualMouseVec[0] = 0.0;//vector[0];
+						self.virtualMouseVec[1] = 0.0;//vector[1];
+					}
+					console.log("asdasd");
+				}
+				if (opt.vm) {
+					self.virtualMouseVec[0] = 0.0;//vector[0];
+					self.virtualMouseVec[1] = 0.0;//vector[1];
+				}
 				this.children[0].style.left = Math.floor((rect2.width/2) - imprintOffset) + "px";
 				this.children[0].style.top = Math.floor((rect2.height/2) - imprintOffset) + "px";
 			});
 			analog.addEventListener('touchcancel', function(e) {
 				console.log(e);
+
 			});
 
 			//if (('ontouchmove' in document.documentElement) !== false)
@@ -271,16 +321,6 @@ InputController.prototype.showController = function(opts) {
 				var touches = [];
 				for(var i1 = 0; i1 < 10; i1++) {
 					touches[i1] = e.targetTouches[i1] !== undefined ? { x: e.targetTouches[i1].clientX, y:  e.targetTouches[i1].clientY } : undefined;
-					/*touches[0] = e.targetTouches[0] !== undefined ? { x: e.targetTouches[0].clientX, y:  e.targetTouches[0].clientY } : undefined;
-					touches[1] = e.targetTouches[1] !== undefined ? { x: e.targetTouches[1].clientX, y:  e.targetTouches[1].clientY } : undefined;
-					touches[2] = e.targetTouches[2] !== undefined ? { x: e.targetTouches[2].clientX, y:  e.targetTouches[2].clientY } : undefined;
-					touches[3] = e.targetTouches[3] !== undefined ? { x: e.targetTouches[3].clientX, y:  e.targetTouches[3].clientY } : undefined;
-					touches[4] = e.targetTouches[4] !== undefined ? { x: e.targetTouches[4].clientX, y:  e.targetTouches[4].clientY } : undefined;
-					touches[5] = e.targetTouches[5] !== undefined ? { x: e.targetTouches[5].clientX, y:  e.targetTouches[5].clientY } : undefined;
-					touches[6] = e.targetTouches[6] !== undefined ? { x: e.targetTouches[6].clientX, y:  e.targetTouches[6].clientY } : undefined;
-					touches[7] = e.targetTouches[7] !== undefined ? { x: e.targetTouches[7].clientX, y:  e.targetTouches[7].clientY } : undefined;
-					touches[8] = e.targetTouches[8] !== undefined ? { x: e.targetTouches[8].clientX, y:  e.targetTouches[8].clientY } : undefined;
-					touches[9] = e.targetTouches[9] !== undefined ? { x: e.targetTouches[9].clientX, y:  e.targetTouches[9].clientY } : undefined;*/
 				}
 				for(var i2 = 0; i2 < touches.length; i2++) {
 					if (touches[i2] === undefined) continue;
@@ -300,10 +340,29 @@ InputController.prototype.showController = function(opts) {
 					};
 					//console.log((( touches[i2].x - rect2.centerx ) / rect2.width) * 2 );
 					//console.log((( touches[i2].y - rect2.centery ) / rect2.height) * 2 );
-
+					
+					/*var vector = [	((( touches[i2].x - rect2.centerx ) / rect2.width) * 2 ),
+									((( touches[i2].y - rect2.centery ) / rect2.height) * 2 )];*/
+					var vector = [];
+					vector[0] =	((( touches[i2].x - rect2.centerx ) / rect2.width) * 2 );
+					vector[1] = ((( touches[i2].y - rect2.centery ) / rect2.height) * 2 );
+					// a 'normal' virtual stick
 					if (opt.type == 1) {
-						self.cursorPosition.x += ((( touches[i2].x - rect2.centerx ) / rect2.width) * 2 );
-						self.cursorPosition.y += ((( touches[i2].y - rect2.centery ) / rect2.height) * 2 );
+
+					}
+					// virtual mouse thing
+					else if (opt.type == 2) {
+						
+						//self.cursorPosition.x += ((( touches[i2].x - rect2.centerx ) / rect2.width) * 2 );
+						//self.cursorPosition.y += ((( touches[i2].y - rect2.centery ) / rect2.height) * 2 );
+					}
+					// a dpad
+					else {
+
+					}
+					if (opt.vm) {
+						self.virtualMouseVec[0] = vector[0];
+						self.virtualMouseVec[1] = vector[1];
 					}
 					// update position 
 					this.children[0].style.left = Math.floor((touches[i2].x - imprintOffset) - rect2.x) + "px";
@@ -371,7 +430,7 @@ InputController.prototype.showController = function(opts) {
 
 };
 
-InputController.MOVE_LEFT = {key: 65, map: "A", bitmask: 1};
+/*InputController.MOVE_LEFT = {key: 65, map: "A", bitmask: 1};
 InputController.MOVE_RIGHT = {key: 68, map: "D", bitmask: 2};
 InputController.MOVE_FORWARD = {key: 87, map: "W", bitmask: 4};
 InputController.MOVE_BACKWARD = {key: 83, map: "S", bitmask: 8};
@@ -379,12 +438,12 @@ InputController.MOVE_BACKWARD = {key: 83, map: "S", bitmask: 8};
 
 // ui 
 InputController.TOGGLE_CONSOLE = {key: 9, map: "TAB"};
-InputController.TOGGLE_CHAT = {key: 9, map: "TAB"};
+InputController.TOGGLE_CHAT = {key: 9, map: "TAB"};*/
 
 
 
 // more debugs
-InputController.TEST_MOBILE = {key: 32, map: "SPACE"};
+//InputController.TEST_MOBILE = {key: 32, map: "SPACE"};
 
 
 

@@ -61,17 +61,17 @@ canvas {
 .app-controller-key {
 	/*float: left;*/
 	position: absolute;
-	width: 25px;
-	height: 25px;
+	width: 50px;
+	height: 50px;
 	border: 5px solid #ff0;
-	margin: 5px;
+	margin: 15px;
 }
 .app-controller-thumbs {
 	position: absolute;
 	width: 9.0em;
 	height: 9.0em;
 	border-radius: 100%;
-	margin: 1.5em;
+	margin: 3.5em;
 
 }
 .app-controller-edit {

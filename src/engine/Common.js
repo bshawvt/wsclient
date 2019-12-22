@@ -15,13 +15,11 @@ function int2rgb(v) {
 					+ b + ")";
 	return str;
 }
-function clamp(val, min, max) {
-	if (val < min) {
+function Clamp(val, min, max) {
+	if (val < min)
 		val = min;
-	}
-	else if (val > max) { 
+	else if (val > max)
 		val = max;
-	}
 	return val;
 }
 function dopen() {
