@@ -1,4 +1,4 @@
-function InputController() {
+function InputController(opts) {
 	var self = this;
 	this.buttonStates = [];
 	this.mouseStates = [];
@@ -35,7 +35,8 @@ function InputController() {
 	//var analogs = [{classNames: "app-bottom app-left app-controller-thumbs-vec", type: 'analog'}, {classNames: "app-bottom app-right app-controller-thumbs-dpad"}];//[{classNames: "app-bottom app-center-horz"}];
 	//var keys = [{map: InputController.TEST_MOBILE}];
 	//console.log(keys);
-	this.showController({keys: this.touchKeys, sticks: this.touchSticks});//{keys: keys, sticks: this.touchSticks});
+
+	//this.showController({keys: this.touchKeys, sticks: this.touchSticks});//{keys: keys, sticks: this.touchSticks});
 
 	/*this.touchstart = function(e) {
 		//console.log("touchstart", e);
@@ -60,10 +61,13 @@ function InputController() {
 	window.addEventListener('touchend', this.touchend);
 	window.addEventListener('touchcancel', this.touchcancel);
 	window.addEventListener('touchmove', this.touchmove);*/
-
+	//if (isMobile()) {
+		this.showController(opts);
+	//}
 	window.addEventListener('mousedown', this.mousedown);
 	window.addEventListener('mouseup', this.mouseup);
 	window.addEventListener('mousemove', this.mousemove);
+
 	window.addEventListener('keydown', this.keydown);
 	window.addEventListener('keyup', this.keyup);
 
@@ -113,6 +117,9 @@ InputController.prototype._keyUp = function(e) {
 	this.buttonStates[keyCode].state = false;
 };
 
+InputController.prototype.consumeButtonState = function(key) {
+	this.buttonStates[key].state = false;
+};
 
 InputController.prototype.getCursorPosition = function() {
 	this.cursorPosition.x += this.virtualMouseVec[0];
@@ -156,6 +163,19 @@ InputController.prototype.showController = function(opts) {
 
 	var edit = document.createElement('div');
 	edit.setAttribute("class", "app-controller-edit app-right");
+	var edit_virtualMouseSens = document.createElement("input");
+	edit_virtualMouseSens.type = "range";
+	edit.appendChild(edit_virtualMouseSens);
+	edit.onclick = function() {
+		if (this.toggled) {
+			this.toggled = false;
+			edit.setAttribute("class", "app-controller-edit app-right");
+		}
+		else {
+			this.toggled = true;
+			edit.setAttribute("class", "app-controller-edit-active app-right");
+		}
+	}
 	//edit
 	html.appendChild(edit);
 
@@ -176,7 +196,7 @@ InputController.prototype.showController = function(opts) {
 				if (opt.initial.bottom) classNames.push("app-bottom");
 				if (opt.initial.left) classNames.push("app-left");
 				if (opt.initial.right) classNames.push("app-right");
-				if (opt.initial.center) classNames.push("app-center-horz");
+				if (opt.initial.center) classNames.push("app-center-horz-key");
 			}
 
 			//classNames = classNames.join(" ");
@@ -187,13 +207,16 @@ InputController.prototype.showController = function(opts) {
 			//console.log(opt);
 			key.innerText = opt.map.map;//opts.keys[i];
 			
-			/* i dont think these listeners need to be removed since they're attached to an element */
+			/* i dont think these listeners need to be removed later on since they're attached to an element */
 			key.addEventListener('touchstart', function(e) {
 				self._keyDown(opt.map.key);
+				//window.navigator.vibrate(50);
+				e.preventDefault();
 			});
 
 			key.addEventListener('touchend', function(e) {
 				self._keyUp(opt.map.key);
+
 			});
 
 			html.appendChild(key);
@@ -239,7 +262,7 @@ InputController.prototype.showController = function(opts) {
 			analog.addEventListener('touchstart', function(e) {
 				// targetTouches is getting lost some how.. i don't want to fix this, i want it to suffer
 				//alert((this.getClientRects()[0].x + " " + this.getClientRects()[0].y));
-				var rect = this.getClientRects()[0];
+				//var rect = this.getClientRects()[0];
 				var touches = [];
 				for(var i1 = 0; i1 < 10; i1++) {
 					touches[i1] = e.targetTouches[i1] !== undefined ? { x: e.targetTouches[i1].clientX, y:  e.targetTouches[i1].clientY } : undefined;
@@ -255,16 +278,21 @@ InputController.prototype.showController = function(opts) {
 						centerx: rect.left + (rect.width/2),
 						centery: rect.top + (rect.height/2)
 					};
+
+					this.children[0].style.left = Math.floor((touches[i2].x - imprintOffset) - rect2.x) + "px";
+					this.children[0].style.top = Math.floor((touches[i2].y - imprintOffset) - rect2.y) + "px";
 					//console.log( touches[i2].x - rect2.centerx );
-					this.children[0].style.left = Math.floor((touches[i2].x - imprintOffset) - rect2.width) + "px";
-					this.children[0].style.top	= Math.floor((touches[i2].y - imprintOffset) - rect2.height) + "px";
+					//this.children[0].style.left = Math.floor((touches[i2].x - imprintOffset) - rect2.width) + "px";
+					//this.children[0].style.top	= Math.floor((touches[i2].y - imprintOffset) - rect2.height) + "px";
 
 					/*this.children[0].style.left = Math.floor((touches[i2].x + imprintOffset) - rect.left) + "px";
 					this.children[0].style.top	= Math.floor((touches[i2].y + imprintOffset) - rect.top) + "px";*/
 				}
+				window.navigator.vibrate(50);
+				e.preventDefault();
 			});
 			analog.addEventListener('touchend', function(e) {
-				var rect = this.getClientRects()[0];
+				//var rect = this.getClientRects()[0];
 				var rect2 = {
 					x: rect.left, 
 					y: rect.top, 
@@ -316,7 +344,7 @@ InputController.prototype.showController = function(opts) {
 			//if (('ontouchmove' in document.documentElement) !== false)
 			analog.addEventListener('touchmove', function(e) {
 				//alert("asdasd");
-				var rect = this.getClientRects()[0];
+				//var rect = this.getClientRects()[0];
 				
 				var touches = [];
 				for(var i1 = 0; i1 < 10; i1++) {
@@ -324,11 +352,6 @@ InputController.prototype.showController = function(opts) {
 				}
 				for(var i2 = 0; i2 < touches.length; i2++) {
 					if (touches[i2] === undefined) continue;
-					
-					//console.log((((rect.left + (rect.width / 2)) - touches[i2].x)/rect.width) * 2);
-					//console.log((((rect.top + (rect.height / 2)) - touches[i2].y)/rect.height) * 2);
-					//console.log((((touches[i2].x)/rect.width) - (rect.left + (rect.width / 2))) * 2);
-					//console.log((((rect.top + (rect.height / 2)) - touches[i2].y)/rect.height) * 2);
 
 					var rect2 = {
 						x: rect.left, 
@@ -338,11 +361,7 @@ InputController.prototype.showController = function(opts) {
 						centerx: rect.left + (rect.width/2),
 						centery: rect.top + (rect.height/2)
 					};
-					//console.log((( touches[i2].x - rect2.centerx ) / rect2.width) * 2 );
-					//console.log((( touches[i2].y - rect2.centery ) / rect2.height) * 2 );
-					
-					/*var vector = [	((( touches[i2].x - rect2.centerx ) / rect2.width) * 2 ),
-									((( touches[i2].y - rect2.centery ) / rect2.height) * 2 )];*/
+
 					var vector = [];
 					vector[0] =	((( touches[i2].x - rect2.centerx ) / rect2.width) * 2 );
 					vector[1] = ((( touches[i2].y - rect2.centery ) / rect2.height) * 2 );
@@ -352,7 +371,7 @@ InputController.prototype.showController = function(opts) {
 					}
 					// virtual mouse thing
 					else if (opt.type == 2) {
-						
+
 						//self.cursorPosition.x += ((( touches[i2].x - rect2.centerx ) / rect2.width) * 2 );
 						//self.cursorPosition.y += ((( touches[i2].y - rect2.centery ) / rect2.height) * 2 );
 					}
@@ -367,32 +386,8 @@ InputController.prototype.showController = function(opts) {
 					// update position 
 					this.children[0].style.left = Math.floor((touches[i2].x - imprintOffset) - rect2.x) + "px";
 					this.children[0].style.top = Math.floor((touches[i2].y - imprintOffset) - rect2.y) + "px";
-
 				}
-				/*touches[0] = e.targetTouches[0] !== undefined ? { x: e.targetTouches[0].clientX, y:  e.targetTouches[0].clientY } : undefined;
-				touches[1] = e.targetTouches[1] !== undefined ? { x: e.targetTouches[1].clientX, y:  e.targetTouches[1].clientY } : undefined;
-				touches[2] = e.targetTouches[2] !== undefined ? { x: e.targetTouches[2].clientX, y:  e.targetTouches[2].clientY } : undefined;
-				touches[3] = e.targetTouches[3] !== undefined ? { x: e.targetTouches[3].clientX, y:  e.targetTouches[3].clientY } : undefined;
-				touches[4] = e.targetTouches[4] !== undefined ? { x: e.targetTouches[4].clientX, y:  e.targetTouches[4].clientY } : undefined;
-				touches[5] = e.targetTouches[5] !== undefined ? { x: e.targetTouches[5].clientX, y:  e.targetTouches[5].clientY } : undefined;
-				touches[6] = e.targetTouches[6] !== undefined ? { x: e.targetTouches[6].clientX, y:  e.targetTouches[6].clientY } : undefined;
-				touches[7] = e.targetTouches[7] !== undefined ? { x: e.targetTouches[7].clientX, y:  e.targetTouches[7].clientY } : undefined;
-				touches[8] = e.targetTouches[8] !== undefined ? { x: e.targetTouches[8].clientX, y:  e.targetTouches[8].clientY } : undefined;
-				touches[9] = e.targetTouches[9] !== undefined ? { x: e.targetTouches[9].clientX, y:  e.targetTouches[9].clientY } : undefined;
-
-				for(var i = 0; i < touches.length; i++) {
-					if (touches[i] === undefined) continue;
-					//alert(Math.floor(touches[i].x - rect.x) + "px")
-
-					//var t = (((rect.left + (rect.width / 2)) - touches[i].x)/rect.width) * 2;
-					//self.controllerSticks
-
-
-					console.log((((rect.left + (rect.width / 2)) - touches[i].x)/rect.width) * 2);
-					console.log((((rect.top + (rect.height / 2)) - touches[i].y)/rect.height) * 2);
-					this.children[0].style.left = Math.floor((touches[i].x - 8) - rect.left) + "px";
-					this.children[0].style.top = Math.floor((touches[i].y - 8) - rect.top) + "px";
-				}*/
+				window.navigator.vibrate(10);
 			});
 			/*else
 				analog.addEventListener('mousemove', function(e) {

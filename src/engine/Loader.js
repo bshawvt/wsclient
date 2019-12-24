@@ -1,3 +1,4 @@
+// warning: there be dragons here
 /* loader class that loads a list of stuff and then does a thing when it's done 
 	if an asset is anything but html/css/javascript then the asset will be saved 
 	in the resource property
@@ -70,6 +71,7 @@ function Loader(sources, callback) {
 				/*else {*/
 					var audio = document.createElement('audio');
 					audio.oncanplaythrough = function() {
+						this.oncanplaythrough = undefined; // oncanplaythrough will be called each time it is played
 						var url = this.src.split(/[?#&]/g)[0];
 						var loadedFilename = url.split(/\/|\\/g);
 						loadedFilename = loadedFilename[loadedFilename.length - 1];
@@ -120,7 +122,7 @@ function Loader(sources, callback) {
 			default: {
 				(function() {
 					var reqDefault = new XMLHttpRequest();
-					reqDefault.open('POST', sources[i] + "?v=" + (new Date()).getTime(), true);
+					reqDefault.open(Config.loaderRequestType, sources[i] + "?v=" + (new Date()).getTime(), true);
 					reqDefault.responseType = "arraybuffer";
 
 					reqDefault.onreadystatechange = function(a, b, c) {
@@ -161,8 +163,9 @@ Loader.prototype.onLoad = function(callback, asset, key) {
 	this.loads++;
 	//if (this.resource[key] !== undefined) // html/css/js arent added to resource array
 	//	this.resource[key].isLoaded = true;
-	console.log(asset);
+	//console.log(asset);
 	callback(this.loads / this.loadCount, asset, key);
+	//console.log("??");
 	if (this.loads>=this.loadCount) {
 		this.clean();
 	}

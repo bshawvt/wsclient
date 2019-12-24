@@ -52,6 +52,8 @@
 					//"/bin/client/data/4096x4096.png", 
 					//"/bin/client/data/1024x1024.png",
 					"/bin/client/data/gradiant.png",
+					"/bin/client/data/spritesheet_1024x1024.png",
+
 
 					// unknown file type load tests
 					/*"/bin/client/data/test1.xtt",
@@ -77,7 +79,8 @@
 
 						// preload all sources before starting
 						if (done >= 1) {
-							d.innerText = "Click to start";
+							var reasonsToStart = ["Click to Start", "Click to lower Expectations"];
+							d.innerText = reasonsToStart[((new Date()).getTime() % (reasonsToStart.length))];
 							var rect = contentContainer.getClientRects()[0];
 							var opt = { parent: contentContainer, 
 								resources: loader.resource,
@@ -96,7 +99,7 @@
 						else {
 							//if (loader !== undefined)
 								//d.innerText = "Doing things first... " + Math.floor(loader.loads / loader.loadCount * 100) + "%";
-							d.innerText = "Doing things first... " + Math.floor(done * 100) + "%";
+							d.innerText = "Preloading ... " + Math.floor(done * 100) + "%";
 						}
 
 					});

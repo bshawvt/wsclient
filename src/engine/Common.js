@@ -5,7 +5,7 @@ function int2rgb(v) {
 	/* expects a value like 0x00ff00 or 65280 and returns
 	the CSS styling text 'rgb(0, 255, 0);'
 	*/
-	if (isNaN(v)) return Config.defaults.int2rgb || "rgb(255, 255, 255);";
+	if (isNaN(v)) return Config.defaults.int2rgb || "rgb(255, 255, 255)";
 	var r = (v >> 16) & 255;
 	var g = (v >> 8) & 255;
 	var b = v & 255;

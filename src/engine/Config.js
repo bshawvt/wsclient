@@ -1,4 +1,5 @@
 var Config = {
-	//orientation: "landscape"
-	orientation: "portrait"
+	loaderRequestType: "GET",
+	orientation: "landscape"
+	//orientation: "portrait"
 }
