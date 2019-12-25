@@ -160,6 +160,7 @@ InputController.prototype.showController = function(opts) {
 
 	var html = document.createElement('div');
 	html.setAttribute("id", "app-controller");
+	document.body.appendChild(html);
 
 	var edit = document.createElement('div');
 	edit.setAttribute("class", "app-controller-edit app-right");
@@ -191,18 +192,55 @@ InputController.prototype.showController = function(opts) {
 			key = document.createElement('div');
 
 			var classNames = ['app-controller-key'];
-			if (opt.initial !== undefined) {
-				if (opt.initial.top) classNames.push("app-top");
-				if (opt.initial.bottom) classNames.push("app-bottom");
-				if (opt.initial.left) classNames.push("app-left");
-				if (opt.initial.right) classNames.push("app-right");
-				if (opt.initial.center) classNames.push("app-center-horz-key");
-			}
+			
 
 			//classNames = classNames.join(" ");
 			key.setAttribute('class', classNames.join(" "));
+			html.appendChild(key);
+			var rect = key.getClientRects()[0];
+			console.log(rect, rect.left - rect.width);
+			// window.innerWidth is always returning before context is focused for some reason 
+			var sW = window.screen.availWidth;
+			var sH = window.screen.availHeight;
 
-			key.style.right = (60 * i) + "px";
+			var initialWidth = Config.orientation === "landscape" ? sH : sW;
+			var initialHeight = Config.orientation === "landscape" ? sW : sH;
+			console.log(sW, sH);
+			if (opt.initial !== undefined) {
+				if (opt.initial.x) key.style.left = opt.initial.x + "px";
+				if (opt.initial.y) key.style.top = opt.initial.y + "px";
+				if (opt.initial.left) {
+					//key.style.left = (0) + "px";
+				}
+				if (opt.initial.right) {
+					var xoff = (opt.initial.xoff || 0) + 30; // 30 = margin * 2
+					key.style.left = (initialWidth - rect.width - xoff ) + "px";
+				}
+				if (opt.initial.top) {
+					//key.style.top = opt.initial.y + "px";
+				}
+				if (opt.initial.bottom) {
+					var yoff = (opt.initial.yoff || 0) + 30; // 30 = margin * 2
+					key.style.top = (initialHeight - rect.height - yoff ) + "px";
+				}
+				if (opt.initial.center !== undefined) {
+					//key.style.left = ((initialWidth/2) - (((rect.width + 20) * opts.keys.length)/2) + ((rect.width + 10) * i)) + "px";
+					var xoff = opt.initial.center.xoff || 0;
+					var yoff = opt.initial.center.yoff || 0;
+					if (opt.initial.center.x) {
+						//key.style.left = ((initialWidth/2) - ((rect.width * xline)/2) - (rect.width * (xline-1))) + "px";
+					}
+					if (opt.initial.center.y) {
+						//key.style.top = ((initialHeight/2) - ((rect.height * yline)/2) - (rect.height * (yline-1))) + "px";
+					}
+				}
+				//if (opt.initial.) classNames.push("app-left");
+				//if (opt.initial.right) classNames.push("app-right");
+			}
+			/*if (center) {
+				key.style.left = ((width/2) - (((rect.width + 20) * opts.keys.length)/2) + ((rect.width + 10) * i)) + "px";
+			}*/
+			//key.style.left = (60 * i) + "px";
 			//console.log(opts.keys[i], opts.keys);
 			//console.log(opt);
 			key.innerText = opt.map.map;//opts.keys[i];
@@ -219,7 +257,7 @@ InputController.prototype.showController = function(opts) {
 
 			});
 
-			html.appendChild(key);
+			
 		})(o);
 		//var result = r(o);
 		//html.appendChild(result);
@@ -251,7 +289,7 @@ InputController.prototype.showController = function(opts) {
 			analog = document.createElement('div');
 			analog.setAttribute('class', classNames.join(" "));
 
-			var rect = analog.getClientRects()[0];
+			//var rect = analog.getClientRects()[0];
 
 
 
@@ -262,7 +300,7 @@ InputController.prototype.showController = function(opts) {
 			analog.addEventListener('touchstart', function(e) {
 				// targetTouches is getting lost some how.. i don't want to fix this, i want it to suffer
 				//alert((this.getClientRects()[0].x + " " + this.getClientRects()[0].y));
-				//var rect = this.getClientRects()[0];
+				var rect = this.getClientRects()[0];
 				var touches = [];
 				for(var i1 = 0; i1 < 10; i1++) {
 					touches[i1] = e.targetTouches[i1] !== undefined ? { x: e.targetTouches[i1].clientX, y:  e.targetTouches[i1].clientY } : undefined;
@@ -292,7 +330,7 @@ InputController.prototype.showController = function(opts) {
 				e.preventDefault();
 			});
 			analog.addEventListener('touchend', function(e) {
-				//var rect = this.getClientRects()[0];
+				var rect = this.getClientRects()[0];
 				var rect2 = {
 					x: rect.left, 
 					y: rect.top, 
@@ -344,7 +382,7 @@ InputController.prototype.showController = function(opts) {
 			//if (('ontouchmove' in document.documentElement) !== false)
 			analog.addEventListener('touchmove', function(e) {
 				//alert("asdasd");
-				//var rect = this.getClientRects()[0];
+				var rect = this.getClientRects()[0];
 				
 				var touches = [];
 				for(var i1 = 0; i1 < 10; i1++) {
@@ -421,7 +459,7 @@ InputController.prototype.showController = function(opts) {
 
 	}
 
-	document.body.appendChild(html);
+	
 
 };
 

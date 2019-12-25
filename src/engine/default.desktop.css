@@ -20,6 +20,7 @@ body {
 }
 canvas {
 	border: 0.00em solid #000;
+	background-color: rgb(200, 200, 200);
 }
 
 #app-content {
@@ -41,17 +42,18 @@ canvas {
 	font-weight: bolder;
 	font-size: 2em;
 	border: 10px solid #ff0;
+	height: ;
 	text-align: center;
 	
 	pointer-events: none;
 	left: 0.00em;
 	right: 0.00em;
-	top: 45%;
+	top: 50%;
 	vertical-align: bottom;
 }
 #app-controller {
 	position: absolute;
-	border: 1px solid #f00;
+	
 	z-index: 1000000000;
 	left: 0.00em;
 	right: 0.00em;
@@ -63,11 +65,13 @@ canvas {
 	position: absolute;
 	width: 50px;
 	height: 50px;
-	border: 5px solid #ff0;
+	border: 0.07em solid #fff;
 	margin: 15px;
 }
 .app-controller-thumbs {
 	position: absolute;
+	border: 0.07em solid #fff;
+	box-shadow: 0.07em 0.07em #000, -0.07em -0.07em #000, -0.07em 0.07em #000,  0.07em -0.07em #000;
 	width: 9.0em;
 	height: 9.0em;
 	border-radius: 100%;
@@ -77,8 +81,8 @@ canvas {
 .app-controller-edit {
 	position: absolute;
 	border: 10px solid #ff0;
-	width: 50px;
-	height: 50px;
+	width: 3.125em;
+	height: 3.125em;
 }
 .app-controller-edit-active {
 	position: absolute;
@@ -89,29 +93,23 @@ canvas {
 }
 
 .app-top {
-	border: 0.07em solid #ff0;
 	top: 0.00em;
 }
 .app-bottom {
-	border: 0.07em solid #ff0;
 	bottom: 0.00em;
 }
 .app-left {
-	border: 0.07em solid #0ff;
 	left: 0.00em;
 }
 .app-right {
-	border: 0.07em solid #0ff;
 	right: 0.00em;
 }
 
 .app-center-horz {
-	border: 0.07em solid #f0f;
 	left: 50%;
 	margin-left: -5.0em;
 }
 .app-center-horz-key {
-	border: 0.07em solid #f0f;
 	left: 50%;
 	margin-left: -25px;
 }
@@ -129,6 +127,6 @@ canvas {
 	position: absolute;
 	width: 0.312em;
 	height: 0.312em;
-	border: 0.343em solid #f0f;
+	border: 0.343em solid #000;
 	border-radius: 100%;
 }
