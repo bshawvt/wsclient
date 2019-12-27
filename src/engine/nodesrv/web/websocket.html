@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style>
+		.my-form {
+			background-color: rgb(70, 100, 150);
+			width: 400px;
+			color: #fff;
+			padding: 5px;
+			margin: 5px;
+		}
+	</style>
+	<script type="application/javascript" src="./websocket.client.js"></script>
+</head>
+<body>
+	<div class="my-form">
+		<label>connect to websocket server:</label><br/>
+		<button id="mf-connect">Connect</button><br/>
+		<label>send stop command:</label><br/>
+		<button id="mf-stop">Stop</button><br/>
+		<label>send start command:</label><br/>
+		<button id="mf-start">Start</button><br/>
+		<label>send restart command:</label><br/>
+		<button id="mf-restart">Restart</button><br/>
+	</div>
+	<script type="application/javascript">
+		var webClient = new WebClient({});
+		console.log(webClient);
+	</script>
+</body>
+</html>

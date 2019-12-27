@@ -49,7 +49,8 @@ Game.prototype.start = function() {
 
 	var keyMaps = [	{ initial: {right: true, bottom: true, yoff: 100, xoff: 225}, map: InputController.MAP_FIRE = {key: 32, map: "SPACE", bitbask: 16} },
 					{ initial: {right: true, bottom: true, yoff: 35, xoff: 225}, map: InputController.MAP_SWAP = {key: 86, map: "V", bitbask: 32} }];
-	var touchMaps = [{ initial: {bottom: true, center: false}, type: 1, vm: true }, { initial: {bottom: true, right: true}, maps: []}];
+	var touchMaps = [	{ initial: {bottom: true, center: false}, maps: []}, 
+						{ initial: {bottom: true, right: true}, type: 1}];
 	this.controller = new InputController({keys: keyMaps, sticks: touchMaps});
 	//this.controller.showController({keys: keyMaps, sticks: touchMaps});
 

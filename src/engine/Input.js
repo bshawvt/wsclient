@@ -199,13 +199,12 @@ InputController.prototype.showController = function(opts) {
 			html.appendChild(key);
 			var rect = key.getClientRects()[0];
 			console.log(rect, rect.left - rect.width);
-			// window.innerWidth is always returning before context is focused for some reason 
+			// window.innerWidth is always returning before context is focused and in fullscreen
 			var sW = window.screen.availWidth;
 			var sH = window.screen.availHeight;
-
 			var initialWidth = Config.orientation === "landscape" ? sH : sW;
 			var initialHeight = Config.orientation === "landscape" ? sW : sH;
-			console.log(sW, sH);
+
 			if (opt.initial !== undefined) {
 				if (opt.initial.x) key.style.left = opt.initial.x + "px";
 				if (opt.initial.y) key.style.top = opt.initial.y + "px";
