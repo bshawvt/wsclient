@@ -42,27 +42,27 @@ Game.prototype.start = function() {
 		throw "error: animator is already active";
 	this.soundsManager = new SoundManager();
 
-	InputController.MAP_LEFT = {key: 65, map: "A", bitmask: 1};
-	InputController.MAP_RIGHT = {key: 68, map: "D", bitmask: 2};
-	InputController.MAP_FORWARD = {key: 87, map: "W", bitmask: 4};
-	InputController.MAP_BACKWARD = {key: 83, map: "S", bitmask: 8};
+	InputController.MAP_LEFT = {key: 65, map: "A", bitmask: 1}
+	InputController.MAP_RIGHT = {key: 68, map: "D", bitmask: 2}
+	InputController.MAP_FORWARD = {key: 87, map: "W", bitmask: 4}
+	InputController.MAP_BACKWARD = {key: 83, map: "S", bitmask: 8}
 
-	var keyMaps = [	{ initial: {right: true, bottom: true, yoff: 100, xoff: 225}, map: InputController.MAP_FIRE = {key: 32, map: "SPACE", bitbask: 16} },
-					{ initial: {right: true, bottom: true, yoff: 35, xoff: 225}, map: InputController.MAP_SWAP = {key: 86, map: "V", bitbask: 32} }];
-	var touchMaps = [	{ initial: {bottom: true, center: false}, maps: []}, 
-						{ initial: {bottom: true, right: true}, type: 1}];
+	var keyMaps = [	{ position: {right: true, bottom: true, yoff: 100, xoff: 225}, map: InputController.MAP_FIRE = {key: 32, map: "SPACE", bitbask: 16} },
+					{ position: {left: true, bottom: true, yoff: 35, xoff: 225}, map: InputController.MAP_SWAP = {key: 86, map: "V", bitbask: 32} }];
+	var touchMaps = [	{ initial: {bottom: true, center: false}, type: 2},//maps: []}, 
+						{ initial: {bottom: true, right: true}, type: 1, maps: {left: InputController.MAP_LEFT = {key: 65, map: "A", bitmask: 1}, right: InputController.MAP_RIGHT = {key: 68, map: "D", bitmask: 2}, top: InputController.MAP_FORWARD = {key: 87, map: "W", bitmask: 4}, bottom: InputController.MAP_BACKWARD = {key: 83, map: "S", bitmask: 8}}}];
 	this.controller = new InputController({keys: keyMaps, sticks: touchMaps});
 	//this.controller.showController({keys: keyMaps, sticks: touchMaps});
 
-	this.dynamicObjects = [ {x: 5, y: 5, width: 50, height: 50, res: {sprite: "spritesheet_1024x1024.png", offx: 256, offy: 0, size: 128}, dir: [0, 0, 0], spd: [1.0, 1.0, 0]},
-	/*{x: 200, y: 5, width: 200, height: 200, res: "gradiant.png", dir: [0, 0, 0], spd: [0.0, 0.0, 0]}*/];
+	this.dynamicObjects = [ {x: 5, y: 5, width: 50, height: 50, res: {sprite: "spritesheet_1024x1024.png", offx: 256, offy: 0, size: 128}, dir: [0, 0, 0], spd: [1.0, 1.0, 0]}/*,
+	{x: 200, y: 5, width: 200, height: 200, res: "gradiant.png", dir: [0, 0, 0], spd: [0.0, 0.0, 0]}*/];
 	this.dynamicObjectsQueue = [];	
 	// i don't know if it matters but it's probably better to start animator after the other things
 	this.animator = new Animator(this);
 	this.startTime = this.animator.dt;
 	console.log("started");
 
-	// per app specific
+	// per app specific stuff 
 	this.attackedTime = 0;
 
 
@@ -133,12 +133,25 @@ Game.prototype.frame = function(dt) {
 		//if (this.dynamicObjects[0].spd[0] <= 0.0) this.dynamicObjects[0].spd[0] = 0.0;
 		//if (this.dynamicObjects[0].spd[1] <= 0.0) this.dynamicObjects[0].spd[1] = 0.0;
 	}*/
-	var pos = In.getCursorPosition();
+	if (In.getButtonState(InputController.MAP_LEFT.key)) {
+		console.log("??")
+		this.dynamicObjects[0].x -= 1;
+	}
+	if (In.getButtonState(InputController.MAP_RIGHT.key)) {
+		this.dynamicObjects[0].x += 1;
+	}
+	if (In.getButtonState(InputController.MAP_FORWARD.key)) {
+		this.dynamicObjects[0].y -= 1; 
+	}
+	if (In.getButtonState(InputController.MAP_BACKWARD.key)) {
+		this.dynamicObjects[0].y += 1; 
+	}
+	//var pos = In.getCursorPosition();
 	//console.log(pos);
-	var pos2 = Math.atan2(-pos.y, pos.x);
-	//console.log(pos2);
-	this.dynamicObjects[0].x = pos.x;//Clamp(In.virtualMouseVec[0], -1.0, 1.0);//Clamp(pos.x, -1.0, 1.0);//pos.x;//Clamp(In.virtualMouseVec[0], -1.0, 1.0);//pos.x;
-	this.dynamicObjects[0].y = pos.y;//Clamp(In.virtualMouseVec[1], -1.0, 1.0);//Clamp(pos.y, -1.0, 1.0);//Clamp(In.virtualMouseVec[1], -1.0, 1.0);//pos.y;
+	//var pos2 = Math.atan2(-pos.y, pos.x);
+	//console.log(pos2 * Math.PI / 180);
+	//this.dynamicObjects[0].x = ;//pos.x;//Clamp(In.virtualMouseVec[0], -1.0, 1.0);//Clamp(pos.x, -1.0, 1.0);//pos.x;//Clamp(In.virtualMouseVec[0], -1.0, 1.0);//pos.x;
+	//this.dynamicObjects[0].y = ;//pos.y;//Clamp(In.virtualMouseVec[1], -1.0, 1.0);//Clamp(pos.y, -1.0, 1.0);//Clamp(In.virtualMouseVec[1], -1.0, 1.0);//pos.y;
 	//console.log(pos);
 
 

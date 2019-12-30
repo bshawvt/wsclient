@@ -155,8 +155,45 @@ InputController.prototype.clean = function() {
 
 };
 
+/* params: { keys: [], sticks: [] }
+	keys:
+		{
+			[
+				position: - set the initial location
+					{ 
+						right: undefined,
+						left: true,
+						top: false,
+						bottom: true,
+
+						xoff: undefined, - offsets to use 
+						yoff: -10,
+					}
+				map: InputController.MAP_* Object - needs to at the very least have a key property
+			]
+		}
+	sticks:
+		{
+			[
+				position: - set the initial location
+					{ 
+						right: undefined,
+						left: true,
+						center: false,
+
+						type: undefined, - can be undefined/0(=sets vector based on distance, for mobile games only), 1(=maps become dpad), 2(=sets cursor pos)
+
+						xoff: undefined, - offsets to use 
+						yoff: -10,
+
+					}
+				maps: [ InputController.MAP_* Object, ... ]
+			]
+		}
+	*/
 InputController.prototype.showController = function(opts) {
 	var self = this;
+	var orientation = GetOrientation();
 
 	var html = document.createElement('div');
 	html.setAttribute("id", "app-controller");
@@ -200,39 +237,42 @@ InputController.prototype.showController = function(opts) {
 			var rect = key.getClientRects()[0];
 			console.log(rect, rect.left - rect.width);
 			// window.innerWidth is always returning before context is focused and in fullscreen
-			var sW = window.screen.availWidth;
-			var sH = window.screen.availHeight;
-			var initialWidth = Config.orientation === "landscape" ? sH : sW;
-			var initialHeight = Config.orientation === "landscape" ? sW : sH;
+			var initialWidth = window.screen.availWidth;
+			var initialHeight = window.screen.availHeight;
+			if (orientation !== Config.orientation) {
+				initialWidth = initialHeight;
+				initialHeight = initialWidth;
+			}
 
-			if (opt.initial !== undefined) {
-				if (opt.initial.x) key.style.left = opt.initial.x + "px";
-				if (opt.initial.y) key.style.top = opt.initial.y + "px";
-				if (opt.initial.left) {
+			if (opt.position !== undefined) {
+				var xoff = 0;//opt.position.xoff || 0;
+				var yoff = 0;//opt.position.yoff || 0;
+
+				if (opt.position.x) key.style.left = opt.position.x + "px";
+				if (opt.position.y) key.style.top = opt.position.y + "px";
+				if (opt.position.left) {
 					//key.style.left = (0) + "px";
+					key.style.left = ( xoff ) + "px";
 				}
-				if (opt.initial.right) {
-					var xoff = (opt.initial.xoff || 0) + 30; // 30 = margin * 2
-					key.style.left = (initialWidth - rect.width - xoff ) + "px";
+				if (opt.position.right) {
+					key.style.left = (initialWidth - (rect.width + (rect.width/2)) - xoff ) + "px";
 				}
-				if (opt.initial.top) {
-					//key.style.top = opt.initial.y + "px";
+				if (opt.position.top) {
+					key.style.top = yoff + "px";
 				}
-				if (opt.initial.bottom) {
-					var yoff = (opt.initial.yoff || 0) + 30; // 30 = margin * 2
-					key.style.top = (initialHeight - rect.height - yoff ) + "px";
+				if (opt.position.bottom) {
+					key.style.top = (initialHeight - (rect.height + (rect.height/2)) - yoff ) + "px";
 				}
-				if (opt.initial.center !== undefined) {
+				//if (opt.initial.center !== undefined) {
 					//key.style.left = ((initialWidth/2) - (((rect.width + 20) * opts.keys.length)/2) + ((rect.width + 10) * i)) + "px";
-					var xoff = opt.initial.center.xoff || 0;
-					var yoff = opt.initial.center.yoff || 0;
-					if (opt.initial.center.x) {
-						//key.style.left = ((initialWidth/2) - ((rect.width * xline)/2) - (rect.width * (xline-1))) + "px";
-					}
-					if (opt.initial.center.y) {
-						//key.style.top = ((initialHeight/2) - ((rect.height * yline)/2) - (rect.height * (yline-1))) + "px";
-					}
+				
+				/*if (opt.initial.center.x) {
+					//key.style.left = ((initialWidth/2) - ((rect.width * xline)/2) - (rect.width * (xline-1))) + "px";
 				}
+				if (opt.initial.center.y) {
+					//key.style.top = ((initialHeight/2) - ((rect.height * yline)/2) - (rect.height * (yline-1))) + "px";
+				}*/
+				//}
 				//if (opt.initial.) classNames.push("app-left");
 				//if (opt.initial.right) classNames.push("app-right");
 			}
@@ -277,10 +317,10 @@ InputController.prototype.showController = function(opts) {
 			}
 
 			if (opt.type == 1) {
-				classNames.push("app-controller-thumbs-vec");
+				classNames.push("app-controller-thumbs-dpad");
 			}
 			else {
-				classNames.push("app-controller-thumbs-dpad");
+				classNames.push("app-controller-thumbs-vec");
 			}
 
 			//classNames = classNames.join(" ");
@@ -316,6 +356,59 @@ InputController.prototype.showController = function(opts) {
 						centery: rect.top + (rect.height/2)
 					};
 
+					var vector = [];
+					vector[0] =	((( touches[i2].x - rect2.centerx ) / rect2.width) * 2 );
+					vector[1] = ((( touches[i2].y - rect2.centery ) / rect2.height) * 2 );
+					// a dpad
+					if (opt.type == 1) {
+						// oddwarg maths
+						var p = Math.atan2(-vector[1], -vector[0]);
+						var n = Math.round(p*4/Math.PI);
+						if (n < 0) n+=8;
+
+						if (n == 0 || n == 1 || n == 7) { //left
+							console.log(opt.maps.left)
+							self._keyDown(opt.maps.left.key);
+						}
+						else {
+							self._keyUp(opt.maps.left.key);
+						}
+
+						if (n == 2 || n == 3 || n == 1) { // top
+							self._keyDown(opt.maps.top.key);
+						}
+						else {
+							self._keyUp(opt.maps.top.key);
+						}
+
+						if (n == 4 || n == 5 || n == 3) { // right
+							self._keyDown(opt.maps.right.key);
+						}
+						else {
+							self._keyUp(opt.maps.right.key);
+						}
+
+						if (n == 6 || n == 7 || n == 5) { // bottom
+							self._keyDown(opt.maps.bottom.key);
+						}
+						else {
+							self._keyUp(opt.maps.bottom.key);
+						}
+
+					}
+					// virtual mouse thing
+					else if (opt.type == 2) {
+
+						//self.cursorPosition.x += ((( touches[i2].x - rect2.centerx ) / rect2.width) * 2 );
+						//self.cursorPosition.y += ((( touches[i2].y - rect2.centery ) / rect2.height) * 2 );
+						self.virtualMouseVec[0] = vector[0];
+						self.virtualMouseVec[1] = vector[1];
+					}
+					// a 'normal' virtual stick
+					else {
+
+					}
+
 					this.children[0].style.left = Math.floor((touches[i2].x - imprintOffset) - rect2.x) + "px";
 					this.children[0].style.top = Math.floor((touches[i2].y - imprintOffset) - rect2.y) + "px";
 					//console.log( touches[i2].x - rect2.centerx );
@@ -345,31 +438,38 @@ InputController.prototype.showController = function(opts) {
 				for(var i2 = 0; i2 < touches.length; i2++) {
 					if (touches[i2] === undefined) continue;
 					
-					// a 'normal' virtual stick
-					if (opt.type == 1) {
-
+					// a dpad
+					/*if (opt.type == 1) {
+						self._keyUp(opt.maps.left.key);
+						self._keyUp(opt.maps.top.key);
+						self._keyUp(opt.maps.right.key);
+						self._keyUp(opt.maps.bottom.key);
 					}
 					// virtual mouse thing
 					else if (opt.type == 2) {
-						//this.virtualMouseVec[0] = vector[0];
-						//this.virtualMouseVec[1] = vector[1];
-						//self.cursorPosition.x += ((( touches[i2].x - rect2.centerx ) / rect2.width) * 2 );
-						//self.cursorPosition.y += ((( touches[i2].y - rect2.centery ) / rect2.height) * 2 );
-					}
-					// a dpad
-					else {
-
-					}
-					if (opt.vm) {
 						self.virtualMouseVec[0] = 0.0;//vector[0];
 						self.virtualMouseVec[1] = 0.0;//vector[1];
 					}
-					console.log("asdasd");
+					// a 'normal' virtual stick
+					else {
+
+					}
+					console.log("asdasd");*/
 				}
-				if (opt.vm) {
+				if (opt.type == 1) {
+					self._keyUp(opt.maps.left.key);
+					self._keyUp(opt.maps.top.key);
+					self._keyUp(opt.maps.right.key);
+					self._keyUp(opt.maps.bottom.key);
+				}
+				else if (opt.type == 2) {
 					self.virtualMouseVec[0] = 0.0;//vector[0];
 					self.virtualMouseVec[1] = 0.0;//vector[1];
 				}
+				/*if (opt.vm) {
+					self.virtualMouseVec[0] = 0.0;//vector[0];
+					self.virtualMouseVec[1] = 0.0;//vector[1];
+				}*/
 				this.children[0].style.left = Math.floor((rect2.width/2) - imprintOffset) + "px";
 				this.children[0].style.top = Math.floor((rect2.height/2) - imprintOffset) + "px";
 			});
@@ -402,8 +502,41 @@ InputController.prototype.showController = function(opts) {
 					var vector = [];
 					vector[0] =	((( touches[i2].x - rect2.centerx ) / rect2.width) * 2 );
 					vector[1] = ((( touches[i2].y - rect2.centery ) / rect2.height) * 2 );
-					// a 'normal' virtual stick
+					// a dpad
 					if (opt.type == 1) {
+						// oddwarg maths
+						var p = Math.atan2(-vector[1], -vector[0]);
+						var n = Math.round(p*4/Math.PI);
+						if (n < 0) n+=8;
+
+						if (n == 0 || n == 1 || n == 7) { //left
+							console.log(opt.maps.left)
+							self._keyDown(opt.maps.left.key);
+						}
+						else {
+							self._keyUp(opt.maps.left.key);
+						}
+
+						if (n == 2 || n == 3 || n == 1) { // top
+							self._keyDown(opt.maps.top.key);
+						}
+						else {
+							self._keyUp(opt.maps.top.key);
+						}
+
+						if (n == 4 || n == 5 || n == 3) { // right
+							self._keyDown(opt.maps.right.key);
+						}
+						else {
+							self._keyUp(opt.maps.right.key);
+						}
+
+						if (n == 6 || n == 7 || n == 5) { // bottom
+							self._keyDown(opt.maps.bottom.key);
+						}
+						else {
+							self._keyUp(opt.maps.bottom.key);
+						}
 
 					}
 					// virtual mouse thing
@@ -411,15 +544,17 @@ InputController.prototype.showController = function(opts) {
 
 						//self.cursorPosition.x += ((( touches[i2].x - rect2.centerx ) / rect2.width) * 2 );
 						//self.cursorPosition.y += ((( touches[i2].y - rect2.centery ) / rect2.height) * 2 );
-					}
-					// a dpad
-					else {
-
-					}
-					if (opt.vm) {
 						self.virtualMouseVec[0] = vector[0];
 						self.virtualMouseVec[1] = vector[1];
 					}
+					// a 'normal' virtual stick
+					else {
+
+					}
+					/*if (opt.vm) {
+						self.virtualMouseVec[0] = vector[0];
+						self.virtualMouseVec[1] = vector[1];
+					}*/
 					// update position 
 					this.children[0].style.left = Math.floor((touches[i2].x - imprintOffset) - rect2.x) + "px";
 					this.children[0].style.top = Math.floor((touches[i2].y - imprintOffset) - rect2.y) + "px";
