@@ -15,6 +15,11 @@ function int2rgb(v) {
 					+ b + ")";
 	return str;
 }
+/* returns a css compatible rgb string 
+	todo: */
+function RGB(r, g, b) {
+	return "rgb(" + r + ", " + g + ", " + b + ")";
+}
 function Clamp(val, min, max) {
 	if (val < min)
 		val = min;

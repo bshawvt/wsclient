@@ -134,7 +134,7 @@ Game.prototype.frame = function(dt) {
 		//if (this.dynamicObjects[0].spd[1] <= 0.0) this.dynamicObjects[0].spd[1] = 0.0;
 	}*/
 	if (In.getButtonState(InputController.MAP_LEFT.key)) {
-		console.log("??")
+		//console.log("??")
 		this.dynamicObjects[0].x -= 1;
 	}
 	if (In.getButtonState(InputController.MAP_RIGHT.key)) {
@@ -191,7 +191,7 @@ Game.prototype.frame = function(dt) {
 Game.prototype.render = function(dt) {
 	var self = this;
 	craw.set(this.context.canvas.id);
-	craw.clear();
+	//craw.clear();
 	//rend(dt, this.dynamicObjects, this.resource);
 	var res = this.resource;
 	this.dynamicObjects.forEach(function(e) {

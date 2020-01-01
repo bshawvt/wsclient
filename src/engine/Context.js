@@ -51,6 +51,7 @@ function Context(opt) {
 
 	the activate event is emitted only once */
 Context.prototype.onActivate = function() {
+	console.log("?");
 
 	if (isMobile()) {
 		//console.log("context has found its way into mobileland");

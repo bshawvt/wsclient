@@ -79,17 +79,30 @@ canvas {
 
 }
 .app-controller-edit {
+	color: rgb(100, 100, 200);
 	position: absolute;
 	border: 10px solid #ff0;
-	width: 3.125em;
-	height: 3.125em;
+	width: 1.5625em;
+	height: 1.5625em;
+	background: rgb(100, 100, 200);
+	z-index: 1000000001;
+	overflow: hidden;
 }
 .app-controller-edit-active {
-	position: absolute;
-	border: 10px solid #ff0;
+	padding: 0.625em;
+	color: #fff;
+	text-shadow: 0.0625em 0.0625em 0.0625em #000;
 	left: 0;
 	right: 0;
-	height: 250px;
+	height: 75%;
+	width: auto;
+}
+.app-transparent {
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
+	filter: alpha(opacity=20);
+	-moz-opacity: 0.20;
+	-khtml-opacity: 0.20;
+	opacity: 0.20; 
 }
 
 .app-top {

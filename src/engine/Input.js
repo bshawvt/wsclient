@@ -5,6 +5,7 @@ function InputController(opts) {
 
 	this.cursorPosition = {x: 0, y: 0};
 
+	this.touchSettings = {sensX: 1, sensY: 1, diagonalOffset: 0, positions: []};
 	this.touchKeys = [];//[{map: InputController.TEST_MOBILE}]; //
 	this.touchSticks = [];//[/*{classNames: "app-bottom app-left app-controller-thumbs-dpad", type: 0}, */
 						//{classNames: "app-bottom app-right app-controller-thumbs-vec", type: 1}]; // {classNames: '', type: ''}
@@ -28,10 +29,10 @@ function InputController(opts) {
 	}
 
 
-	/*var touchCanvas = new craw({id: "input", w: window.innerWidth - 4, h: window.innerHeight - 4});
-	touchCanvas.style.position = "absolute";
-	touchCanvas.style.border = "0.12em solid #fff";
-	touchCanvas.style.pointerEvents = "none";*/
+	/*this.touchCanvas = new craw({id: "input", w: window.innerWidth - 4, h: window.innerHeight - 4});
+	this.touchCanvas.style.position = "absolute";
+	this.touchCanvas.style.border = "0.12em solid #fff";
+	this.touchCanvas.style.pointerEvents = "none";*/
 	//var analogs = [{classNames: "app-bottom app-left app-controller-thumbs-vec", type: 'analog'}, {classNames: "app-bottom app-right app-controller-thumbs-dpad"}];//[{classNames: "app-bottom app-center-horz"}];
 	//var keys = [{map: InputController.TEST_MOBILE}];
 	//console.log(keys);
@@ -122,8 +123,8 @@ InputController.prototype.consumeButtonState = function(key) {
 };
 
 InputController.prototype.getCursorPosition = function() {
-	this.cursorPosition.x += this.virtualMouseVec[0];
-	this.cursorPosition.y += this.virtualMouseVec[1];
+	this.cursorPosition.x += (this.virtualMouseVec[0] * this.touchSettings.sensX);
+	this.cursorPosition.y += (this.virtualMouseVec[1] * this.touchSettings.sensY);
 	return this.cursorPosition;
 };
 InputController.prototype.getMouseStates = function(button) {
@@ -155,6 +156,103 @@ InputController.prototype.clean = function() {
 
 };
 
+InputController.prototype._createSettingsElements = function(html) {
+	var self = this;
+
+	var edit = document.createElement('div');
+	edit.setAttribute("class", "app-controller-edit app-transparent app-right");
+	
+	function closeSettings() {
+		edit.setAttribute("class", "app-controller-edit app-transparent app-right");
+		edit.toggled = false;
+	}
+	
+	var edit_label1 = document.createElement('label');
+	edit_label1.innerText = "Virtual Mouse X Sensitivity:";
+	
+	var edit_virtualMouseSensX = document.createElement("input");
+	edit_virtualMouseSensX.type = "range";
+	edit_virtualMouseSensX.min = 1;
+	edit_virtualMouseSensX.max = 10;
+	edit_virtualMouseSensX.value = 1;
+
+	var edit_label2 = document.createElement('label');
+	edit_label2.innerText = "Virtual Mouse Y Sensitivity:";
+
+	var edit_virtualMouseSensY = document.createElement("input");
+	edit_virtualMouseSensY.type = "range";
+	edit_virtualMouseSensY.min = 1;
+	edit_virtualMouseSensY.max = 10;
+	edit_virtualMouseSensY.value = 1;
+
+	var edit_label3 = document.createElement('label');
+	edit_label3.innerText = "D-Pad Diagonal Dead Zone:";
+	
+	var edit_diagDeadZone = document.createElement("input");
+	edit_diagDeadZone.type = "range";
+	edit_diagDeadZone.min = -15;
+	edit_diagDeadZone.max = 15;
+	edit_diagDeadZone.value = 0;
+
+	var edit_save = document.createElement('button');
+	edit_save.innerText = "Save";
+	edit_save.onclick = function(e) {
+
+		self.touchSettings.sensX = edit_virtualMouseSensX.value;
+		self.touchSettings.sensY = edit_virtualMouseSensY.value;
+		self.touchSettings.diagonalOffset = edit_diagDeadZone;
+
+		closeSettings();
+		e.stopPropagation();
+
+	}
+	var edit_cancel = document.createElement('button');
+	edit_cancel.innerText = "Close";
+	edit_cancel.onclick = function(e) {
+		closeSettings();
+		e.stopPropagation();
+	}
+
+	var edit_default = document.createElement('button');
+	edit_default.innerText = "Set to Default";
+	edit_default.onclick = function(e) {
+		edit_virtualMouseSensX.value = 1;
+		edit_virtualMouseSensY.value = 1;
+		edit_diagDeadZone.value = 0;
+		
+		self.touchSettings.sensX = edit_virtualMouseSensX.value;
+		self.touchSettings.sensY = edit_virtualMouseSensY.value;
+		self.touchSettings.diagonalOffset = edit_diagDeadZone.value;
+	}
+	
+	edit.appendChild(edit_label1);
+	edit.appendChild(edit_virtualMouseSensX);
+	edit.appendChild(document.createElement("br"));
+	edit.appendChild(edit_label2);
+	edit.appendChild(edit_virtualMouseSensY);
+	edit.appendChild(document.createElement("br"));
+	edit.appendChild(edit_label3);
+	edit.appendChild(edit_diagDeadZone);
+	edit.appendChild(document.createElement("br"));
+	edit.appendChild(document.createElement("br"));
+	edit.appendChild(edit_save);
+	edit.appendChild(edit_cancel);
+	edit.appendChild(edit_default);
+
+	edit.onclick = function() {
+		if (!this.toggled) {
+			this.toggled = true;
+			edit.setAttribute("class", "app-controller-edit app-controller-edit-active app-right");
+			//edit.setAttribute("class", "app-controller-edit app-right");
+		}
+		/*else {
+			this.toggled = true;
+			edit.setAttribute("class", "app-controller-edit-active app-right");
+		}*/
+	}
+	//edit
+	html.appendChild(edit);
+};
 /* params: { keys: [], sticks: [] }
 	keys:
 		{
@@ -199,26 +297,9 @@ InputController.prototype.showController = function(opts) {
 	html.setAttribute("id", "app-controller");
 	document.body.appendChild(html);
 
-	var edit = document.createElement('div');
-	edit.setAttribute("class", "app-controller-edit app-right");
-	var edit_virtualMouseSens = document.createElement("input");
-	edit_virtualMouseSens.type = "range";
-	edit.appendChild(edit_virtualMouseSens);
-	edit.onclick = function() {
-		if (this.toggled) {
-			this.toggled = false;
-			edit.setAttribute("class", "app-controller-edit app-right");
-		}
-		else {
-			this.toggled = true;
-			edit.setAttribute("class", "app-controller-edit-active app-right");
-		}
-	}
-	//edit
-	html.appendChild(edit);
+	this._createSettingsElements(html);
 
-	var imprintOffset = 9; // accumulation of each elements border sizes and thumb element
-
+	var imprintOffset = 9; // accumulation of each elements border sizes and thumb element	
 
 	for(var i = 0; i < opts.keys.length; i++) {
 		var key = {};
@@ -263,25 +344,9 @@ InputController.prototype.showController = function(opts) {
 				if (opt.position.bottom) {
 					key.style.top = (initialHeight - (rect.height + (rect.height/2)) - yoff ) + "px";
 				}
-				//if (opt.initial.center !== undefined) {
-					//key.style.left = ((initialWidth/2) - (((rect.width + 20) * opts.keys.length)/2) + ((rect.width + 10) * i)) + "px";
-				
-				/*if (opt.initial.center.x) {
-					//key.style.left = ((initialWidth/2) - ((rect.width * xline)/2) - (rect.width * (xline-1))) + "px";
-				}
-				if (opt.initial.center.y) {
-					//key.style.top = ((initialHeight/2) - ((rect.height * yline)/2) - (rect.height * (yline-1))) + "px";
-				}*/
-				//}
-				//if (opt.initial.) classNames.push("app-left");
-				//if (opt.initial.right) classNames.push("app-right");
+
 			}
-			/*if (center) {
-				key.style.left = ((width/2) - (((rect.width + 20) * opts.keys.length)/2) + ((rect.width + 10) * i)) + "px";
-			}*/
-			//key.style.left = (60 * i) + "px";
-			//console.log(opts.keys[i], opts.keys);
-			//console.log(opt);
+
 			key.innerText = opt.map.map;//opts.keys[i];
 			
 			/* i dont think these listeners need to be removed later on since they're attached to an element */
@@ -362,12 +427,12 @@ InputController.prototype.showController = function(opts) {
 					// a dpad
 					if (opt.type == 1) {
 						// oddwarg maths
-						var p = Math.atan2(-vector[1], -vector[0]);
-						var n = Math.round(p*4/Math.PI);
-						if (n < 0) n+=8;
+						//var p = Math.atan2(-vector[1], -vector[0]);// * 2;
+						//var n = Math.round(p*4/Math.PI);
+						//if (n < 0) n+=8;
+						//console.log(n);
 
-						if (n == 0 || n == 1 || n == 7) { //left
-							console.log(opt.maps.left)
+						/*if (n == 0 || n == 1 || n == 7) { //left
 							self._keyDown(opt.maps.left.key);
 						}
 						else {
@@ -393,7 +458,7 @@ InputController.prototype.showController = function(opts) {
 						}
 						else {
 							self._keyUp(opt.maps.bottom.key);
-						}
+						}*/
 
 					}
 					// virtual mouse thing
@@ -502,17 +567,171 @@ InputController.prototype.showController = function(opts) {
 					var vector = [];
 					vector[0] =	((( touches[i2].x - rect2.centerx ) / rect2.width) * 2 );
 					vector[1] = ((( touches[i2].y - rect2.centery ) / rect2.height) * 2 );
+
 					// a dpad
 					if (opt.type == 1) {
-						// oddwarg maths
-						var p = Math.atan2(-vector[1], -vector[0]);
-						var n = Math.round(p*4/Math.PI);
-						if (n < 0) n+=8;
 
-						if (n == 0 || n == 1 || n == 7) { //left
-							console.log(opt.maps.left)
+						var dOffset = this.touchSettings.diagonalOffset;// || 0;
+
+						// oddwarg maths
+						var p = Math.atan2(-vector[1], vector[0]);
+						var deg = Math.round(p/Math.PI*180);
+						if (deg < 0) deg+=360;
+						
+						var right = deg < 45 || deg > 330;
+						var rightTop = deg < 60 - dOffset && deg > 30 + dOffset;
+						var rightBot = deg < 330 - dOffset && deg > 300 + dOffset;
+						var left = deg > 150 && deg < 210;
+						var leftTop = deg > 120 + dOffset - dOffset && deg < 150 - dOffset;
+						var leftBot = deg > 210 + dOffset && deg < 240 - dOffset;
+						var top = deg > 60 && deg < 120;
+						var bottom = deg > 240 && deg < 300;
+
+						//console.log(right, rightTop, rightBot, left, leftTop, leftBot, top, bottom);
+						console.log(right);
+						console.log(rightTop);
+						console.log(rightBot);
+						console.log(left);
+						console.log(leftTop);
+						console.log(leftBot);
+						console.log(top);
+						console.log(bottom);
+
+						
+						// right
+						if (right || rightBot || rightTop) {
+
+							for(var t1 = 0; t1 < 100; t1++) {
+
+								var px = -100 + touches[i2].x + Math.floor(Math.random() * 200);//-2 + (Math.random() * (touches[i2].x * 2));
+								var py = -100 + touches[i2].y + Math.floor(Math.random() * 200);//-2 + (Math.random() * (touches[i2].y * 2));
+								var vx = ((( (px) - rect2.centerx ) / rect2.width) * 2 );
+								var vy = ((( (py) - rect2.centery ) / rect2.height) * 2 );
+								var p2 = Math.atan2(-vy, vx);
+								
+								var deg2 = Math.round(p2/Math.PI*180);
+								if (deg2 < 0) deg2+=360;
+
+								var right2 = deg2 < 45 || deg2 > 330;
+								var rightTop2 = deg2 < 60 - dOffset && deg2 > 30 + dOffset;
+								var rightBot2 = deg2 < 330 && deg2 > 300;
+
+								
+								if (rightTop2)
+									craw.circle({x: px, y: py, r: 2, f: true});
+
+							}
+							self._keyDown(opt.maps.right.key);
+						}
+						else {
+							self._keyUp(opt.maps.right.key);
+						}
+
+						// left 
+						if (left || leftTop || leftBot) {
+							for(var t1 = 0; t1 < 100; t1++) {
+
+								var px = -100 + touches[i2].x + Math.floor(Math.random() * 200);//-2 + (Math.random() * (touches[i2].x * 2));
+								var py = -100 + touches[i2].y + Math.floor(Math.random() * 200);//-2 + (Math.random() * (touches[i2].y * 2));
+								var vx = ((( (px) - rect2.centerx ) / rect2.width) * 2 );
+								var vy = ((( (py) - rect2.centery ) / rect2.height) * 2 );
+								var p2 = Math.atan2(-vy, vx);
+								
+								var deg2 = Math.round(p2/Math.PI*180);
+								if (deg2 < 0) deg2+=360;
+
+								var left2 = deg2 > 150 && deg2 < 210;
+								var leftTop2 = deg2 > 120 + dOffset - dOffset && deg2 < 150 - dOffset;
+								var leftBot2 = deg2 > 210 + dOffset && deg2 < 240 - dOffset;
+
+								
+								if (leftTop2)
+									craw.circle({x: px, y: py, r: 2, f: true});
+
+							}
 							self._keyDown(opt.maps.left.key);
 						}
+						else {
+							self._keyUp(opt.maps.left.key);
+						}
+
+						// top
+						if (top || leftTop || rightTop) {
+							self._keyDown(opt.maps.top.key);
+							
+						}
+						else {
+							self._keyUp(opt.maps.top.key);
+						}
+
+						// bottom
+						if (bottom || leftBot || rightBot) {
+							self._keyDown(opt.maps.bottom.key);
+						}
+						else {
+							self._keyUp(opt.maps.bottom.key);
+						}
+
+						/*// top 
+						var t0 = (xp > -(30*Math.PI/180) && xp < (30*Math.PI/180));
+						var t1 = (xp > (35*Math.PI/180) && xp < (55*Math.PI/180));
+						var t2 = (xp < -(35*Math.PI/180) && xp > -(55*Math.PI/180));
+						if (t0 || t1 || t2) {
+							self._keyDown(opt.maps.top.key);
+						}
+						else {
+							self._keyUp(opt.maps.top.key);
+						}
+
+						// bottom 
+						var b0 = (xp > -(30*Math.PI/180) && xp < (30*Math.PI/180));
+						var b1 = (xp > (35*Math.PI/180) && xp < (55*Math.PI/180));
+						var b2 = (xp < -(35*Math.PI/180) && xp > -(55*Math.PI/180));
+						if (b0 || b1 || b2) {
+							self._keyDown(opt.maps.bottom.key);
+						}
+						else {
+							self._keyUp(opt.maps.bottom.key);
+						}*/
+						// right
+						//console.log(xp > -(30*Math.PI/180) && xp < (30*Math.PI/180));
+						// right top
+						//console.log(xp > (35*Math.PI/180) && xp < (55*Math.PI/180));
+						// right bottom
+						//console.log(xp < -(35*Math.PI/180) && xp > -(55*Math.PI/180));
+						// top right
+						//console.log(Math.round(p/Math.PI * 180) > 30 && Math.round(p/Math.PI * 180) < 60);
+						// bottom right
+						//console.log(np < -30 && np > -60);
+
+
+
+						//console.log(deg);
+						//if (n < 0) n+=8;
+
+						//console.log(p, n);
+
+						/*if (n == 0 || n == 1 || n == 7) { //left
+							self._keyDown(opt.maps.left.key);*/
+
+							/*craw.set("input");
+							//console.log(touches[i2].x, touches[i2].y);
+							for(var t1 = 0; t1 < 1; t1++) {
+
+								var px = -100 + touches[i2].x + Math.floor(Math.random() * 200);//-2 + (Math.random() * (touches[i2].x * 2));
+								var py = -100 + touches[i2].y + Math.floor(Math.random() * 200);//-2 + (Math.random() * (touches[i2].y * 2));
+								var vx = ((( (px) - rect2.centerx ) / rect2.width) * 2 );
+								var vy = ((( (py) - rect2.centery ) / rect2.height) * 2 );
+								var p2 = Math.atan2(vy, vx);
+								var n2 = p2/Math.PI*180;//Math.round((p2*6/Math.PI));
+								console.log(n2, );
+								if (n2 < 0) n2+=8;*/
+								//if (/*n2 == 0 || */n2 == 1/* || n2 == 7*/) {
+								/*	craw.circle({x: px, y: py, r: 2, f: true});
+								}
+
+							}*/
+						/*}
 						else {
 							self._keyUp(opt.maps.left.key);
 						}
@@ -536,7 +755,7 @@ InputController.prototype.showController = function(opts) {
 						}
 						else {
 							self._keyUp(opt.maps.bottom.key);
-						}
+						}*/
 
 					}
 					// virtual mouse thing
