@@ -28,42 +28,8 @@ function InputController(opts) {
 		self._keyUp(e);
 	}
 
-
-	/*this.touchCanvas = new craw({id: "input", w: window.innerWidth - 4, h: window.innerHeight - 4});
-	this.touchCanvas.style.position = "absolute";
-	this.touchCanvas.style.border = "0.12em solid #fff";
-	this.touchCanvas.style.pointerEvents = "none";*/
-	//var analogs = [{classNames: "app-bottom app-left app-controller-thumbs-vec", type: 'analog'}, {classNames: "app-bottom app-right app-controller-thumbs-dpad"}];//[{classNames: "app-bottom app-center-horz"}];
-	//var keys = [{map: InputController.TEST_MOBILE}];
-	//console.log(keys);
-
-	//this.showController({keys: this.touchKeys, sticks: this.touchSticks});//{keys: keys, sticks: this.touchSticks});
-
-	/*this.touchstart = function(e) {
-		//console.log("touchstart", e);
-		//craw.set(touchCanvas);
-		//for(var i = 0; i < e.targetTouches.length; i++) {
-			//var touch = e.targetTouches[i];
-			//var c = "rgb("+ (Math.floor(Math.random() * 255)) + ", " + (Math.floor(Math.random() * 255)) + ", " + (Math.floor(Math.random() * 255)) + ")";
-			//craw.circle({x: touch.clientX, y: touch.clientY, r: 5, f: true, c: c});
-		//}
-	}
-	this.touchend = function(e) {
-		//console.log("touchend", e);
-	}
-	this.touchcancel = function(e) {
-		//console.log("touchcancel", e);
-	}
-	this.touchmove = function(e) {
-		//console.log("touchmove", e);
-	}
-
-	window.addEventListener('touchstart', this.touchstart);
-	window.addEventListener('touchend', this.touchend);
-	window.addEventListener('touchcancel', this.touchcancel);
-	window.addEventListener('touchmove', this.touchmove);*/
 	//if (isMobile()) {
-		this.showController(opts);
+		this._showController(opts);
 	//}
 	window.addEventListener('mousedown', this.mousedown);
 	window.addEventListener('mouseup', this.mouseup);
@@ -198,9 +164,9 @@ InputController.prototype._createSettingsElements = function(html) {
 	edit_save.innerText = "Save";
 	edit_save.onclick = function(e) {
 
-		self.touchSettings.sensX = edit_virtualMouseSensX.value;
-		self.touchSettings.sensY = edit_virtualMouseSensY.value;
-		self.touchSettings.diagonalOffset = edit_diagDeadZone;
+		self.touchSettings.sensX = parseInt(edit_virtualMouseSensX.value);
+		self.touchSettings.sensY = parseInt(edit_virtualMouseSensY.value);
+		self.touchSettings.diagonalOffset = parseInt(edit_diagDeadZone.value);
 
 		closeSettings();
 		e.stopPropagation();
@@ -220,9 +186,9 @@ InputController.prototype._createSettingsElements = function(html) {
 		edit_virtualMouseSensY.value = 1;
 		edit_diagDeadZone.value = 0;
 		
-		self.touchSettings.sensX = edit_virtualMouseSensX.value;
-		self.touchSettings.sensY = edit_virtualMouseSensY.value;
-		self.touchSettings.diagonalOffset = edit_diagDeadZone.value;
+		self.touchSettings.sensX = parseInt(edit_virtualMouseSensX.value);
+		self.touchSettings.sensY = parseInt(edit_virtualMouseSensY.value);
+		self.touchSettings.diagonalOffset = parseInt(edit_diagDeadZone.value);
 	}
 	
 	edit.appendChild(edit_label1);
@@ -289,7 +255,7 @@ InputController.prototype._createSettingsElements = function(html) {
 			]
 		}
 	*/
-InputController.prototype.showController = function(opts) {
+InputController.prototype._showController = function(opts) {
 	var self = this;
 	var orientation = GetOrientation();
 
@@ -300,6 +266,14 @@ InputController.prototype.showController = function(opts) {
 	this._createSettingsElements(html);
 
 	var imprintOffset = 9; // accumulation of each elements border sizes and thumb element	
+
+	var initialWidth = window.screen.availWidth;
+	var initialHeight = window.screen.availHeight;
+	//console.log(orientation, );
+	if (orientation !== Config.orientation) {
+		initialHeight = window.screen.availWidth;
+		initialWidth = window.screen.availHeight;
+	}
 
 	for(var i = 0; i < opts.keys.length; i++) {
 		var key = {};
@@ -316,14 +290,9 @@ InputController.prototype.showController = function(opts) {
 			key.setAttribute('class', classNames.join(" "));
 			html.appendChild(key);
 			var rect = key.getClientRects()[0];
-			console.log(rect, rect.left - rect.width);
+
 			// window.innerWidth is always returning before context is focused and in fullscreen
-			var initialWidth = window.screen.availWidth;
-			var initialHeight = window.screen.availHeight;
-			if (orientation !== Config.orientation) {
-				initialWidth = initialHeight;
-				initialHeight = initialWidth;
-			}
+			
 
 			if (opt.position !== undefined) {
 				var xoff = 0;//opt.position.xoff || 0;
@@ -471,7 +440,8 @@ InputController.prototype.showController = function(opts) {
 					}
 					// a 'normal' virtual stick
 					else {
-
+						var f = opt.initial.right ? "right" : "left";
+						self.touchSticks[f] = [vector[0], vector[1]];
 					}
 
 					this.children[0].style.left = Math.floor((touches[i2].x - imprintOffset) - rect2.x) + "px";
@@ -500,27 +470,9 @@ InputController.prototype.showController = function(opts) {
 				for(var i1 = 0; i1 < 10; i1++) {
 					touches[i1] = e.targetTouches[i1] !== undefined ? { x: e.targetTouches[i1].clientX, y:  e.targetTouches[i1].clientY } : undefined;
 				}
-				for(var i2 = 0; i2 < touches.length; i2++) {
+				/*for(var i2 = 0; i2 < touches.length; i2++) {
 					if (touches[i2] === undefined) continue;
-					
-					// a dpad
-					/*if (opt.type == 1) {
-						self._keyUp(opt.maps.left.key);
-						self._keyUp(opt.maps.top.key);
-						self._keyUp(opt.maps.right.key);
-						self._keyUp(opt.maps.bottom.key);
-					}
-					// virtual mouse thing
-					else if (opt.type == 2) {
-						self.virtualMouseVec[0] = 0.0;//vector[0];
-						self.virtualMouseVec[1] = 0.0;//vector[1];
-					}
-					// a 'normal' virtual stick
-					else {
-
-					}
-					console.log("asdasd");*/
-				}
+				}*/
 				if (opt.type == 1) {
 					self._keyUp(opt.maps.left.key);
 					self._keyUp(opt.maps.top.key);
@@ -530,6 +482,10 @@ InputController.prototype.showController = function(opts) {
 				else if (opt.type == 2) {
 					self.virtualMouseVec[0] = 0.0;//vector[0];
 					self.virtualMouseVec[1] = 0.0;//vector[1];
+				}
+				else {
+					var f = opt.initial.right ? "right" : "left";
+					self.touchSticks[f] = [0.0, 0.0];
 				}
 				/*if (opt.vm) {
 					self.virtualMouseVec[0] = 0.0;//vector[0];
@@ -571,204 +527,113 @@ InputController.prototype.showController = function(opts) {
 					// a dpad
 					if (opt.type == 1) {
 
-						var dOffset = this.touchSettings.diagonalOffset;// || 0;
+						var dOffset = self.touchSettings.diagonalOffset;
+						if (Math.sqrt((vector[0] * vector[0]) + (vector[1] * vector[1])) > 0.5) {
 
-						// oddwarg maths
-						var p = Math.atan2(-vector[1], vector[0]);
-						var deg = Math.round(p/Math.PI*180);
-						if (deg < 0) deg+=360;
-						
-						var right = deg < 45 || deg > 330;
-						var rightTop = deg < 60 - dOffset && deg > 30 + dOffset;
-						var rightBot = deg < 330 - dOffset && deg > 300 + dOffset;
-						var left = deg > 150 && deg < 210;
-						var leftTop = deg > 120 + dOffset - dOffset && deg < 150 - dOffset;
-						var leftBot = deg > 210 + dOffset && deg < 240 - dOffset;
-						var top = deg > 60 && deg < 120;
-						var bottom = deg > 240 && deg < 300;
-
-						//console.log(right, rightTop, rightBot, left, leftTop, leftBot, top, bottom);
-						console.log(right);
-						console.log(rightTop);
-						console.log(rightBot);
-						console.log(left);
-						console.log(leftTop);
-						console.log(leftBot);
-						console.log(top);
-						console.log(bottom);
-
-						
-						// right
-						if (right || rightBot || rightTop) {
-
-							for(var t1 = 0; t1 < 100; t1++) {
-
-								var px = -100 + touches[i2].x + Math.floor(Math.random() * 200);//-2 + (Math.random() * (touches[i2].x * 2));
-								var py = -100 + touches[i2].y + Math.floor(Math.random() * 200);//-2 + (Math.random() * (touches[i2].y * 2));
-								var vx = ((( (px) - rect2.centerx ) / rect2.width) * 2 );
-								var vy = ((( (py) - rect2.centery ) / rect2.height) * 2 );
-								var p2 = Math.atan2(-vy, vx);
-								
-								var deg2 = Math.round(p2/Math.PI*180);
-								if (deg2 < 0) deg2+=360;
-
-								var right2 = deg2 < 45 || deg2 > 330;
-								var rightTop2 = deg2 < 60 - dOffset && deg2 > 30 + dOffset;
-								var rightBot2 = deg2 < 330 && deg2 > 300;
-
-								
-								if (rightTop2)
-									craw.circle({x: px, y: py, r: 2, f: true});
-
-							}
-							self._keyDown(opt.maps.right.key);
-						}
-						else {
-							self._keyUp(opt.maps.right.key);
-						}
-
-						// left 
-						if (left || leftTop || leftBot) {
-							for(var t1 = 0; t1 < 100; t1++) {
-
-								var px = -100 + touches[i2].x + Math.floor(Math.random() * 200);//-2 + (Math.random() * (touches[i2].x * 2));
-								var py = -100 + touches[i2].y + Math.floor(Math.random() * 200);//-2 + (Math.random() * (touches[i2].y * 2));
-								var vx = ((( (px) - rect2.centerx ) / rect2.width) * 2 );
-								var vy = ((( (py) - rect2.centery ) / rect2.height) * 2 );
-								var p2 = Math.atan2(-vy, vx);
-								
-								var deg2 = Math.round(p2/Math.PI*180);
-								if (deg2 < 0) deg2+=360;
-
-								var left2 = deg2 > 150 && deg2 < 210;
-								var leftTop2 = deg2 > 120 + dOffset - dOffset && deg2 < 150 - dOffset;
-								var leftBot2 = deg2 > 210 + dOffset && deg2 < 240 - dOffset;
-
-								
-								if (leftTop2)
-									craw.circle({x: px, y: py, r: 2, f: true});
-
-							}
-							self._keyDown(opt.maps.left.key);
-						}
-						else {
-							self._keyUp(opt.maps.left.key);
-						}
-
-						// top
-						if (top || leftTop || rightTop) {
-							self._keyDown(opt.maps.top.key);
+							var p = Math.atan2(-vector[1], vector[0]);
+							var deg = Math.round(p/Math.PI*180);
+							if (deg < 0) deg+=360;
 							
-						}
-						else {
-							self._keyUp(opt.maps.top.key);
-						}
+							var left = deg > 150 && deg < 210;
+							var right = deg < 45 || deg > 330;
+							var top = deg > 60 && deg < 120;
+							var bottom = deg > 240 && deg < 300;
+							var rightTop = deg < 60 - dOffset && deg > 30 + dOffset;
+							var rightBot = deg < 330 - dOffset && deg > 300 + dOffset;
+							var leftTop = deg > 120 + dOffset && deg < 150 - dOffset;
+							var leftBot = deg > 210 + dOffset && deg < 240 - dOffset;
+							
+							// right
+							if (right || rightBot || rightTop) {
 
-						// bottom
-						if (bottom || leftBot || rightBot) {
-							self._keyDown(opt.maps.bottom.key);
-						}
-						else {
-							self._keyUp(opt.maps.bottom.key);
-						}
+								/*for(var t1 = 0; t1 < 100; t1++) {
 
-						/*// top 
-						var t0 = (xp > -(30*Math.PI/180) && xp < (30*Math.PI/180));
-						var t1 = (xp > (35*Math.PI/180) && xp < (55*Math.PI/180));
-						var t2 = (xp < -(35*Math.PI/180) && xp > -(55*Math.PI/180));
-						if (t0 || t1 || t2) {
-							self._keyDown(opt.maps.top.key);
-						}
-						else {
-							self._keyUp(opt.maps.top.key);
-						}
+									var px = -100 + touches[i2].x + Math.floor(Math.random() * 200);//-2 + (Math.random() * (touches[i2].x * 2));
+									var py = -100 + touches[i2].y + Math.floor(Math.random() * 200);//-2 + (Math.random() * (touches[i2].y * 2));
+									var vx = ((( (px) - rect2.centerx ) / rect2.width) * 2 );
+									var vy = ((( (py) - rect2.centery ) / rect2.height) * 2 );
+									var p2 = Math.atan2(-vy, vx);
+									
+									var deg2 = Math.round(p2/Math.PI*180);
+									if (deg2 < 0) deg2+=360;
 
-						// bottom 
-						var b0 = (xp > -(30*Math.PI/180) && xp < (30*Math.PI/180));
-						var b1 = (xp > (35*Math.PI/180) && xp < (55*Math.PI/180));
-						var b2 = (xp < -(35*Math.PI/180) && xp > -(55*Math.PI/180));
-						if (b0 || b1 || b2) {
-							self._keyDown(opt.maps.bottom.key);
-						}
-						else {
-							self._keyUp(opt.maps.bottom.key);
-						}*/
-						// right
-						//console.log(xp > -(30*Math.PI/180) && xp < (30*Math.PI/180));
-						// right top
-						//console.log(xp > (35*Math.PI/180) && xp < (55*Math.PI/180));
-						// right bottom
-						//console.log(xp < -(35*Math.PI/180) && xp > -(55*Math.PI/180));
-						// top right
-						//console.log(Math.round(p/Math.PI * 180) > 30 && Math.round(p/Math.PI * 180) < 60);
-						// bottom right
-						//console.log(np < -30 && np > -60);
+									var right2 = deg2 < 45 || deg2 > 330;
+									var rightTop2 = deg2 < 60 - dOffset && deg2 > 30 + dOffset;
+									var rightBot2 = deg2 < 330 && deg2 > 300;
 
+									
+									if (rightTop2)
+										craw.circle({x: px, y: py, r: 2, f: true});
 
+								}*/
+								self._keyDown(opt.maps.right.key);
+							}
+							else {
+								self._keyUp(opt.maps.right.key);
+							}
 
-						//console.log(deg);
-						//if (n < 0) n+=8;
+							// left 
+							if (left || leftTop || leftBot) {
+								/*for(var t1 = 0; t1 < 100; t1++) {
 
-						//console.log(p, n);
+									var px = -100 + touches[i2].x + Math.floor(Math.random() * 200);//-2 + (Math.random() * (touches[i2].x * 2));
+									var py = -100 + touches[i2].y + Math.floor(Math.random() * 200);//-2 + (Math.random() * (touches[i2].y * 2));
+									var vx = ((( (px) - rect2.centerx ) / rect2.width) * 2 );
+									var vy = ((( (py) - rect2.centery ) / rect2.height) * 2 );
+									var p2 = Math.atan2(-vy, vx);
+									
+									var deg2 = Math.round(p2/Math.PI*180);
+									if (deg2 < 0) deg2+=360;
 
-						/*if (n == 0 || n == 1 || n == 7) { //left
-							self._keyDown(opt.maps.left.key);*/
+									var left2 = deg2 > 150 && deg2 < 210;
+									var leftTop2 = deg2 > 120 + dOffset - dOffset && deg2 < 150 - dOffset;
+									var leftBot2 = deg2 > 210 + dOffset && deg2 < 240 - dOffset;
 
-							/*craw.set("input");
-							//console.log(touches[i2].x, touches[i2].y);
-							for(var t1 = 0; t1 < 1; t1++) {
+									
+									if (leftTop2)
+										craw.circle({x: px, y: py, r: 2, f: true});
 
-								var px = -100 + touches[i2].x + Math.floor(Math.random() * 200);//-2 + (Math.random() * (touches[i2].x * 2));
-								var py = -100 + touches[i2].y + Math.floor(Math.random() * 200);//-2 + (Math.random() * (touches[i2].y * 2));
-								var vx = ((( (px) - rect2.centerx ) / rect2.width) * 2 );
-								var vy = ((( (py) - rect2.centery ) / rect2.height) * 2 );
-								var p2 = Math.atan2(vy, vx);
-								var n2 = p2/Math.PI*180;//Math.round((p2*6/Math.PI));
-								console.log(n2, );
-								if (n2 < 0) n2+=8;*/
-								//if (/*n2 == 0 || */n2 == 1/* || n2 == 7*/) {
-								/*	craw.circle({x: px, y: py, r: 2, f: true});
-								}
+								}*/
+								self._keyDown(opt.maps.left.key);
+							}
+							else {
+								self._keyUp(opt.maps.left.key);
+							}
 
-							}*/
-						/*}
-						else {
-							self._keyUp(opt.maps.left.key);
-						}
+							// top
+							if (top || leftTop || rightTop) {
+								self._keyDown(opt.maps.top.key);
+								
+							}
+							else {
+								self._keyUp(opt.maps.top.key);
+							}
 
-						if (n == 2 || n == 3 || n == 1) { // top
-							self._keyDown(opt.maps.top.key);
-						}
-						else {
-							self._keyUp(opt.maps.top.key);
-						}
-
-						if (n == 4 || n == 5 || n == 3) { // right
-							self._keyDown(opt.maps.right.key);
+							// bottom
+							if (bottom || leftBot || rightBot) {
+								self._keyDown(opt.maps.bottom.key);
+							}
+							else {
+								self._keyUp(opt.maps.bottom.key);
+							}
 						}
 						else {
 							self._keyUp(opt.maps.right.key);
-						}
-
-						if (n == 6 || n == 7 || n == 5) { // bottom
-							self._keyDown(opt.maps.bottom.key);
-						}
-						else {
+							self._keyUp(opt.maps.left.key);
+							self._keyUp(opt.maps.top.key);
 							self._keyUp(opt.maps.bottom.key);
-						}*/
+						}
 
 					}
 					// virtual mouse thing
 					else if (opt.type == 2) {
-
-						//self.cursorPosition.x += ((( touches[i2].x - rect2.centerx ) / rect2.width) * 2 );
-						//self.cursorPosition.y += ((( touches[i2].y - rect2.centery ) / rect2.height) * 2 );
 						self.virtualMouseVec[0] = vector[0];
 						self.virtualMouseVec[1] = vector[1];
 					}
 					// a 'normal' virtual stick
 					else {
-
+						var f = opt.initial.right ? "right" : "left";
+						self.touchSticks[f] = [vector[0], vector[1]];
 					}
 					/*if (opt.vm) {
 						self.virtualMouseVec[0] = vector[0];
@@ -778,32 +643,8 @@ InputController.prototype.showController = function(opts) {
 					this.children[0].style.left = Math.floor((touches[i2].x - imprintOffset) - rect2.x) + "px";
 					this.children[0].style.top = Math.floor((touches[i2].y - imprintOffset) - rect2.y) + "px";
 				}
-				window.navigator.vibrate(10);
+				window.navigator.vibrate(50);
 			});
-			/*else
-				analog.addEventListener('mousemove', function(e) {
-					//alert("asdasd");
-					var rect = this.getClientRects()[0];
-					
-					var touches = [];
-					touches[0] = e.targetTouches[0] !== undefined ? { x: e.targetTouches[0].clientX, y:  e.targetTouches[0].clientY } : undefined;
-					touches[1] = e.targetTouches[1] !== undefined ? { x: e.targetTouches[1].clientX, y:  e.targetTouches[1].clientY } : undefined;
-					touches[2] = e.targetTouches[2] !== undefined ? { x: e.targetTouches[2].clientX, y:  e.targetTouches[2].clientY } : undefined;
-					touches[3] = e.targetTouches[3] !== undefined ? { x: e.targetTouches[3].clientX, y:  e.targetTouches[3].clientY } : undefined;
-					touches[4] = e.targetTouches[4] !== undefined ? { x: e.targetTouches[4].clientX, y:  e.targetTouches[4].clientY } : undefined;
-					touches[5] = e.targetTouches[5] !== undefined ? { x: e.targetTouches[5].clientX, y:  e.targetTouches[5].clientY } : undefined;
-					touches[6] = e.targetTouches[6] !== undefined ? { x: e.targetTouches[6].clientX, y:  e.targetTouches[6].clientY } : undefined;
-					touches[7] = e.targetTouches[7] !== undefined ? { x: e.targetTouches[7].clientX, y:  e.targetTouches[7].clientY } : undefined;
-					touches[8] = e.targetTouches[8] !== undefined ? { x: e.targetTouches[8].clientX, y:  e.targetTouches[8].clientY } : undefined;
-					touches[9] = e.targetTouches[9] !== undefined ? { x: e.targetTouches[9].clientX, y:  e.targetTouches[9].clientY } : undefined;
-
-					for(var i = 0; i < touches.length; i++) {
-						if (touches[i] === undefined) continue;
-						//alert(Math.floor(touches[i].x - rect.x) + "px")
-						this.children[0].style.left = Math.floor(touches[i].x - rect.x) + "px";
-						this.children[0].style.top = Math.floor(touches[i].y - rect.y) + "px";
-					}
-				});*/
 
 			analog.appendChild(imprint);
 			html.appendChild(analog);

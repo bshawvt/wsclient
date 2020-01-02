@@ -42,15 +42,21 @@ Game.prototype.start = function() {
 		throw "error: animator is already active";
 	this.soundsManager = new SoundManager();
 
-	InputController.MAP_LEFT = {key: 65, map: "A", bitmask: 1}
+	/*InputController.MAP_LEFT = {key: 65, map: "A", bitmask: 1}
 	InputController.MAP_RIGHT = {key: 68, map: "D", bitmask: 2}
 	InputController.MAP_FORWARD = {key: 87, map: "W", bitmask: 4}
-	InputController.MAP_BACKWARD = {key: 83, map: "S", bitmask: 8}
+	InputController.MAP_BACKWARD = {key: 83, map: "S", bitmask: 8}*/
 
-	var keyMaps = [	{ position: {right: true, bottom: true, yoff: 100, xoff: 225}, map: InputController.MAP_FIRE = {key: 32, map: "SPACE", bitbask: 16} },
-					{ position: {left: true, bottom: true, yoff: 35, xoff: 225}, map: InputController.MAP_SWAP = {key: 86, map: "V", bitbask: 32} }];
-	var touchMaps = [	{ initial: {bottom: true, center: false}, type: 2},//maps: []}, 
-						{ initial: {bottom: true, right: true}, type: 1, maps: {left: InputController.MAP_LEFT = {key: 65, map: "A", bitmask: 1}, right: InputController.MAP_RIGHT = {key: 68, map: "D", bitmask: 2}, top: InputController.MAP_FORWARD = {key: 87, map: "W", bitmask: 4}, bottom: InputController.MAP_BACKWARD = {key: 83, map: "S", bitmask: 8}}}];
+	var keyMaps = [	{ position: {right: true, bottom: true, yoff: 100, xoff: 225}, map: 
+						InputController.MAP_FIRE = {key: 32, map: "SPACE", bitbask: 16} },
+					{ position: {left: true, bottom: true, yoff: 35, xoff: 225}, map: 
+						InputController.MAP_SWAP = {key: 86, map: "V", bitbask: 32}	}];
+	var touchMaps = [	{ initial: {bottom: true, right: true}, type: 0},//maps: []}, 
+						{ initial: {bottom: true, right: false}, type: 1, maps: {
+								left: InputController.MAP_LEFT = {key: 65, map: "A", bitmask: 1}, 
+								right: InputController.MAP_RIGHT = {key: 68, map: "D", bitmask: 2}, 
+								top: InputController.MAP_FORWARD = {key: 87, map: "W", bitmask: 4}, 
+								bottom: InputController.MAP_BACKWARD = {key: 83, map: "S", bitmask: 8}}}];
 	this.controller = new InputController({keys: keyMaps, sticks: touchMaps});
 	//this.controller.showController({keys: keyMaps, sticks: touchMaps});
 
@@ -115,26 +121,10 @@ Game.prototype.frame = function(dt) {
 		if (snd) {
 			snd.data.play();
 		}
-		//In.consumeButtonState(InputController.MAP_FIRE.key);
+
 	}
-		/*this.dynamicObjects[0].spd[0] += 0.05;
-		this.dynamicObjects[0].spd[1] += 0.05;
-		this.dynamicObjects[0].spd[0] = Clamp(this.dynamicObjects[0].spd[0], 0, 2);
-		this.dynamicObjects[0].spd[1] = Clamp(this.dynamicObjects[0].spd[1], 0, 2);
-		console.log(this.dynamicObjects[0].spd[0], this.dynamicObjects[0].spd[1]);
-		//if (this.dynamicObjects[0].spd[0] >= 0.0) this.dynamicObjects[0].spd[0] = 10.0;
-		//if (this.dynamicObjects[0].spd[1] >= 0.0) this.dynamicObjects[0].spd[1] = 10.0;
-	}
-	else {
-		this.dynamicObjects[0].spd[0] -= 0.15;
-		this.dynamicObjects[0].spd[1] -= 0.15;
-		this.dynamicObjects[0].spd[0] = Clamp(this.dynamicObjects[0].spd[0], 0, 2);
-		this.dynamicObjects[0].spd[1] = Clamp(this.dynamicObjects[0].spd[1], 0, 2);
-		//if (this.dynamicObjects[0].spd[0] <= 0.0) this.dynamicObjects[0].spd[0] = 0.0;
-		//if (this.dynamicObjects[0].spd[1] <= 0.0) this.dynamicObjects[0].spd[1] = 0.0;
-	}*/
+
 	if (In.getButtonState(InputController.MAP_LEFT.key)) {
-		//console.log("??")
 		this.dynamicObjects[0].x -= 1;
 	}
 	if (In.getButtonState(InputController.MAP_RIGHT.key)) {
@@ -146,6 +136,20 @@ Game.prototype.frame = function(dt) {
 	if (In.getButtonState(InputController.MAP_BACKWARD.key)) {
 		this.dynamicObjects[0].y += 1; 
 	}
+
+	var dir = In.touchSticks["right"];
+	//console.log(dir, In.touchSticks);
+	if (dir !== undefined) {
+		this.dynamicObjects[0].x += Clamp(dir[0], -1.0, 1.0);
+		this.dynamicObjects[0].y += Clamp(dir[1], -1.0, 1.0);
+	}
+	else {
+		//var pos = In.getCursorPosition();
+		//this.dynamicObjects[0].x = pos.x;
+		//this.dynamicObjects[0].y = pos.y;
+	}
+
+
 	//var pos = In.getCursorPosition();
 	//console.log(pos);
 	//var pos2 = Math.atan2(-pos.y, pos.x);
@@ -191,7 +195,7 @@ Game.prototype.frame = function(dt) {
 Game.prototype.render = function(dt) {
 	var self = this;
 	craw.set(this.context.canvas.id);
-	//craw.clear();
+	craw.clear();
 	//rend(dt, this.dynamicObjects, this.resource);
 	var res = this.resource;
 	this.dynamicObjects.forEach(function(e) {
