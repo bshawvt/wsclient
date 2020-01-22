@@ -1,3 +1,4 @@
+// every time I come back to this class i only bring more sadness and despair
 function InputController(opts) {
 	var self = this;
 	this.buttonStates = [];
@@ -5,12 +6,14 @@ function InputController(opts) {
 
 	this.cursorPosition = {x: 0, y: 0};
 
-	this.touchSettings = {sensX: 1, sensY: 1, diagonalOffset: 0, positions: []};
+	this.touchSettings = {sensX: 1, sensY: 1, diagonalOffset: 0, positions: [], feedback: {start: 25, move: 25}};
 	this.touchKeys = [];//[{map: InputController.TEST_MOBILE}]; //
 	this.touchSticks = [];//[/*{classNames: "app-bottom app-left app-controller-thumbs-dpad", type: 0}, */
 						//{classNames: "app-bottom app-right app-controller-thumbs-vec", type: 1}]; // {classNames: '', type: ''}
 	this.virtualMouseVec = [0.0, 0.0]; // 2d vector that is zero when the touch thing isnt active
 	this.pointerLock = false;
+
+	this.controllerElements = []; //
 	
 	this.mousedown = function(e) {
 		self._mouseDown(e);
@@ -37,6 +40,8 @@ function InputController(opts) {
 
 	window.addEventListener('keydown', this.keydown);
 	window.addEventListener('keyup', this.keyup);
+
+	
 
 };
 InputController.prototype._mouseMove = function(e) {
@@ -122,21 +127,36 @@ InputController.prototype.clean = function() {
 
 };
 
+
+/* creates the settings menu thing for the mobile controller */
 InputController.prototype._createSettingsElements = function(html) {
 	var self = this;
 
+	var toggle = document.createElement('div');
+	toggle.setAttribute("class", "app-controller-edit app-right app-transparent");
+
 	var edit = document.createElement('div');
-	edit.setAttribute("class", "app-controller-edit app-transparent app-right");
-	
+	edit.setAttribute("class", "app-controller-edit-activate app-hidden");
+
 	function closeSettings() {
-		edit.setAttribute("class", "app-controller-edit app-transparent app-right");
-		edit.toggled = false;
+		edit.setAttribute("class", "app-hidden");
+		toggle.setAttribute("class", "app-controller-edit app-right app-transparent");
+	}
+
+	function openSettings() {
+		edit.setAttribute("class", "app-controller-edit-activate");
+		toggle.setAttribute("class", "app-controller-edit app-hidden");
+	}
+
+	toggle.onclick = function() {
+		openSettings();	
 	}
 	
 	var edit_label1 = document.createElement('label');
 	edit_label1.innerText = "Virtual Mouse X Sensitivity:";
 	
 	var edit_virtualMouseSensX = document.createElement("input");
+	edit_virtualMouseSensX.setAttribute("class", "app-slider");
 	edit_virtualMouseSensX.type = "range";
 	edit_virtualMouseSensX.min = 1;
 	edit_virtualMouseSensX.max = 10;
@@ -146,6 +166,7 @@ InputController.prototype._createSettingsElements = function(html) {
 	edit_label2.innerText = "Virtual Mouse Y Sensitivity:";
 
 	var edit_virtualMouseSensY = document.createElement("input");
+	edit_virtualMouseSensY.setAttribute("class", "app-slider");
 	edit_virtualMouseSensY.type = "range";
 	edit_virtualMouseSensY.min = 1;
 	edit_virtualMouseSensY.max = 10;
@@ -155,28 +176,83 @@ InputController.prototype._createSettingsElements = function(html) {
 	edit_label3.innerText = "D-Pad Diagonal Dead Zone:";
 	
 	var edit_diagDeadZone = document.createElement("input");
+	edit_diagDeadZone.setAttribute("class", "app-slider");
 	edit_diagDeadZone.type = "range";
 	edit_diagDeadZone.min = -15;
 	edit_diagDeadZone.max = 15;
 	edit_diagDeadZone.value = 0;
 
+	var edit_label4 = document.createElement('label');
+	edit_label4.innerText = "Global Controller Opacity:";
+
+	var edit_controllerOpacity = document.createElement("input");
+	edit_controllerOpacity.setAttribute("class", "app-slider");
+	edit_controllerOpacity.type = "range";
+	edit_controllerOpacity.min = 0;
+	edit_controllerOpacity.max = 10;
+	edit_controllerOpacity.value = 10;
+
+	edit_controllerOpacity.onchange = function(e) {
+		self.controllerElements.forEach(function(e) {
+			e.style.opacity = edit_controllerOpacity.value / 10;
+		});
+	}
+
+	// element position/settings group
+	var edit_label5 = document.createElement('label');
+	edit_label5.innerText = "Screen Element Settings:";
+
+	var edit_container = document.createElement("div");
+	edit_container.setAttribute("class", "app-controller-settings-group");
+
+	var edit_elementSettings = document.createElement("select");
+	var edit_item = document.createElement("div");
+
+	for(var i = 0; i<self.controllerElements.length;i++) {
+		var el = document.createElement("option");
+		var item = self.controllerElements[i];
+		el.innerText = item.innerText.length > 0 ? item.innerText : "Controller";
+		el.value = i;
+		edit_elementSettings.appendChild(el);
+	}
+
+	edit_elementSettings.onchange = function(e) {
+
+	}
+
+	//edit_container.appendChild(edit_label5);
+	//edit_label5.appendChild(document.createElement("br"));
+	edit_container.appendChild(edit_elementSettings);
+	edit_container.appendChild(edit_item);
+	//edit_container.appendChild(edit_item);
+
+
+
+
+	
+
+	/*edit_elementSettings.onchange = function(e) {
+		self.controllerElements.forEach(function(e) {
+			e.style.opacity = edit_controllerOpacity.value / 10;
+		});
+	}*/
+
 	var edit_save = document.createElement('button');
 	edit_save.innerText = "Save";
 	edit_save.onclick = function(e) {
-
 		self.touchSettings.sensX = parseInt(edit_virtualMouseSensX.value);
 		self.touchSettings.sensY = parseInt(edit_virtualMouseSensY.value);
 		self.touchSettings.diagonalOffset = parseInt(edit_diagDeadZone.value);
 
 		closeSettings();
-		e.stopPropagation();
-
+		//e.stopPropagation();
 	}
+
 	var edit_cancel = document.createElement('button');
 	edit_cancel.innerText = "Close";
 	edit_cancel.onclick = function(e) {
 		closeSettings();
-		e.stopPropagation();
+		//e.stopPropagation();
 	}
 
 	var edit_default = document.createElement('button');
@@ -192,32 +268,37 @@ InputController.prototype._createSettingsElements = function(html) {
 	}
 	
 	edit.appendChild(edit_label1);
-	edit.appendChild(edit_virtualMouseSensX);
+	edit_label1.appendChild(document.createElement("br"));
+	edit_label1.appendChild(edit_virtualMouseSensX);
 	edit.appendChild(document.createElement("br"));
 	edit.appendChild(edit_label2);
-	edit.appendChild(edit_virtualMouseSensY);
+	edit_label2.appendChild(document.createElement("br"));
+	edit_label2.appendChild(edit_virtualMouseSensY);
 	edit.appendChild(document.createElement("br"));
 	edit.appendChild(edit_label3);
-	edit.appendChild(edit_diagDeadZone);
+	edit_label3.appendChild(document.createElement("br"));
+	edit_label3.appendChild(edit_diagDeadZone);
+	edit.appendChild(document.createElement("br"));
+	edit.appendChild(edit_label4);
+	edit_label4.appendChild(document.createElement("br"));
+	edit_label4.appendChild(edit_controllerOpacity);
+	edit.appendChild(document.createElement("br"));
+	edit.appendChild(edit_label5);
+	edit_label5.appendChild(document.createElement("br"));
+	edit_label5.appendChild(edit_container);
+	/*edit.appendChild(edit_label5);
+	edit_label5.appendChild(document.createElement("br"));
+	edit_label5.appendChild(edit_elementSettings);*/
 	edit.appendChild(document.createElement("br"));
 	edit.appendChild(document.createElement("br"));
 	edit.appendChild(edit_save);
 	edit.appendChild(edit_cancel);
 	edit.appendChild(edit_default);
 
-	edit.onclick = function() {
-		if (!this.toggled) {
-			this.toggled = true;
-			edit.setAttribute("class", "app-controller-edit app-controller-edit-active app-right");
-			//edit.setAttribute("class", "app-controller-edit app-right");
-		}
-		/*else {
-			this.toggled = true;
-			edit.setAttribute("class", "app-controller-edit-active app-right");
-		}*/
-	}
 	//edit
+	html.appendChild(toggle);
 	html.appendChild(edit);
+
 };
 /* params: { keys: [], sticks: [] }
 	keys:
@@ -263,16 +344,14 @@ InputController.prototype._showController = function(opts) {
 	html.setAttribute("id", "app-controller");
 	document.body.appendChild(html);
 
-	this._createSettingsElements(html);
-
 	var imprintOffset = 9; // accumulation of each elements border sizes and thumb element	
 
-	var initialWidth = window.screen.availWidth;
-	var initialHeight = window.screen.availHeight;
+	var initialWidth = window.screen.availWidth || 0;
+	var initialHeight = window.screen.availHeight || 0;
 	//console.log(orientation, );
 	if (orientation !== Config.orientation) {
-		initialHeight = window.screen.availWidth;
-		initialWidth = window.screen.availHeight;
+		initialHeight = window.screen.availWidth || 0;
+		initialWidth = window.screen.availHeight || 0;
 	}
 
 	for(var i = 0; i < opts.keys.length; i++) {
@@ -292,8 +371,6 @@ InputController.prototype._showController = function(opts) {
 			var rect = key.getClientRects()[0];
 
 			// window.innerWidth is always returning before context is focused and in fullscreen
-			
-
 			if (opt.position !== undefined) {
 				var xoff = 0;//opt.position.xoff || 0;
 				var yoff = 0;//opt.position.yoff || 0;
@@ -330,10 +407,13 @@ InputController.prototype._showController = function(opts) {
 
 			});
 
+			self.controllerElements.push(key);
+
 			
 		})(o);
 		//var result = r(o);
 		//html.appendChild(result);
+
 	}
 
 
@@ -356,15 +436,9 @@ InputController.prototype._showController = function(opts) {
 			else {
 				classNames.push("app-controller-thumbs-vec");
 			}
-
-			//classNames = classNames.join(" ");
 			
 			analog = document.createElement('div');
 			analog.setAttribute('class', classNames.join(" "));
-
-			//var rect = analog.getClientRects()[0];
-
-
 
 			var imprint = document.createElement('div');
 			imprint.setAttribute('class', 'app-controller-thumbs-imprint');
@@ -372,7 +446,6 @@ InputController.prototype._showController = function(opts) {
 
 			analog.addEventListener('touchstart', function(e) {
 				// targetTouches is getting lost some how.. i don't want to fix this, i want it to suffer
-				//alert((this.getClientRects()[0].x + " " + this.getClientRects()[0].y));
 				var rect = this.getClientRects()[0];
 				var touches = [];
 				for(var i1 = 0; i1 < 10; i1++) {
@@ -395,46 +468,10 @@ InputController.prototype._showController = function(opts) {
 					vector[1] = ((( touches[i2].y - rect2.centery ) / rect2.height) * 2 );
 					// a dpad
 					if (opt.type == 1) {
-						// oddwarg maths
-						//var p = Math.atan2(-vector[1], -vector[0]);// * 2;
-						//var n = Math.round(p*4/Math.PI);
-						//if (n < 0) n+=8;
-						//console.log(n);
-
-						/*if (n == 0 || n == 1 || n == 7) { //left
-							self._keyDown(opt.maps.left.key);
-						}
-						else {
-							self._keyUp(opt.maps.left.key);
-						}
-
-						if (n == 2 || n == 3 || n == 1) { // top
-							self._keyDown(opt.maps.top.key);
-						}
-						else {
-							self._keyUp(opt.maps.top.key);
-						}
-
-						if (n == 4 || n == 5 || n == 3) { // right
-							self._keyDown(opt.maps.right.key);
-						}
-						else {
-							self._keyUp(opt.maps.right.key);
-						}
-
-						if (n == 6 || n == 7 || n == 5) { // bottom
-							self._keyDown(opt.maps.bottom.key);
-						}
-						else {
-							self._keyUp(opt.maps.bottom.key);
-						}*/
 
 					}
 					// virtual mouse thing
 					else if (opt.type == 2) {
-
-						//self.cursorPosition.x += ((( touches[i2].x - rect2.centerx ) / rect2.width) * 2 );
-						//self.cursorPosition.y += ((( touches[i2].y - rect2.centery ) / rect2.height) * 2 );
 						self.virtualMouseVec[0] = vector[0];
 						self.virtualMouseVec[1] = vector[1];
 					}
@@ -446,16 +483,12 @@ InputController.prototype._showController = function(opts) {
 
 					this.children[0].style.left = Math.floor((touches[i2].x - imprintOffset) - rect2.x) + "px";
 					this.children[0].style.top = Math.floor((touches[i2].y - imprintOffset) - rect2.y) + "px";
-					//console.log( touches[i2].x - rect2.centerx );
-					//this.children[0].style.left = Math.floor((touches[i2].x - imprintOffset) - rect2.width) + "px";
-					//this.children[0].style.top	= Math.floor((touches[i2].y - imprintOffset) - rect2.height) + "px";
 
-					/*this.children[0].style.left = Math.floor((touches[i2].x + imprintOffset) - rect.left) + "px";
-					this.children[0].style.top	= Math.floor((touches[i2].y + imprintOffset) - rect.top) + "px";*/
 				}
-				window.navigator.vibrate(50);
+				window.navigator.vibrate(self.touchSettings.feedback.start);
 				e.preventDefault();
 			});
+
 			analog.addEventListener('touchend', function(e) {
 				var rect = this.getClientRects()[0];
 				var rect2 = {
@@ -470,9 +503,6 @@ InputController.prototype._showController = function(opts) {
 				for(var i1 = 0; i1 < 10; i1++) {
 					touches[i1] = e.targetTouches[i1] !== undefined ? { x: e.targetTouches[i1].clientX, y:  e.targetTouches[i1].clientY } : undefined;
 				}
-				/*for(var i2 = 0; i2 < touches.length; i2++) {
-					if (touches[i2] === undefined) continue;
-				}*/
 				if (opt.type == 1) {
 					self._keyUp(opt.maps.left.key);
 					self._keyUp(opt.maps.top.key);
@@ -487,13 +517,10 @@ InputController.prototype._showController = function(opts) {
 					var f = opt.initial.right ? "right" : "left";
 					self.touchSticks[f] = [0.0, 0.0];
 				}
-				/*if (opt.vm) {
-					self.virtualMouseVec[0] = 0.0;//vector[0];
-					self.virtualMouseVec[1] = 0.0;//vector[1];
-				}*/
 				this.children[0].style.left = Math.floor((rect2.width/2) - imprintOffset) + "px";
 				this.children[0].style.top = Math.floor((rect2.height/2) - imprintOffset) + "px";
 			});
+
 			analog.addEventListener('touchcancel', function(e) {
 				console.log(e);
 
@@ -544,78 +571,29 @@ InputController.prototype._showController = function(opts) {
 							var leftBot = deg > 210 + dOffset && deg < 240 - dOffset;
 							
 							// right
-							if (right || rightBot || rightTop) {
-
-								/*for(var t1 = 0; t1 < 100; t1++) {
-
-									var px = -100 + touches[i2].x + Math.floor(Math.random() * 200);//-2 + (Math.random() * (touches[i2].x * 2));
-									var py = -100 + touches[i2].y + Math.floor(Math.random() * 200);//-2 + (Math.random() * (touches[i2].y * 2));
-									var vx = ((( (px) - rect2.centerx ) / rect2.width) * 2 );
-									var vy = ((( (py) - rect2.centery ) / rect2.height) * 2 );
-									var p2 = Math.atan2(-vy, vx);
-									
-									var deg2 = Math.round(p2/Math.PI*180);
-									if (deg2 < 0) deg2+=360;
-
-									var right2 = deg2 < 45 || deg2 > 330;
-									var rightTop2 = deg2 < 60 - dOffset && deg2 > 30 + dOffset;
-									var rightBot2 = deg2 < 330 && deg2 > 300;
-
-									
-									if (rightTop2)
-										craw.circle({x: px, y: py, r: 2, f: true});
-
-								}*/
+							if (right || rightBot || rightTop)
 								self._keyDown(opt.maps.right.key);
-							}
-							else {
+							else
 								self._keyUp(opt.maps.right.key);
-							}
 
 							// left 
-							if (left || leftTop || leftBot) {
-								/*for(var t1 = 0; t1 < 100; t1++) {
-
-									var px = -100 + touches[i2].x + Math.floor(Math.random() * 200);//-2 + (Math.random() * (touches[i2].x * 2));
-									var py = -100 + touches[i2].y + Math.floor(Math.random() * 200);//-2 + (Math.random() * (touches[i2].y * 2));
-									var vx = ((( (px) - rect2.centerx ) / rect2.width) * 2 );
-									var vy = ((( (py) - rect2.centery ) / rect2.height) * 2 );
-									var p2 = Math.atan2(-vy, vx);
-									
-									var deg2 = Math.round(p2/Math.PI*180);
-									if (deg2 < 0) deg2+=360;
-
-									var left2 = deg2 > 150 && deg2 < 210;
-									var leftTop2 = deg2 > 120 + dOffset - dOffset && deg2 < 150 - dOffset;
-									var leftBot2 = deg2 > 210 + dOffset && deg2 < 240 - dOffset;
-
-									
-									if (leftTop2)
-										craw.circle({x: px, y: py, r: 2, f: true});
-
-								}*/
+							if (left || leftTop || leftBot)
 								self._keyDown(opt.maps.left.key);
-							}
-							else {
+							else
 								self._keyUp(opt.maps.left.key);
-							}
 
 							// top
-							if (top || leftTop || rightTop) {
+							if (top || leftTop || rightTop)
 								self._keyDown(opt.maps.top.key);
-								
-							}
-							else {
+							else
 								self._keyUp(opt.maps.top.key);
-							}
 
 							// bottom
-							if (bottom || leftBot || rightBot) {
+							if (bottom || leftBot || rightBot)
 								self._keyDown(opt.maps.bottom.key);
-							}
-							else {
+							else
 								self._keyUp(opt.maps.bottom.key);
-							}
+						
 						}
 						else {
 							self._keyUp(opt.maps.right.key);
@@ -635,25 +613,23 @@ InputController.prototype._showController = function(opts) {
 						var f = opt.initial.right ? "right" : "left";
 						self.touchSticks[f] = [vector[0], vector[1]];
 					}
-					/*if (opt.vm) {
-						self.virtualMouseVec[0] = vector[0];
-						self.virtualMouseVec[1] = vector[1];
-					}*/
 					// update position 
 					this.children[0].style.left = Math.floor((touches[i2].x - imprintOffset) - rect2.x) + "px";
 					this.children[0].style.top = Math.floor((touches[i2].y - imprintOffset) - rect2.y) + "px";
 				}
-				window.navigator.vibrate(50);
+				window.navigator.vibrate(self.touchSettings.feedback.move);
 			});
 
 			analog.appendChild(imprint);
+
+			self.controllerElements.push(analog);
 			html.appendChild(analog);
 
 		})(o);
 
 	}
 
-	
+	this._createSettingsElements(html);
 
 };
 

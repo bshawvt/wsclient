@@ -54,7 +54,7 @@ canvas {
 #app-controller {
 	position: absolute;
 	
-	z-index: 1000000000;
+	z-index: 10000000;
 	left: 0.00em;
 	right: 0.00em;
 	top: 0.00em;
@@ -72,30 +72,48 @@ canvas {
 	position: absolute;
 	border: 0.07em solid #fff;
 	box-shadow: 0.07em 0.07em #000, -0.07em -0.07em #000, -0.07em 0.07em #000,  0.07em -0.07em #000;
-	width: 9.0em;
-	height: 9.0em;
+	width: 8.0em;
+	height: 8.0em;
 	border-radius: 100%;
 	margin: 3.5em;
-
+	z-index: 10000000;
+}
+.app-controller-settings-group {
+	margin: 0 0 0 2em;
+	padding: 5px;
+	border: 1px solid #f00;
 }
 .app-controller-edit {
+
+	background: url(/bin/client/data/spritesheet_1024x1024.png);
+	background-position: 0.0em -4.0em;
+	background-size: 32.0em;
+
 	color: rgb(100, 100, 200);
 	position: absolute;
-	border: 10px solid #ff0;
-	width: 1.5625em;
-	height: 1.5625em;
-	background: rgb(100, 100, 200);
-	z-index: 1000000001;
-	overflow: hidden;
+	
+	width: 4.0em;
+	height: 4.0em;
+	z-index: 10000000;
+	/*overflow: hidden;*/
 }
-.app-controller-edit-active {
-	padding: 0.625em;
+.app-controller-edit-activate {
+	position: absolute;
+	padding: 5%;
 	color: #fff;
+	border: 10px solid #ff0;
 	text-shadow: 0.0625em 0.0625em 0.0625em #000;
+	background: rgb(100, 100, 200);
 	left: 0;
 	right: 0;
-	height: 75%;
+	top: 0;
+	bottom: 0;
+	z-index: 10000001;
 	width: auto;
+	overflow-y: scroll;
+}
+.app-hidden {
+	display: none;
 }
 .app-transparent {
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
@@ -129,17 +147,22 @@ canvas {
 
 .app-controller-thumbs-dpad {
 	background: url(/bin/client/data/spritesheet_1024x1024.png);
-	background-position: 0.5em 0.5em;
+	background-position: -8.0em -8.0em;
 }
 .app-controller-thumbs-vec {
 	background: url(/bin/client/data/spritesheet_1024x1024.png);
-	background-position: -7.5em 0.5em;
+	background-position: -8.0em 0.0em;
 }
-
 .app-controller-thumbs-imprint {
 	position: absolute;
 	width: 0.312em;
 	height: 0.312em;
 	border: 0.343em solid #000;
 	border-radius: 100%;
+}
+.app-slider {
+	/*margin: ‭0.3125em;*/
+	/*padding: ‭0.3125em;*/
+	padding: 10px;
+	margin: 0px;
 }

@@ -151,3 +151,18 @@ function TypedArray2Array(arr) {
 		n.push(arr[i]);
 	return n;
 }
+function Bytes2Hex(arr) {
+	var n = [];
+	for(var i = 0; i < arr.length; i++) {
+		var s = arr[i].toString(16);
+		n.push(s.length == 1 ? "0" + s : s);
+	}
+	return n;
+}
+function Bytes2Ascii(arr) {
+	var n = [];
+	for(var i = 0; i < arr.length; i++) {
+		n.push(String.fromCharCode(arr[i]));
+	}
+	return n;
+}
