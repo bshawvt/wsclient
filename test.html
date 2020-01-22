@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="/test.style.css">
+
+	<script type="application/javascript">
+
+		function Bytes2Hex(arr) {
+			var n = [];
+			for(var i = 0; i < arr.length; i++) {
+				var s = arr[i].toString(16).toUpperCase();
+				n.push(s.length == 1 ? "0" + s : s);
+			}
+			return n;
+		}
+		function Bytes2Ascii(arr) {
+			var n = [];
+			for(var i = 0; i < arr.length; i++) {
+				n.push(String.fromCharCode(arr[i]));
+			}
+			return n;
+		}
+		function Editor(elementId) {
+			this.files = [];
+			this.readTarget = 0;
+			this.ready = false;
+			this.editor = { 
+				parent: null,
+				content: { parent: null, left: null, center: null, right: null } 
+			};
+
+			
+
+			var editor = document.getElementById(elementId);
+			this.editor.parent = editor;
+			this.editor.content.parent = editor.children[3]; // 4th index because the content element starts there
+		
+			this.editor.content.left = document.createElement("div");
+			this.editor.content.right = document.createElement("div");
+			this.editor.content.center = document.createElement("div");
+
+			this.editor.content.left.setAttribute("class", "editor-content-textarea editor-content-left");
+			this.editor.content.left.setAttribute("contenteditable", "true");
+
+			this.editor.content.right.setAttribute("class", "editor-content-textarea editor-content-right");
+			this.editor.content.right.setAttribute("contenteditable", "true");
+
+			this.editor.content.center.setAttribute("class", "editor-content-textarea editor-content-center");
+			this.editor.content.center.setAttribute("contenteditable", "true");
+
+			var self = this;
+
+			var dropZonePewPew = document.createElement("div");
+			dropZonePewPew.setAttribute("class", "editor-drop absolute");
+			dropZonePewPew.innerText = "DROP TO LOAD"
+
+			function dropEvent(event) {
+				event.preventDefault();
+				dropZonePewPew.setAttribute("class", "editor-drop absolute")
+				self.files = [];
+				self.readTarget = 0;
+				self.ready = false;
+				self.getFiles(event.dataTransfer.files);
+			};
+			function dragEvent(event) {
+				console.log("ASDASD")
+				event.preventDefault();
+				dropZonePewPew.setAttribute("class", "editor-drop editor-drop-active absolute");
+
+
+			};
+			function stopEvent(event) {
+				event.preventDefault();
+				dropZonePewPew.setAttribute("class", "editor-drop absolute")
+			};
+
+			document.ondrop = dropEvent;
+			document.ondragover = dragEvent;
+			document.ondragend = stopEvent;
+			document.ondragexit = stopEvent;
+			document.ondragleave = stopEvent;
+			
+			document.body.appendChild(dropZonePewPew);
+			
+		}
+		Editor.prototype.initialize = function() {
+
+			if (this.ready) { // cleanup stuff if the user has dropped new things to open
+				for(var i = this.editor.content.parent.children.length - 1; i >= 0 ; i--) {
+					console.log(i, this.editor.content.parent.children[i]);
+					this.editor.content.parent.children[i].remove();
+				}
+			}
+
+			if (this.files.length == 2) {
+				this.editor.content.parent.appendChild(this.editor.content.left);
+				this.editor.content.parent.appendChild(this.editor.content.center);
+				this.editor.content.parent.appendChild(this.editor.content.right);
+				this.appendData(this.files[0], this.files[1]);
+			}
+			else {
+				this.editor.content.left = document.createElement("textarea");
+				this.editor.content.left.setAttribute("class", "editor-content-textarea editor-content-left");
+				this.editor.content.parent.appendChild(this.editor.content.left);
+				this.appendData(this.files[0]);
+			}
+
+		};
+		/* processes the data and does things */
+		Editor.prototype.appendData = function(a, b) {
+			this.editor.content.left.innerText = a.hex.join(" ");
+			if (b) {
+				this.editor.content.right.innerText = b.hex.join(" ");
+				this.editor.content.center.innerText = "TODO";// todo: highlight differences in center box maybe?
+			}
+		};
+		/* called on drop event and receives file data */
+		Editor.prototype.getFiles = function(files) {
+			var self = this;
+			this.readTarget = files.length;
+			if (this.readTarget == 2) {
+				for(var i = 0; i < this.readTarget; i++) {
+					var file = files[i];
+					(function(f){
+						var read = new FileReader();
+						read.file = f;
+						read.onload = function(a) {
+							self.loadData(read.file, read.result);
+						}
+						read.readAsArrayBuffer(f);
+					})(file);
+				}
+			}
+			else {
+				var read = new FileReader();
+				read.file = files[0]; 
+				read.onload = function(a) {
+					//console.log(a);
+					self.loadData(read.file, read.result);
+				}
+				read.readAsArrayBuffer(files[0]);
+			}
+		};
+		/* called when getFiles receives data and saves it to an array */
+		Editor.prototype.loadData = function(file, result) {
+			var typed = new Uint8Array(result);
+			var hex = Bytes2Hex(typed);
+			var ascii = Bytes2Ascii(typed);
+
+
+			var data = {
+				file: file,
+				arrayBuffer: result,
+				typedArray: typed,
+				hex: hex,
+				ascii: ascii
+			}
+
+			this.files.push(data);
+
+			if (this.files.length >= this.readTarget && !this.ready)
+				this.onReadyCallback();
+		};
+		/* called when all files have been loaded by the app, creates UI stuff */
+		Editor.prototype.onReadyCallback = function() {
+			this.ready = true;
+			//console.log(this.files);
+			this.initialize();
+		};
+	</script>
+
+</head>
+<body>
+
+	<div id="app-editor" class="editor absolute">
+		<div class="editor-menu-1"></div>
+		<div class="editor-menu-2"></div>
+		<div class="editor-menu-3"></div>
+		<div class="editor-content absolute">
+
+		</div>
+	</div>
+
+	<script type="application/javascript">
+		new Editor("app-editor");
+	</script>
+</body>
+</html>
