@@ -6,7 +6,10 @@ function InputController(opts) {
 
 	this.cursorPosition = {x: 0, y: 0};
 
-	this.touchSettings = {sensX: 1, sensY: 1, diagonalOffset: 0, positions: [], feedback: {start: 25, move: 25}};
+	this.touchSettings = {sensX: 1, sensY: 1, 
+		diagonalOffset: 0, 
+		feedback: { start: 25, move: 25, enabled: true }
+	};
 	this.touchKeys = [];//[{map: InputController.TEST_MOBILE}]; //
 	this.touchSticks = [];//[/*{classNames: "app-bottom app-left app-controller-thumbs-dpad", type: 0}, */
 						//{classNames: "app-bottom app-right app-controller-thumbs-vec", type: 1}]; // {classNames: '', type: ''}
@@ -32,7 +35,7 @@ function InputController(opts) {
 	}
 
 	//if (isMobile()) {
-		this._showController(opts);
+		this._createMobileController(opts);
 	//}
 	window.addEventListener('mousedown', this.mousedown);
 	window.addEventListener('mouseup', this.mouseup);
@@ -40,6 +43,7 @@ function InputController(opts) {
 
 	window.addEventListener('keydown', this.keydown);
 	window.addEventListener('keyup', this.keyup);
+
 
 	
 
@@ -87,10 +91,6 @@ InputController.prototype._keyUp = function(e) {
 		this.buttonStates[keyCode] = {state: false};
 	}
 	this.buttonStates[keyCode].state = false;
-};
-
-InputController.prototype.consumeButtonState = function(key) {
-	this.buttonStates[key].state = false;
 };
 
 InputController.prototype.getCursorPosition = function() {
@@ -152,6 +152,8 @@ InputController.prototype._createSettingsElements = function(html) {
 		openSettings();	
 	}
 	
+	var edit_l1container = document.createElement('div');
+	edit_l1container.setAttribute("class", "app-controller-settings-group");
 	var edit_label1 = document.createElement('label');
 	edit_label1.innerText = "Virtual Mouse X Sensitivity:";
 	
@@ -162,6 +164,8 @@ InputController.prototype._createSettingsElements = function(html) {
 	edit_virtualMouseSensX.max = 10;
 	edit_virtualMouseSensX.value = 1;
 
+	var edit_l2container = document.createElement('div');
+	edit_l2container.setAttribute("class", "app-controller-settings-group");
 	var edit_label2 = document.createElement('label');
 	edit_label2.innerText = "Virtual Mouse Y Sensitivity:";
 
@@ -172,9 +176,11 @@ InputController.prototype._createSettingsElements = function(html) {
 	edit_virtualMouseSensY.max = 10;
 	edit_virtualMouseSensY.value = 1;
 
+	var edit_l3container = document.createElement('div');
+	edit_l3container.setAttribute("class", "app-controller-settings-group");
 	var edit_label3 = document.createElement('label');
 	edit_label3.innerText = "D-Pad Diagonal Dead Zone:";
-	
+
 	var edit_diagDeadZone = document.createElement("input");
 	edit_diagDeadZone.setAttribute("class", "app-slider");
 	edit_diagDeadZone.type = "range";
@@ -182,6 +188,8 @@ InputController.prototype._createSettingsElements = function(html) {
 	edit_diagDeadZone.max = 15;
 	edit_diagDeadZone.value = 0;
 
+	var edit_l4container = document.createElement('div');
+	edit_l4container.setAttribute("class", "app-controller-settings-group");
 	var edit_label4 = document.createElement('label');
 	edit_label4.innerText = "Global Controller Opacity:";
 
@@ -198,16 +206,39 @@ InputController.prototype._createSettingsElements = function(html) {
 		});
 	}
 
-	// element position/settings group
+	var edit_l5container = document.createElement('div');
+	edit_l5container.setAttribute("class", "app-controller-settings-group");
 	var edit_label5 = document.createElement('label');
-	edit_label5.innerText = "Screen Element Settings:";
+	edit_label5.innerText = "Use Tactile Feedback? ";
+	edit_label5.for = "tactileFeedback";
+
+	var edit_checkbox = document.createElement("input");
+	edit_checkbox.setAttribute("class", "app-checkbox");
+	edit_checkbox.type = "checkbox";
+	edit_checkbox.id = "tactileFeedback";
+	edit_checkbox.checked = self.touchSettings.feedback.enabled;
+	edit_checkbox.onchange = function(e) {
+		self.touchSettings.feedback.enabled = this.checked;
+	}
+	
+	var edit_l6container = document.createElement('div');
+	edit_l6container.setAttribute("class", "app-controller-settings-group");
+	var edit_label6 = document.createElement('label');
+	edit_label6.innerText = "Screen Element Settings:";
+
 
 	var edit_container = document.createElement("div");
 	edit_container.setAttribute("class", "app-controller-settings-group");
 
 	var edit_elementSettings = document.createElement("select");
-	var edit_item = document.createElement("div");
+	edit_elementSettings.setAttribute("class", "app-selector");
 
+	var edit_item = document.createElement("div");
+	
+	var eldefault = document.createElement("option");
+	eldefault.innerText = "- Choose an option -";
+	edit_elementSettings.appendChild(eldefault);
+	
 	for(var i = 0; i<self.controllerElements.length;i++) {
 		var el = document.createElement("option");
 		var item = self.controllerElements[i];
@@ -216,13 +247,67 @@ InputController.prototype._createSettingsElements = function(html) {
 		edit_elementSettings.appendChild(el);
 	}
 
-	edit_elementSettings.onchange = function(e) {
+	edit_elementSettings.onchange = function(a, b) {
+		
+		for (var i = 0; edit_container.children.length; i++) {
+			edit_container.children[i].remove();
+		};
+		if (isNaN(a.target.value)) return;
+
+		var control = self.controllerElements[parseInt(a.target.value)];
+		var rect = control.getClientRects()[0];//control.getBoundingClientRect();
+		var itemX = rect.left;
+		var itemY = rect.top;
+
+		var itemContainer = document.createElement("div");
+		
+		var xLabel = document.createElement("label");
+		xLabel.innerText = "Location X:";
+
+		var itemXSlider = document.createElement("input");
+		itemXSlider.setAttribute("class", "app-slider");
+		itemXSlider.type = "range";
+		itemXSlider.min = 0;
+		itemXSlider.max = window.screen.availWidth - (rect.width*2);
+		itemXSlider.value = itemX;
+		itemXSlider.oninput = function(e) {
+			control.style.left = this.value + "px";
+		};
+
+		var yLabel = document.createElement("label");
+		yLabel.innerText = "Location Y:";
+
+		var itemYSlider = document.createElement("input");
+		itemYSlider.setAttribute("class", "app-slider");
+		itemYSlider.type = "range";
+		itemYSlider.min = 0;
+		itemYSlider.max = window.screen.availHeight - rect.height;
+		itemYSlider.value = itemY;
+		itemYSlider.oninput = function(e) {
+			control.style.top = this.value + "px";
+			//yLabel.innerText = "Location Y:";
+		};
+		
+		xLabel.appendChild(document.createElement("br"));
+		xLabel.appendChild(itemXSlider);
+
+		yLabel.appendChild(document.createElement("br"));
+		yLabel.appendChild(itemYSlider);
+
+
+		itemContainer.appendChild(xLabel);
+		itemContainer.appendChild(document.createElement("br"));
+		itemContainer.appendChild(yLabel);
+		itemContainer.appendChild(document.createElement("br"));
+		edit_container.appendChild(itemContainer);
 
 	}
 
 	//edit_container.appendChild(edit_label5);
 	//edit_label5.appendChild(document.createElement("br"));
-	edit_container.appendChild(edit_elementSettings);
+	edit_label6.appendChild(document.createElement("br"));
+	edit_label6.appendChild(edit_elementSettings);
+	edit_label6.appendChild(document.createElement("br"));
 	edit_container.appendChild(edit_item);
 	//edit_container.appendChild(edit_item);
 
@@ -238,6 +323,7 @@ InputController.prototype._createSettingsElements = function(html) {
 	}*/
 
 	var edit_save = document.createElement('button');
+	edit_save.setAttribute("class", "app-buttons");
 	edit_save.innerText = "Save";
 	edit_save.onclick = function(e) {
 		self.touchSettings.sensX = parseInt(edit_virtualMouseSensX.value);
@@ -249,6 +335,7 @@ InputController.prototype._createSettingsElements = function(html) {
 	}
 
 	var edit_cancel = document.createElement('button');
+	edit_cancel.setAttribute("class", "app-buttons");
 	edit_cancel.innerText = "Close";
 	edit_cancel.onclick = function(e) {
 		closeSettings();
@@ -256,6 +343,7 @@ InputController.prototype._createSettingsElements = function(html) {
 	}
 
 	var edit_default = document.createElement('button');
+	edit_default.setAttribute("class", "app-buttons");
 	edit_default.innerText = "Set to Default";
 	edit_default.onclick = function(e) {
 		edit_virtualMouseSensX.value = 1;
@@ -266,34 +354,48 @@ InputController.prototype._createSettingsElements = function(html) {
 		self.touchSettings.sensY = parseInt(edit_virtualMouseSensY.value);
 		self.touchSettings.diagonalOffset = parseInt(edit_diagDeadZone.value);
 	}
-	
-	edit.appendChild(edit_label1);
+
 	edit_label1.appendChild(document.createElement("br"));
 	edit_label1.appendChild(edit_virtualMouseSensX);
-	edit.appendChild(document.createElement("br"));
-	edit.appendChild(edit_label2);
+	edit_l1container.appendChild(edit_label1);
+
 	edit_label2.appendChild(document.createElement("br"));
 	edit_label2.appendChild(edit_virtualMouseSensY);
-	edit.appendChild(document.createElement("br"));
-	edit.appendChild(edit_label3);
+	edit_l2container.appendChild(edit_label2);
+
 	edit_label3.appendChild(document.createElement("br"));
 	edit_label3.appendChild(edit_diagDeadZone);
-	edit.appendChild(document.createElement("br"));
-	edit.appendChild(edit_label4);
+	edit_l3container.appendChild(edit_label3);
+
 	edit_label4.appendChild(document.createElement("br"));
 	edit_label4.appendChild(edit_controllerOpacity);
-	edit.appendChild(document.createElement("br"));
-	edit.appendChild(edit_label5);
-	edit_label5.appendChild(document.createElement("br"));
-	edit_label5.appendChild(edit_container);
-	/*edit.appendChild(edit_label5);
-	edit_label5.appendChild(document.createElement("br"));
-	edit_label5.appendChild(edit_elementSettings);*/
-	edit.appendChild(document.createElement("br"));
-	edit.appendChild(document.createElement("br"));
+	edit_l4container.appendChild(edit_label4);
+
+	edit_label5.appendChild(edit_checkbox);
+	edit_l5container.appendChild(edit_label5);
+
+	edit_label6.appendChild(document.createElement("br"));
+	edit_label6.appendChild(edit_container);
+	edit_l6container.appendChild(edit_label6);
+
+
 	edit.appendChild(edit_save);
 	edit.appendChild(edit_cancel);
 	edit.appendChild(edit_default);
+	edit.appendChild(document.createElement("br"));
+	edit.appendChild(document.createElement("br"));
+	edit.appendChild(edit_l6container);
+	edit.appendChild(document.createElement("br"));
+	edit.appendChild(edit_l1container);
+	edit.appendChild(document.createElement("br"));
+	edit.appendChild(edit_l2container);
+	edit.appendChild(document.createElement("br"));
+	edit.appendChild(edit_l3container);
+	edit.appendChild(document.createElement("br"));
+	edit.appendChild(edit_l4container);
+	edit.appendChild(document.createElement("br"));
+	edit.appendChild(edit_l5container);
+	edit.appendChild(document.createElement("br"));
 
 	//edit
 	html.appendChild(toggle);
@@ -306,15 +408,21 @@ InputController.prototype._createSettingsElements = function(html) {
 			[
 				position: - set the initial location
 					{ 
-						right: undefined,
+						right: undefined, -- snap to a location on the screen
 						left: true,
+						center: undefined,
 						top: false,
 						bottom: true,
 
-						xoff: undefined, - offsets to use 
+						xoff: undefined, -- repositioning snapped element
 						yoff: -10,
 					}
-				map: InputController.MAP_* Object - needs to at the very least have a key property
+				map: InputController.MAP_* {
+					id: "Jump", -- displayed as innerText for keys
+					key: 32, -- a key code
+					map: "SPACE", -- predicted key that needs to be pressed
+					bitmask: 16 -- for network sync
+				}
 			]
 		}
 	sticks:
@@ -336,7 +444,7 @@ InputController.prototype._createSettingsElements = function(html) {
 			]
 		}
 	*/
-InputController.prototype._showController = function(opts) {
+InputController.prototype._createMobileController = function(opts) {
 	var self = this;
 	var orientation = GetOrientation();
 
@@ -362,21 +470,19 @@ InputController.prototype._showController = function(opts) {
 		(function(opt) {
 			key = document.createElement('div');
 
-			var classNames = ['app-controller-key'];
+			//var classNames = ['app-controller-key'];
 			
 
 			//classNames = classNames.join(" ");
-			key.setAttribute('class', classNames.join(" "));
+			key.setAttribute('class', "app-controller-key");
 			html.appendChild(key);
 			var rect = key.getClientRects()[0];
 
 			// window.innerWidth is always returning before context is focused and in fullscreen
 			if (opt.position !== undefined) {
-				var xoff = 0;//opt.position.xoff || 0;
-				var yoff = 0;//opt.position.yoff || 0;
+				var xoff = opt.position.xoff || 0;
+				var yoff = opt.position.yoff || 0;
 
-				if (opt.position.x) key.style.left = opt.position.x + "px";
-				if (opt.position.y) key.style.top = opt.position.y + "px";
 				if (opt.position.left) {
 					//key.style.left = (0) + "px";
 					key.style.left = ( xoff ) + "px";
@@ -390,15 +496,19 @@ InputController.prototype._showController = function(opts) {
 				if (opt.position.bottom) {
 					key.style.top = (initialHeight - (rect.height + (rect.height/2)) - yoff ) + "px";
 				}
+				if (opt.position.center) {
+					key.style.left = (((initialWidth - rect.width)/2) - xoff ) + "px";
+				}
 
 			}
 
-			key.innerText = opt.map.map;//opts.keys[i];
+			var keyDiv = document.createElement("div");
+			keyDiv.innerText = opt.map.id;//opts.keys[i];
+			key.appendChild(keyDiv);
 			
 			/* i dont think these listeners need to be removed later on since they're attached to an element */
 			key.addEventListener('touchstart', function(e) {
 				self._keyDown(opt.map.key);
-				//window.navigator.vibrate(50);
 				e.preventDefault();
 			});
 
@@ -485,7 +595,8 @@ InputController.prototype._showController = function(opts) {
 					this.children[0].style.top = Math.floor((touches[i2].y - imprintOffset) - rect2.y) + "px";
 
 				}
-				window.navigator.vibrate(self.touchSettings.feedback.start);
+				if (self.touchSettings.feedback.enabled)
+					window.navigator.vibrate(self.touchSettings.feedback.start);
 				e.preventDefault();
 			});
 
@@ -561,6 +672,7 @@ InputController.prototype._showController = function(opts) {
 							var deg = Math.round(p/Math.PI*180);
 							if (deg < 0) deg+=360;
 							
+							// this made oddwarg sad
 							var left = deg > 150 && deg < 210;
 							var right = deg < 45 || deg > 330;
 							var top = deg > 60 && deg < 120;
@@ -617,7 +729,8 @@ InputController.prototype._showController = function(opts) {
 					this.children[0].style.left = Math.floor((touches[i2].x - imprintOffset) - rect2.x) + "px";
 					this.children[0].style.top = Math.floor((touches[i2].y - imprintOffset) - rect2.y) + "px";
 				}
-				window.navigator.vibrate(self.touchSettings.feedback.move);
+				if (self.touchSettings.feedback.enabled)
+					window.navigator.vibrate(self.touchSettings.feedback.move);
 			});
 
 			analog.appendChild(imprint);

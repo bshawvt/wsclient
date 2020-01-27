@@ -63,10 +63,20 @@ canvas {
 .app-controller-key {
 	/*float: left;*/
 	position: absolute;
-	width: 50px;
-	height: 50px;
-	border: 0.07em solid #fff;
+	width: 3.125em;
+	height: 3.125em;
+	border: 0.2em solid #fff;
+	border-radius: 0.5em;
 	margin: 15px;
+
+
+	display: table;
+	text-align: center;
+}
+.app-controller-key > div {
+	display: table-cell;
+	vertical-align: middle;
+	word-break: break-all;
 }
 .app-controller-thumbs {
 	position: absolute;
@@ -79,9 +89,9 @@ canvas {
 	z-index: 10000000;
 }
 .app-controller-settings-group {
-	margin: 0 0 0 2em;
-	padding: 5px;
-	border: 1px solid #f00;
+	margin: 0 0 0 0;
+	padding: 0.2em;
+	border: 0.3em solid rgba(10, 10, 125, 0.5);
 }
 .app-controller-edit {
 
@@ -103,7 +113,7 @@ canvas {
 	color: #fff;
 	border: 10px solid #ff0;
 	text-shadow: 0.0625em 0.0625em 0.0625em #000;
-	background: rgb(100, 100, 200);
+	background: rgba(100, 100, 200, 0.75);
 	left: 0;
 	right: 0;
 	top: 0;
@@ -111,6 +121,7 @@ canvas {
 	z-index: 10000001;
 	width: auto;
 	overflow-y: scroll;
+	font-size: 2em;
 }
 .app-hidden {
 	display: none;
@@ -165,4 +176,21 @@ canvas {
 	/*padding: ‭0.3125em;*/
 	padding: 10px;
 	margin: 0px;
+	height: 25px;
+	width: 50%;
+	border: 5px solid #000;
+}
+.app-checkbox {
+	width: 30px;
+	height: 30px;
+}
+.app-selector {
+	height: 30px;
+	width: auto;
+}
+.app-buttons {
+	width: 33%;
+	height: 50px;
+	padding: 5px;
+	font-size: 24px;
 }

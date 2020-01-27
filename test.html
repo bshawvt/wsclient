@@ -21,12 +21,20 @@
 			}
 			return n;
 		}
+		function Hex2Ascii(arr) {
+			var n = [];
+			for(var i = 0; i < arr.length; i++) {
+				n.push(String.fromCharCode(parseInt(arr[i], 16)));
+			}
+			return n;
+		}
 		function Editor(elementId) {
 			this.files = [];
 			this.readTarget = 0;
 			this.ready = false;
 			this.editor = { 
 				parent: null,
+				buttons: { export: null },
 				content: { parent: null, left: null, center: null, right: null } 
 			};
 
@@ -35,7 +43,10 @@
 			var editor = document.getElementById(elementId);
 			this.editor.parent = editor;
 			this.editor.content.parent = editor.children[3]; // 4th index because the content element starts there
-		
+			this.editor.buttons.export = editor.children[0].children[0]; // 1st child is the 1st menu bar, 2nd child is the 1st button
+			this.editor.status = editor.children[2]; // 3rd child because its the last menu bar
+
+
 			this.editor.content.left = document.createElement("div");
 			this.editor.content.right = document.createElement("div");
 			this.editor.content.center = document.createElement("div");
@@ -74,7 +85,13 @@
 				event.preventDefault();
 				dropZonePewPew.setAttribute("class", "editor-drop absolute")
 			};
+			function sexport() {
+				var edited = self.editor.content.left.innerText.split(" ");
+				var ascii = Hex2Ascii(edited);
+				console.log(edited, ascii);
 
+			}
+			this.editor.buttons.export.onclick = sexport;
 			document.ondrop = dropEvent;
 			document.ondragover = dragEvent;
 			document.ondragend = stopEvent;
@@ -100,8 +117,8 @@
 				this.appendData(this.files[0], this.files[1]);
 			}
 			else {
-				this.editor.content.left = document.createElement("textarea");
-				this.editor.content.left.setAttribute("class", "editor-content-textarea editor-content-left");
+				//this.editor.content.left = document.createElement("textarea");
+				//this.editor.content.left.setAttribute("class", "editor-content-textarea editor-content-left");
 				this.editor.content.parent.appendChild(this.editor.content.left);
 				this.appendData(this.files[0]);
 			}
@@ -174,7 +191,11 @@
 <body>
 
 	<div id="app-editor" class="editor absolute">
-		<div class="editor-menu-1"></div>
+		<div class="editor-menu-1">
+			<button>Export</button>
+			<button>Button Name 1</button>
+			<button>Button Name 2</button>
+		</div>
 		<div class="editor-menu-2"></div>
 		<div class="editor-menu-3"></div>
 		<div class="editor-content absolute">

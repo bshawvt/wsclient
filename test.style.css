@@ -44,7 +44,9 @@ body {
 	bottom: 0px;
 	resize: horizontal;
 	word-break: break-word;
-	white-space: pre-wrap
+	white-space: pre-wrap;
+	padding: 1em;
+	overflow-y: scroll;
 }
 .editor-content-left {
 	
@@ -81,4 +83,8 @@ body {
 	text-align: center;
 	line-height: 1em;
 
+}
+button {
+	height: 3em;
+	width: 8em;
 }
