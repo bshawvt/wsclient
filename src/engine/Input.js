@@ -344,7 +344,7 @@ InputController.prototype._createSettingsElements = function(html) {
 
 	var edit_default = document.createElement('button');
 	edit_default.setAttribute("class", "app-buttons");
-	edit_default.innerText = "Set to Default";
+	edit_default.innerText = "Default most";
 	edit_default.onclick = function(e) {
 		edit_virtualMouseSensX.value = 1;
 		edit_virtualMouseSensY.value = 1;
