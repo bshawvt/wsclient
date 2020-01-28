@@ -66,9 +66,9 @@ Context.prototype.onActivate = function() {
 		this.canvas.onclick = undefined;
 	}
 
-	if (this.hasActivated) // prevent sending more than one activated event
+	/*if (this.hasActivated) // prevent sending more than one activated event
 		return;
-	this.hasActivated = true;
+	this.hasActivated = true;*/
 	this.onactive.emit("activated");
 
 };

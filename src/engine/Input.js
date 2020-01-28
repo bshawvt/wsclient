@@ -34,15 +34,19 @@ function InputController(opts) {
 		self._keyUp(e);
 	}
 
-	//if (isMobile()) {
+	if (isMobile()) {
 		this._createMobileController(opts);
-	//}
+	}
 	window.addEventListener('mousedown', this.mousedown);
 	window.addEventListener('mouseup', this.mouseup);
 	window.addEventListener('mousemove', this.mousemove);
 
 	window.addEventListener('keydown', this.keydown);
 	window.addEventListener('keyup', this.keyup);
+
+	window.addEventListener('hashchange', function(e) {
+		console.log("asdasd?", e);
+	});
 
 
 	
@@ -344,7 +348,7 @@ InputController.prototype._createSettingsElements = function(html) {
 
 	var edit_default = document.createElement('button');
 	edit_default.setAttribute("class", "app-buttons");
-	edit_default.innerText = "Default most";
+	edit_default.innerText = "Default";
 	edit_default.onclick = function(e) {
 		edit_virtualMouseSensX.value = 1;
 		edit_virtualMouseSensY.value = 1;

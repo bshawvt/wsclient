@@ -3,21 +3,11 @@
 	resources = should be an array from Loader.js or similar for adding preloaded assets
 		to ResourceManager */
 function Game(opt) {
+	var self = this;
 	var opt = opt || {};
 	// opt.resources for preloaded assets
-	this.resource = new ResourceManager(opt.resources);
-
-	var context = { parent: opt.parent, 
-		// callback is optional
-		width: opt.width || window.innerWidth,
-		height: opt.height || window.innerHeight,
-		onresize: function(ctx) {
-			/*var rect = context.canvas.getClientRects()[0]; // keeps resize proportional
-			context.resize(window.innerWidth - (rect.x * 2), window.innerHeight - (rect.y * 2));*/
-			ctx.resize(window.innerWidth, window.innerHeight);
-		}
-	};
-	this.context = new Context(context);
+	
+	
 
 	this.TimeStep = opt.timeStep || 1000/30; // used by animator, here for convenience
 	this.network = null;
@@ -25,8 +15,23 @@ function Game(opt) {
 	this.soundManager = null; // not instanced here because most browsers and mobile flip out 
 	this.controller = null;
 
+
+	this.scene = null;
+	this.renderer = null;
 	this.dynamicObjects = [];
 	this.dynamicObjectsQueue = [];
+
+	this.resource = new ResourceManager(opt.resources);
+	var context = { parent: opt.parent, 
+		// callback is optional
+		width: opt.width || window.innerWidth,
+		height: opt.height || window.innerHeight,
+		onresize: function(ctx) {
+			ctx.resize(window.innerWidth, window.innerHeight);
+		}
+	};
+	this.context = new Context(context);
+
 	this.startTime = 0xffffffffffffff; // crazy number because it becomes dt after animator starts
 }
 
@@ -51,7 +56,7 @@ Game.prototype.start = function() {
 						InputController.MAP_FIRE = {id: "Fire", key: 32, map: "SPACE", bitbask: 16} },
 					{ position: {center: true, bottom: true, yoff: 5, xoff: 30}, map: 
 						InputController.MAP_SWAP = {id: "ABCDEFGH", key: 86, map: "V", bitbask: 32}	}];
-	var touchMaps = [	{ initial: {bottom: true, right: true}, type: 0},//maps: []}, 
+	var touchMaps = [	{ initial: {bottom: true, right: true}, type: 2},//maps: []}, 
 						{ initial: {bottom: true, right: false}, type: 1, maps: {
 								left: InputController.MAP_LEFT = {key: 65, map: "A", bitmask: 1}, 
 								right: InputController.MAP_RIGHT = {key: 68, map: "D", bitmask: 2}, 
@@ -60,8 +65,7 @@ Game.prototype.start = function() {
 	this.controller = new InputController({keys: keyMaps, sticks: touchMaps});
 	//this.controller.showController({keys: keyMaps, sticks: touchMaps});
 
-	this.dynamicObjects = [ {x: 5, y: 5, width: 50, height: 50, res: {sprite: "spritesheet_1024x1024.png", offx: 256, offy: 0, size: 128}, dir: [0, 0, 0], spd: [1.0, 1.0, 0]}/*,
-	{x: 200, y: 5, width: 200, height: 200, res: "gradiant.png", dir: [0, 0, 0], spd: [0.0, 0.0, 0]}*/];
+	this.dynamicObjects = [  ];
 	this.dynamicObjectsQueue = [];	
 	// i don't know if it matters but it's probably better to start animator after the other things
 	this.animator = new Animator(this);
@@ -69,7 +73,10 @@ Game.prototype.start = function() {
 	console.log("started");
 
 	// per app specific stuff 
-	this.attackedTime = 0;
+
+	this.scene = new THREE.Scene();
+	this.renderer = new THREE.WebGLRenderer();
+	
 
 
 };
@@ -89,124 +96,14 @@ Game.prototype.frame = function(dt) {
 	var self = this;
 	var In = this.controller; 
 
-	this.dynamicObjects.forEach(function(e) {
-		if (e.expires)
-			if (dt > e.expires) {
-				if (dt > e.expires + 1000) {
-					e.removed = true;
-				}
-				e.res.offx = 384;
-				e.spd[0] = 0.0;
-				e.spd[1] = 0.0;
-			}
-		e.x += e.dir[0] * e.spd[0];
-		e.y += e.dir[1] * e.spd[1];
-	});
-
-	/*if (In.getButtonState(InputController.TEST_MOBILE.key)) {
-		this.dynamicObjects[0].x = 0.0;
-		this.dynamicObjects[0].y = 0.0;
-	}*/
-
-	//console.log(In.getCursorPosition());
-	if (In.getButtonState(InputController.MAP_FIRE.key) && dt > this.attackedTime + 200) {
-		this.attackedTime = dt;
-		var p = this.dynamicObjects[0];
-		d1 = p.dir[0] != 0.0 ? p.dir[0] : -1 + Math.random() * 2;
-		d2 = p.dir[1] != 0.0 ? p.dir[1] : -1 + Math.random() * 2;
-		var dabomb = {expires: dt + 2000, x: p.x, y: p.y, width: 50, height: 50, res: {sprite: "spritesheet_1024x1024.png", offx: 512, offy: 0, size: 128}, dir: [d1, d2, 0], spd: [4.0, 4.0, 0]}
-		this.dynamicObjectsQueue.push(dabomb);
-
-		var snd = this.resource.get("Cat_mewing.mp3")
-		if (snd) {
-			snd.data.play();
-		}
-
-	}
-
-	if (In.getButtonState(InputController.MAP_LEFT.key)) {
-		this.dynamicObjects[0].x -= 1;
-	}
-	if (In.getButtonState(InputController.MAP_RIGHT.key)) {
-		this.dynamicObjects[0].x += 1;
-	}
-	if (In.getButtonState(InputController.MAP_FORWARD.key)) {
-		this.dynamicObjects[0].y -= 1; 
-	}
-	if (In.getButtonState(InputController.MAP_BACKWARD.key)) {
-		this.dynamicObjects[0].y += 1; 
-	}
-
-	var dir = In.touchSticks["right"];
-	//console.log(dir, In.touchSticks);
-	if (dir !== undefined) {
-		this.dynamicObjects[0].x += Clamp(dir[0], -1.0, 1.0);
-		this.dynamicObjects[0].y += Clamp(dir[1], -1.0, 1.0);
-	}
-	else {
-		//var pos = In.getCursorPosition();
-		//this.dynamicObjects[0].x = pos.x;
-		//this.dynamicObjects[0].y = pos.y;
-	}
-
-
-	//var pos = In.getCursorPosition();
-	//console.log(pos);
-	//var pos2 = Math.atan2(-pos.y, pos.x);
-	//console.log(pos2 * Math.PI / 180);
-	//this.dynamicObjects[0].x = ;//pos.x;//Clamp(In.virtualMouseVec[0], -1.0, 1.0);//Clamp(pos.x, -1.0, 1.0);//pos.x;//Clamp(In.virtualMouseVec[0], -1.0, 1.0);//pos.x;
-	//this.dynamicObjects[0].y = ;//pos.y;//Clamp(In.virtualMouseVec[1], -1.0, 1.0);//Clamp(pos.y, -1.0, 1.0);//Clamp(In.virtualMouseVec[1], -1.0, 1.0);//pos.y;
-	//console.log(pos);
-
-
-
-	//this.dynamicObjects[0].x += this.dynamicObjects[0].dir[0] * this.dynamicObjects[0].spd[0];
-	//this.dynamicObjects[0].y += this.dynamicObjects[0].dir[1] * this.dynamicObjects[0].spd[1];
-
-		//this.dynamicObjects[0].y = In.getCursorPosition().y;
 	
-
-	if (this._tmpInit === undefined)
-		if (dt  - this.startTime > 1000) {
-			// load a new asset into the game if it doesn't already exist in the resource manager
-			//var load = new Loader([ "/bin/client/data/4096x4096.png" ], function(done, asset, key) {
-			var load = new Loader([ "/bin/client/data/Cat_mewing.mp3" ], (done, asset, key) => {
-				var res = { type: ResourceManager.GetResourceType(key), data: asset, isLoaded: true };
-				self.resource.add(key, res);
-
-				console.log("dynamic load test has finished loading %s", key);
-				console.log(this, res, key);
-
-				var snd = new AudioContext();
-				//asset.play();
-				//asset.data.play();
-
-				resource = asset;
-				audiocontext = snd;
-
-			});
-			this._tmpInit = 1;
-			console.log("dynamic load test has started...");
-		}
 };
 
 /* animator will try to execute render as fast as possible
 	in most web browsers it will be limited at 60fps */
 Game.prototype.render = function(dt) {
 	var self = this;
-	craw.set(this.context.canvas.id);
-	craw.clear();
-	//rend(dt, this.dynamicObjects, this.resource);
-	var res = this.resource;
-	this.dynamicObjects.forEach(function(e) {
-		var img = res.get(e.res.sprite);
-		//console.log(img);
-		if (img == null) img = res.get("default_img");
-		//console.log(e.res, img);
-		
-		craw.img(img.data, {  x: Math.floor(e.x),  y: Math.floor(e.y),  w: e.width,  h: e.height, 
-						sx: e.res.offx, sy: e.res.offy, sw: e.res.size, sh: e.res.size });// sw: img.data.width, sh: img.data.height });
-	});
+	
 };
 
 /* functions exactly as render, except animator calls this 
