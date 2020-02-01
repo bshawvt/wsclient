@@ -10,23 +10,28 @@ function Game(opt) {
 	
 
 	this.TimeStep = opt.timeStep || 1000/30; // used by animator, here for convenience
-	this.network = null;
 	this.animator = null; // not instanced here because looping begins immediately
 	this.soundManager = null; // not instanced here because most browsers and mobile flip out 
+	this.network = new Network(); // the login token needs to be used immediately
 	this.controller = null;
-
 
 	this.scene = null;
 	this.renderer = null;
-	this.dynamicObjects = [];
-	this.dynamicObjectsQueue = [];
+	this.camera = null;
+
+	this.sceneObjects = [];
+	this.sceneObjectsQueue = [];
 
 	this.resource = new ResourceManager(opt.resources);
 	var context = { parent: opt.parent, 
 		// callback is optional
-		width: opt.width || window.innerWidth,
-		height: opt.height || window.innerHeight,
+		width: window.innerWidth,
+		height: window.innerHeight,
+		//onresize: this.onResize
 		onresize: function(ctx) {
+			self.camera.aspect = window.innerWidth / window.innerHeight;
+			self.camera.updateProjectionMatrix();
+			self.renderer.setSize(window.innerWidth, window.innerHeight);
 			ctx.resize(window.innerWidth, window.innerHeight);
 		}
 	};
@@ -63,31 +68,47 @@ Game.prototype.start = function() {
 								top: InputController.MAP_FORWARD = {key: 87, map: "W", bitmask: 4}, 
 								bottom: InputController.MAP_BACKWARD = {key: 83, map: "S", bitmask: 8}}}];
 	this.controller = new InputController({keys: keyMaps, sticks: touchMaps});
-	//this.controller.showController({keys: keyMaps, sticks: touchMaps});
 
-	this.dynamicObjects = [  ];
-	this.dynamicObjectsQueue = [];	
+	this.sceneObjects = [  ];
+	this.sceneObjectsQueue = [];
+
+	this.network.start();	
+
+	// threejs setup
+	this.scene = new THREE.Scene();
+	this.renderer = new THREE.WebGLRenderer({canvas: this.context.canvas});
+	this.renderer.setSize(window.innerWidth, window.innerHeight);
+	this.renderer.setClearColor(0xc8c8ff);
+	this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+	var cube = new SceneCube(); 
+	this.sceneObjectsQueue.push(cube);
+	this.camera.position.z = 5;
+
 	// i don't know if it matters but it's probably better to start animator after the other things
 	this.animator = new Animator(this);
 	this.startTime = this.animator.dt;
 	console.log("started");
 
 	// per app specific stuff 
-
-	this.scene = new THREE.Scene();
-	this.renderer = new THREE.WebGLRenderer();
 	
 
 
 };
 
+
 /* cleanup */
 Game.prototype.stop = function() {
 	if (this.animator==null) return;
 	this.animator.stop();
-
 	this.animator = null;
-	this.dynamicObjects = [];
+	
+	this.network.close();
+	this.network = null;
+
+	this.sceneObjects = [];
+	this.sceneObjectsQueue = [];
+
 	console.log("stopped");
 };
 
@@ -96,31 +117,44 @@ Game.prototype.frame = function(dt) {
 	var self = this;
 	var In = this.controller; 
 
+	for(var i = 0; i < this.sceneObjects.length; i++) {
+		var item = this.sceneObjects[i];
+		item.step(dt);
+	}
 	
+	this.network.sendFrame();
+
 };
 
 /* animator will try to execute render as fast as possible
 	in most web browsers it will be limited at 60fps */
 Game.prototype.render = function(dt) {
 	var self = this;
+
+	for(var i = 0; i < this.sceneObjects.length; i++) {
+		var item = this.sceneObjects[i];
+		item.draw(dt);
+	}
+	this.renderer.render(this.scene, this.camera);
 	
 };
 
 /* functions exactly as render, except animator calls this 
 	before stepping frames */
 Game.prototype.flush = function() {
-	for(var i1 = 0; i1 < this.dynamicObjectsQueue.length; i1++) {
-		var item = this.dynamicObjectsQueue[i1];
-		this.dynamicObjects.push(item);
+	for(var i1 = 0; i1 < this.sceneObjectsQueue.length; i1++) {
+		var item = this.sceneObjectsQueue[i1];
+		this.sceneObjects.push(item);
+		this.scene.add(item.object);
 	}
-	this.dynamicObjectsQueue = [];
+	this.sceneObjectsQueue = [];
 
-	for(var i2 = 0; i2 < this.dynamicObjects.length; i2++) {
-		var item = this.dynamicObjects[i2];
+	// deleting
+	for(var i2 = 0; i2 < this.sceneObjects.length; i2++) {
+		var item = this.sceneObjects[i2];
 		if (item.removed) {
-			this.dynamicObjects[i2] = this.dynamicObjects[this.dynamicObjects.length - 1];
-			//this.dynamicObjects[i2] = undefined;
-			this.dynamicObjects.pop();
+			this.sceneObjects[i2] = this.sceneObjects[this.sceneObjects.length - 1];
+			this.sceneObjects.pop();
 		}
 	}
 };

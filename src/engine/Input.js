@@ -8,7 +8,8 @@ function InputController(opts) {
 
 	this.touchSettings = {sensX: 1, sensY: 1, 
 		diagonalOffset: 0, 
-		feedback: { start: 25, move: 25, enabled: true }
+		feedback: { start: 25, move: 25, enabled: true },
+		positions: []
 	};
 	this.touchKeys = [];//[{map: InputController.TEST_MOBILE}]; //
 	this.touchSticks = [];//[/*{classNames: "app-bottom app-left app-controller-thumbs-dpad", type: 0}, */

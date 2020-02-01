@@ -1,13 +1,14 @@
-function Network(invoker) {
-	
-	this.invoker = invoker;
+function Network(opts) {
+	var opts = opts || {};
+	this.queuedMessage = []; // holds messages that shouldn't be processed immediately
 	this.netObjects = []; // a list of scene objects synchronized over a network
-	this.netObjects[0] = {name: "Server"};
 	this.socket = null;
-	this.state = 0;
+	this.state = 0; // 0 disconnected, 1 awaiting character select, 2 ready
+	this.hasStarted = false; // set from Game.start
 
+	this.out = opts.out || console.log;
 	this.frame = new NetworkFrame();
-	this.ping = -1; // latency round trip time
+	this.ping = -1;
 
 	// get token
 	this.session = document.cookie.match(/(^|;)?session=([^;]*)(;|$)/) || undefined;
@@ -17,26 +18,46 @@ function Network(invoker) {
 	else {
 		this.session = null;
 	}
+	// expire the token because it is one time use and limited time only anyway
+	document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/bin.html";
 
-	// expire the one time use session cookie 
-	//document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/client/index.html";
-	console.log(this);
-	console.log(invoker);
-	new ContainerNetDebugger(this); // debug
+	this.connect();
 
 };
-Network.prototype.connect = function(args) {
+Network.prototype.process = function(message) {
+	switch(message.type) {
+		case 0: {
+			break;
+		}
+		case 1: { // chatblob
+	
+			break;
+		}
+		case 2: { // authenticate blob
+			new ContainerCharacterSelect(this, message);
+			break;//
+		}
+		case 3: { 
+
+			break;
+		}
+		default: {
+			break;
+		}
+	}
+};
+Network.prototype.connect = function() {
 
 	if (this.session === null) {
-		this.invoker.ui.console("You need to authenticate before you can join the server");
+		this.out("You need to login before you can join the server");
 		return;
 	}
 
 	if (this.socket == null) {
-		this.invoker.ui.console("Connecting to server...");
+		this.out("Connecting to server...");
 		var connectionString = [ Config.servers.game.address, ":",
 			Config.servers.game.port, "/", this.session, "/", Config.version.build ];
-		
+
 		var socket = new WebSocket(connectionString.join(''));
 
 		socket.onclose = (event) => { this.onClose(event); }
@@ -47,83 +68,30 @@ Network.prototype.connect = function(args) {
 		this.socket = socket;
 	}
 };
-Network.prototype.directConnect = function(args) {
-	this.invoker.ui.console("directConnect to server...");
-	var connectionString = [ args.address + ":",
-		args.port + "/", args.session, "/", args.version  ];
 
-
-	var socket = new WebSocket(connectionString.join(''));
-
-	socket.onclose = (event) => { this.onClose(event); }
-	socket.onerror = (event) => { this.onError(event); }
-	socket.onmessage = (event) => { this.onMessage(event); }
-	socket.onopen = (event) => { this.onOpen(event); }
-
-	this.socket = socket;
-};
 Network.prototype.onClose = function(event) {
-	this.invoker.ui.console("Disconnected: " + event.reason);
-	this.setState(0);
+	this.out("Disconnected: " + event.reason);
+	//this.setState(0);
 };
 Network.prototype.onError = function(event) {
-	this.invoker.ui.console("Network error!");
+	this.out("Network error!");
 };
 Network.prototype.onMessage = function(event) {
 	//this.invoker.ui.console("Network: " + event.data);
 	var json = JSON.parse(event.data);
-	console.log(json);
-	//this.invoker.ui.console("raw: " + event.data);
-	Events.emit("networkOnMessage", event.data);
+	this.out(json);
 	for(var i = 0; i < json.messages.length; i++) {
 		var message = json.messages[i];
-
-		switch(message.type) {
-			case 0: {
-				break;
-			}
-			case 1: { // chatblob
-				//this.invoker.ui.chat(message);
-				var channel = (() => {
-					switch (message.channelId) {
-						case 0: {
-							return "All";
-						}
-						default: {
-							return "^";
-						}
-					}
-				})();
-
-				var from = this.netObjects[message.from];
-				if (from === undefined) {
-					from = (this.netObjects[message.from] = {name:"unknown"});
-				};
-
-				this.invoker.ui.console(channel + ": " + from.name + ": " + message.message);
-				break;
-			}
-			case 2: { // authenticate blob
-				if (message.ready) {
-					this.setState(1);
-				}
-				
-				new ContainerCharacterSelect(this, message);
-				
-				break;//
-			}
-			case 3: { // authenticate
-
-				break;
-			}
-			default: {
-				break;
-			}
+		if (!this.hasStarted) {
+			this.queuedMessage.push(message);
+			continue;
 		}
+		this.process(message);
 	}
 };
 Network.prototype.onOpen = function(event) {
-	this.invoker.ui.console("Authenticating...");
+	this.out("Authenticating...");
+	this.state = 1;
 };
 
 Network.prototype.sendFrame = function() {
@@ -133,18 +101,22 @@ Network.prototype.sendFrame = function() {
 		this.frame.clear();
 	}
 };
-Network.prototype.debugSendFrame = function() {
-	if (this.socket !== null) {
-		this.socket.send(this.frame.serialize());
-		//this.frame.clear();
-	}
-};
+// used to propagate messages received before the game has started
+Network.prototype.start = function() {
+	//new ContainerCharacterSelect(this, {ready: true, characters: [], id: 0, type: 2 });
 
-Network.prototype.setState = function(state) {
-	/* connection state
-	0: unconnected
-	1: authenticated
-	*/
-	this.state = state;
-	//this.invoker.ui.console("state " + this.state);
+	var self = this;
+	this.hasStarted = true;
+	this.queuedMessage.forEach(function(item) {
+		self.process(item);
+	});
+	this.queuedMessage = [];
 };
+Network.prototype.close = function() {
+	this.socket.close();
+};
+Network.BlobTypes = {};
+Network.BlobTypes.None = 0;
+Network.BlobTypes.Chat = 1;
+Network.BlobTypes.Join = 2;
+Network.BlobTypes.State = 3;
