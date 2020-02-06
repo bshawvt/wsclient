@@ -143,14 +143,23 @@ InputController.prototype._createSettingsElements = function(html) {
 	var edit = document.createElement('div');
 	edit.setAttribute("class", "app-controller-edit-activate app-hidden");
 
+	var controller = document.getElementById("app-controller");
+	console.log(controller);
+	var attrDefaults = controller.className;
+
 	function closeSettings() {
 		edit.setAttribute("class", "app-hidden");
 		toggle.setAttribute("class", "app-controller-edit app-right app-transparent");
+		controller.style.zIndex = 2;
+		//controller.setAttribute("class", attrDefaults);
+
 	}
 
 	function openSettings() {
 		edit.setAttribute("class", "app-controller-edit-activate");
 		toggle.setAttribute("class", "app-controller-edit app-hidden");
+		controller.style.zIndex = 10;
+		//controller.setAttribute("class", attrDefaults + " foreground");
 	}
 
 	toggle.onclick = function() {

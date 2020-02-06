@@ -29,9 +29,11 @@ function Game(opt) {
 		height: window.innerHeight,
 		//onresize: this.onResize
 		onresize: function(ctx) {
-			self.camera.aspect = window.innerWidth / window.innerHeight;
-			self.camera.updateProjectionMatrix();
-			self.renderer.setSize(window.innerWidth, window.innerHeight);
+			if (self.animator !== null) { // animator is null until the game starts
+				self.camera.aspect = window.innerWidth / window.innerHeight;
+				self.camera.updateProjectionMatrix();
+				self.renderer.setSize(window.innerWidth, window.innerHeight);
+			}
 			ctx.resize(window.innerWidth, window.innerHeight);
 		}
 	};
@@ -158,19 +160,3 @@ Game.prototype.flush = function() {
 		}
 	}
 };
-
-/*if (typeof app !=="undefined") {
-	app.stop();
-	console.log(app);
-}
-var app = undefined;
-setTimeout(function() {
-
-	new craw({parent: "canvas-1", id: "canvas2d_game"});
-
-	var opt = { canvas: "canvas2d_game" };
-	app = new Game(opt);
-	app.start();
-
-}, 100);
-*/

@@ -85,7 +85,7 @@ function EnterFullscreen(element) {
 	else if (typeof d.msRequestFullscreen === "function") {
 		d.msRequestFullscreen();
 	}
-
+	console.log("Enter fullscreen done");
 	window._lastFullscreenState = true; // 
 }
 function ExitFullscreen() {
@@ -117,6 +117,7 @@ function MobileOrientation(orientation) {
 	else if (typeof window.screen.lockOrientation === "function") {
 		window.screen.lockOrientation(orientation);
 	}
+	console.log("Orientation locked")
 }
 /* returns mobile orientation */
 function GetOrientation() {

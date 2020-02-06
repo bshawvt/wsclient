@@ -16,6 +16,7 @@ var Config = {
 	},
 
 	defaults: {
+		log: console.log,
 		int2rgb: "rgb(255, 255, 255);",
 		touchSettings: {
 			sensX: 1.0,

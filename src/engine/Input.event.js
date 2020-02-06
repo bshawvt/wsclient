@@ -1,4 +1,4 @@
-function InputEvent(event, noDefaultPropagation) {
+function EventInput(event, noDefaultPropagation) {
 	/* normalizes mouse/touch/keyboard events maybe and returns an Input.definitions object
 		todo: multitouch support, keyboard support?
 	*/

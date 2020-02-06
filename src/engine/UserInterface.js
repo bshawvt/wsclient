@@ -1,6 +1,34 @@
 /* message response is expected to be a join blob */
+function Container() {
+
+}
+
+Container.Menu = 1;
+Container.Console = 2;
+Container.Select = 4;
+Container.Todo = 8;
+
+function ContainerMenu() {
+	var html = document.getElementById("ui-container");
+	if (html==null) {
+		html = document.createElement("div");
+		html.id = "ui-container";
+		document.body.appendChild(html);
+	}
+
+	var container = document.createElement("div");
+	container.setAttribute("class", "ui-menu");
+
+	html.appendChild(container);
+}
 function ContainerCharacterSelect(network, message) {
-	var html = document.body;
+	var html = document.getElementById("ui-container");
+	if (html==null) {
+		html = document.createElement("div");
+		html.id = "ui-container";
+		document.body.appendChild(html);
+	}
+
 	var container = document.createElement("div");
 	container.setAttribute("class", "ui-charselect");
 
@@ -18,9 +46,10 @@ function ContainerCharacterSelect(network, message) {
 			console.log(this.data);
 			var blob = {type: Network.BlobTypes.Join, id: this.data};
 			network.frame.push(blob);
-			//close();
+			close();
 		}
-		select.innerText = "a nameless";
+		console.log(message.characters[i]);
+		select.innerText = message.characters[i].name;
 		group.appendChild(select);
 	}
 
@@ -31,7 +60,7 @@ function ContainerCharacterSelect(network, message) {
 			var blob = {type: Network.BlobTypes.Join, id: -1};
 			console.log(blob);
 			network.frame.push(blob);
-			//close();
+			close();
 		}
 		select.innerText = "Create new character";
 		group.appendChild(select);
@@ -43,4 +72,92 @@ function ContainerCharacterSelect(network, message) {
 
 	html.appendChild(container);
 	console.log("ASDASD!!!!!");
+}
+
+function ContainerConsole(network) {
+	var html = document.getElementById("ui-container");
+	if (html==null) {
+		html = document.createElement("div");
+		html.id = "ui-container";
+		document.body.appendChild(html);
+	}
+
+	var self = this;
+	//var html = document.body;
+	var container = document.createElement("div");
+	container.setAttribute("class", "ui-console");
+
+	var messages = document.createElement("div");
+	messages.setAttribute("class", "ui-console-messagebody");
+
+	this.cl = console.log;
+	this.append = function(arguewithmem8) {
+		self.cl(arguewithmem8);
+		for(var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			var m = arg;
+			if (typeof arg === "object") {
+				m = JSON.stringify(arg);
+			}
+			var msg = document.createElement("div");
+			msg.innerText = m;
+			//this.scrollTop = this.scrollHeight;
+			if (!isMobile()) {
+				messages.appendChild(msg);
+				messages.scrollTop = messages.scrollHeight;
+			}
+			else { // 
+				messages.prepend(msg);
+				messages.scrollTop = 0;
+			}
+		}
+	}
+
+	this.isActive = false;
+	var toggle = function(a) {
+		self.isActive = !self.isActive;
+		if (self.isActive) { // open state
+			container.setAttribute("class", "ui-console");
+		}
+		else { // closed state
+			container.setAttribute("class", "ui-console-hidden");
+		}
+	}
+
+	var inputContainer = document.createElement("div");
+	inputContainer.setAttribute("class", "ui-console-input");
+
+	var input = document.createElement("input");
+	input.placeholder = "> Press enter to send";
+
+	function send(event) {
+		var evt = {};
+		if (event === null) { // null only when send is clicked
+			evt.key = 13;
+		}
+		else {
+			evt = new EventInput(event);
+		}
+
+		if (evt.key == 13) {
+			self.append(input.value);
+			input.value = "";
+		}
+	}
+	input.onkeydown = send;
+
+	var sendBtn = document.createElement("button");
+	sendBtn.setAttribute("class", "ui-console-input-send");
+	sendBtn.innerText = "Send";
+	sendBtn.onclick = function(e) { send(null); };
+
+	inputContainer.appendChild(input);
+	inputContainer.appendChild(sendBtn);
+
+	console.log = this.append;
+	container.appendChild(messages);
+	container.appendChild(inputContainer);
+
+	html.appendChild(container);
+
 }

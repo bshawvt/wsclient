@@ -6,7 +6,7 @@ function Network(opts) {
 	this.state = 0; // 0 disconnected, 1 awaiting character select, 2 ready
 	this.hasStarted = false; // set from Game.start
 
-	this.out = opts.out || console.log;
+	//this.out = opts.out || console.log;
 	this.frame = new NetworkFrame();
 	this.ping = -1;
 
@@ -21,6 +21,7 @@ function Network(opts) {
 	// expire the token because it is one time use and limited time only anyway
 	document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/bin.html";
 
+	this.console = null;
 	this.connect();
 
 };
@@ -34,7 +35,14 @@ Network.prototype.process = function(message) {
 			break;
 		}
 		case 2: { // authenticate blob
-			new ContainerCharacterSelect(this, message);
+			if (message.ready) {
+				new ContainerCharacterSelect(this, message);
+				this.state = 2;
+			}
+			else {
+				this.out("there a server error.");
+				this.close();
+			}
 			break;//
 		}
 		case 3: { 
@@ -49,12 +57,12 @@ Network.prototype.process = function(message) {
 Network.prototype.connect = function() {
 
 	if (this.session === null) {
-		this.out("You need to login before you can join the server");
+		console.log("You need to login before you can join the server");
 		return;
 	}
 
 	if (this.socket == null) {
-		this.out("Connecting to server...");
+		console.log("Connecting to server...");
 		var connectionString = [ Config.servers.game.address, ":",
 			Config.servers.game.port, "/", this.session, "/", Config.version.build ];
 
@@ -70,16 +78,16 @@ Network.prototype.connect = function() {
 };
 
 Network.prototype.onClose = function(event) {
-	this.out("Disconnected: " + event.reason);
+	console.log("Disconnected: " + event.reason);
 	//this.setState(0);
 };
 Network.prototype.onError = function(event) {
-	this.out("Network error!");
+	console.log("Network error!");
 };
 Network.prototype.onMessage = function(event) {
 	//this.invoker.ui.console("Network: " + event.data);
 	var json = JSON.parse(event.data);
-	this.out(json);
+	console.log(json);
 	for(var i = 0; i < json.messages.length; i++) {
 		var message = json.messages[i];
 		if (!this.hasStarted) {
@@ -90,7 +98,7 @@ Network.prototype.onMessage = function(event) {
 	}
 };
 Network.prototype.onOpen = function(event) {
-	this.out("Authenticating...");
+	console.log("Authenticating...");
 	this.state = 1;
 };
 
@@ -101,10 +109,10 @@ Network.prototype.sendFrame = function() {
 		this.frame.clear();
 	}
 };
-// used to propagate messages received before the game has started
+/* called when Game has been activated to propagate messages received before it was activated */
 Network.prototype.start = function() {
-	//new ContainerCharacterSelect(this, {ready: true, characters: [], id: 0, type: 2 });
-
+	new ContainerCharacterSelect(this, {ready: true, characters: [], id: 0, type: 2 });
+	this.console = new ContainerConsole(this);
 	var self = this;
 	this.hasStarted = true;
 	this.queuedMessage.forEach(function(item) {
