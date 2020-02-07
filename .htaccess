@@ -1,0 +1,10 @@
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.+)$ index.php [QSA,L]
+
+#ErrorDocument 403 /?controller=error&action=403
+#ErrorDocument 404 /?controller=error&action=404
+#ErrorDocument 403 http://anotherprophecy.com/?controller=error&action=403
+#ErrorDocument 404 http://anotherprophecy.com/?controller=error&action=404

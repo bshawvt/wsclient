@@ -2,8 +2,14 @@
 	class Controller { // todo: this is a terrible template 
 		private $dbContext = NULL;
 		private $viewModel = NULL;
-		function __construct() {
+		function __construct($route) {
 			$this->dbContext = (new DBContext())->getContext();
+			switch($route->getAction()) {
+				default: {
+					$this->view = $this->index();
+					break;
+				}
+			}
 		}
 		function __destruct() {
 			$this->dbContext = NULL;
@@ -12,10 +18,10 @@
 			return $this->viewModel;
 		}
 		public function getView() {
-			return $this->index();
+			return include ($this->view);
 		}
 		public function index() {
-			return include ("views/index.php");
+			return "views/index.php";
 		}
 	}
 

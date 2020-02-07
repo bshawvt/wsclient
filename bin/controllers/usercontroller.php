@@ -5,8 +5,10 @@
 	require ("dtos/useraccountdto.php");
 	require ("dtos/createdto.php");
 	require ("dtos/recoverdto.php");
+	require ("dtos/errordto.php");
 
 	require ("services/emailservice.php");
+	require ("services/captchaservice.php");
 
 	class UserController {
 		private $dbContext = NULL;
@@ -17,28 +19,70 @@
 		function __construct($route) {
 
 			$this->dbContext = (new DBContext())->getContext();
+
+			$username = "";
+			if (isset($_POST["username"])) {
+				$username = $_POST["username"];
+			}
+
+			$hashword1 = "";
+			if (isset($_POST["hashword1"])) {
+				$hashword1 = $_POST["hashword1"];
+			}
+
+			$hashword2 = "";
+			if (isset($_POST["hashword2"])) {
+				$hashword2 = $_POST["hashword2"];
+			}
+
+			$ip = "";
+			if (isset($_POST["ip"])) {
+				$ip = $_POST["ip"];
+			}
+			
+			$secret = "";
+			if (isset($_POST["secret"])) {
+				$secret = $_POST["secret"];
+			}
+
+			$email = "";
+			if (isset($_POST["email"])) {
+				$email = $_POST["email"];
+			}
+			
+			$recovery_token = "";
+			if (isset($_POST["recovery_token"])) {
+				$recovery_token = $_POST["recovery_token"];
+			}
+
+			$captcha = "";
+			if (isset($_POST["captcha"])) {
+				$captcha = $_POST["captcha"];
+			}
 			
 			// todo : this should be moved to routing
 			$this->route = $route;
-			switch($this->route->getAction()) {
+			switch($route->getAction()) {
 				case "play": {
-					$this->view = $this->play($this->route->username, $this->route->hashword1, $this->route->clientIP);
+
+					$this->view = $this->play($username, $hashword1, $ip, $captcha);
 					break;
 				}
 				case "create": {
-					$this->view = $this->create($this->route->username, $this->route->hashword1, $this->route->hashword2, $this->route->email, $this->route->secret);
+					$this->view = $this->create($username, $hashword1, $hashword2, $email, $secret, $captcha);
 					break;
 				}
 				case "recover": {
-					$this->view = $this->recover($this->route->email);
+					$this->view = $this->recover($email, $captcha);
 					break;
 				}
 				case "reset": {
-					$this->view = $this->reset($this->route->recovery_email, $this->route->token);
+
+					$this->view = $this->reset($_GET["recovery_email"], $_GET["token"]);
 					break;
 				}
 				case "change": {
-					$this->view = $this->change($this->route->recovery_token, $this->route->email, $this->route->hashword1, $this->route->hashword2);
+					$this->view = $this->change($recovery_token, $email, $hashword1, $hashword2);
 					break;
 				}
 				default: {
@@ -60,66 +104,89 @@
 		public function index() {
 			return "views/creation.html";
 		}
-		public function play($username, $hashword, $ip) {
+		public function play($username, $hashword, $ip, $captcha) {
 
 			$ip = $_SERVER['REMOTE_ADDR'];
 			$ps = $this->dbContext->prepare('CALL WSProc_GenerateSessionToken(?, ?, ?)');
 
-			$ps->bindParam(1, $username);
-			$ps->bindParam(2, $hashword);
-			$ps->bindParam(3, $ip);
-			$ps->execute();
+			/*$catchaCmp = ""
+			if(isset($_SESSION["generated_captcha"]) {
+				$catchaCmp = $_SESSION["generated_captcha"]
+			}
+			$captchaCmp = explode("|", $captchaCmp);
+			$captchaCmp = implode("", $captchaCmp);
+			(new Captcha())->consume();*/
+			if ((new Captcha())->consume($captcha) == 0) {
+				$ps->bindParam(1, $username);
+				$ps->bindParam(2, $hashword);
+				$ps->bindParam(3, $ip);
+				$ps->execute();
 
-			$resultSet = $ps->fetch();
-			if ($ps->rowCount() > 0) {
-				$this->viewModel = new UserAccountDto($resultSet);
-				if ($this->viewModel->useraccount->sessionToken !== NULL) {
-					// redirect away from play.php when the client authenticates
-					#setcookie("session", $this->viewModel->useraccount->sessionToken, time()+10, "client/index.html");
-					//setcookie("session", $this->viewModel->useraccount->sessionToken, time()+10, "client/index.html");
-					//header("Location: client/index.html");
-					setcookie("session", $this->viewModel->useraccount->sessionToken, time()+10, Config::$gameClientUrl);
-					header("Location: " . Config::$gameClientUrl);
+				$resultSet = $ps->fetch();
+				if ($ps->rowCount() > 0) {
+					$this->viewModel = new UserAccountDto($resultSet);
+					if ($this->viewModel->useraccount->sessionToken !== NULL) {
+						// redirect away from play.php when the client authenticates
+						#setcookie("session", $this->viewModel->useraccount->sessionToken, time()+10, "client/index.html");
+						//setcookie("session", $this->viewModel->useraccount->sessionToken, time()+10, "client/index.html");
+						//header("Location: client/index.html");
+						setcookie("session", $this->viewModel->useraccount->sessionToken, time()+10, Config::$gameClientUrl);
+						header("Location: " . Config::$gameClientUrl);
+					}
+				}
+				else {
+					$this->viewModel = new ErrorDto();
+					$this->viewModel->setError("You failed to authenticate");
 				}
 			}
+			else {
+				$this->viewModel = new ErrorDto();
+				$this->viewModel->setError("Captcha was incorrect");
+			}
+
 			return "views/play.php"; // fallback if authentication fails
 		}
-		public function create($username, $hashword1, $hashword2, $email, $secret) {
+		public function create($username, $hashword1, $hashword2, $email, $secret, $captcha) {
 			$MAGIC_KEY = "thing"; // make sure a user reads things before signing up
 
 			$this->viewModel = new CreateDto();
 			if (strlen($username) > 4) {
 				if (strcmp($secret, $MAGIC_KEY) == 0) {
-					if (strcmp($hashword1, $hashword2) == 0) {
-						if ($email!=NULL && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-							$this->viewModel->setError("Invalid email address");
-						}
-						else {
-							$query = 'CALL WSProc_InsertUserAccount(?, ?, ?);';
-							if ($email == NULL) {
-								$query = 'CALL WSProc_InsertUserAccount(?, ?, NULL);';
-							}
-							$ps = $this->dbContext->prepare($query);
-							$ps->bindParam(1, $username);
-							$ps->bindParam(2, $hashword1);
-
-							if ($email != NULL) {
-								$ps->bindParam(3, $email);
-							}
-
-							if ($ps->execute()) {
-								$this->viewModel->setUserAccount(new UserAccountModel(NULL));
-								$this->viewModel->useraccount->username = $username;
-								$this->viewModel->useraccount->email = $email;
+					if ((new Captcha())->consume($captcha) == 0) {
+						if (strcmp($hashword1, $hashword2) == 0) {
+							if ($email!=NULL && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+								$this->viewModel->setError("Invalid email address");
 							}
 							else {
-								//print_r($ps->errorInfo());
-								$this->viewModel->setError("That username or email address is already in use");
+								$query = 'CALL WSProc_InsertUserAccount(?, ?, ?);';
+								if ($email == NULL) {
+									$query = 'CALL WSProc_InsertUserAccount(?, ?, NULL);';
+								}
+								$ps = $this->dbContext->prepare($query);
+								$ps->bindParam(1, $username);
+								$ps->bindParam(2, $hashword1);
+
+								if ($email != NULL) {
+									$ps->bindParam(3, $email);
+								}
+
+								if ($ps->execute()) {
+									$this->viewModel->setUserAccount(new UserAccountModel(NULL));
+									$this->viewModel->useraccount->username = $username;
+									$this->viewModel->useraccount->email = $email;
+								}
+								else {
+									//print_r($ps->errorInfo());
+									$this->viewModel->setError("That username or email address is already in use");
+								}
 							}
+						}
+						else {
+							$this->viewModel->setError("Password and confirmed password do not match");
 						}
 					}
 					else {
-						$this->viewModel->setError("Password and confirmed password do not match");
+						$this->viewModel->setError("Captcha was incorrect");
 					}
 				}
 				else {
@@ -132,12 +199,15 @@
 			return "views/create.php";
 		}
 
-		public function recover($email) {
+		public function recover($email, $captcha) {
 			// generate and insert new useraccountrecovery token
 
 			$this->viewModel = new RecoverDto();
 			if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 				$this->viewModel->setError("Invalid email address");
+			}
+			else if ((new Captcha())->consume($captcha) != 0) {
+				$this->viewModel->setError("Captcha was incorrect");
 			}
 			else {
 				$ps = $this->dbContext->prepare("CALL WSProc_GenerateRecoveryToken(?);");

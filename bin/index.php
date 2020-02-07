@@ -8,6 +8,10 @@
 	$route = new Route();
 	$controller = $route->getController();
 	$view = $controller; // todo: 
+
+	
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -88,56 +92,81 @@
 				req.send();
 			}
 
-			function getFormPasswordElement(form) { 
-				var result = {hashword1: undefined, hashword2: undefined};
-				var inputs = form.getElementsByTagName("input");
-				for(var i = 0; i < inputs.length; i++) {
-					var name = inputs[i].getAttribute("name");
-					// each form should have one or the other whenever this function is called so set both here
-					if (name === "hashword1") {
-						result.hashword1 = inputs[i];
-					}
-					else if (name === "hashword2") {
-						result.hashword2 = inputs[i];
-					}
-				}
-				return result;
-			}
-
-			function onsubmit_login(e, event) {
-				//event.preventDefault();
-
-				/*var hashwords = getFormPasswordElement(e);
-				var crypt = new sjcl.hash.sha256();
-				
-				crypt.update(hashwords.hashword1.value);
-				var hash = sjcl.codec.base64.fromBits(crypt.finalize());
-				
-				hashwords.hashword1.value = hash;
-				console.log(hash);*/
+			function onsubmit_recover(e, event) {
+				event.preventDefault();
+				// todo: 
 				//e.submit();
+				showCaptcha(e);
+			}
+			function onsubmit_login(e, event) {
+				event.preventDefault();
+				// todo: 
+				//e.submit();
+
+				//e.children[0].value = document.getElementById("captcha_input");
+				//e.submit();
+				//awaitSubmit(e);
+				showCaptcha(e);
+				
 			}
 
 			function onsubmit_create(e, event) {
-				//event.preventDefault();
-
-				/*var hashwords = getFormPasswordElement(e);
-				var crypt = new sjcl.hash.sha256();
-				
-				crypt.update(hashwords.hashword1.value);
-				var hash1 = sjcl.codec.base64.fromBits(crypt.finalize());
-
-				crypt.update(hashwords.hashword2.value);
-				var hash2 = sjcl.codec.base64.fromBits(crypt.finalize());
-
-				hashwords.hashword1.value = hash1;
-				hashwords.hashword2.value = hash2;*/
+				event.preventDefault();
+				// todo: 
 				//e.submit();
+				showCaptcha(e);
 			}
+
+			function awaitSubmit(form, captcha) {
+				form.children[0].value = captcha;
+				form.submit();
+			}
+
+			function showCaptcha(e) {
+				var html = document.createElement("div");
+				html.setAttribute("class", "modal");
+
+				var container = document.createElement("div");
+				container.setAttribute("class", "modal-contents");
+
+				var img = document.createElement("img");
+				img.src = "views/captcha.php";
+
+				var input = document.createElement("input");
+				input.placeholder = "_ _ _"
+				input.onkeydown = function(e) {
+					if (e.keyCode == 13) {
+						button.click();
+					}
+				}
+				var button = document.createElement("button");
+				button.innerText = "Continue";
+				button.onclick = function() {
+					awaitSubmit(e, input.value);
+					document.body.remove(html);
+				}
+
+				var label = document.createElement("label");
+				label.innerText = "Enter the number:";
+
+				container.appendChild(img);
+				container.appendChild(label);
+				container.appendChild(input);
+				container.appendChild(button);
+
+				html.appendChild(container);
+
+				document.body.appendChild(html);
+				input.focus();
+			}
+
 			</script>
 	</head>
 
 	<body>
+
+
+
 		<div class="wrapper">
 			<div class="portal-body">
 				<div class="header warn">
@@ -152,6 +181,7 @@
 									<span class="clear-fix"></span>
 
 									<form method="POST" action="?controller=user&action=create" onsubmit="onsubmit_create(this, event)">
+										<input name="captcha" placeholder="" class="hidden-field"/>
 										<input name="username" placeholder="Username" required/>
 										<input name="hashword1" value="" placeholder="Password" type="Password" required/>
 										<input name="hashword2" value="" placeholder="Confirm password" type="Password" required/>
@@ -173,8 +203,9 @@
 							<div class="user-form">
 								<label>Login and join the game
 									<form method="POST" action="?controller=user&action=play" onsubmit="onsubmit_login(this, event)">
-										<input name="username" placeholder="Username" required/>
-										<input name="hashword1" value="" placeholder="Password" type="Password" required/>
+										<input name="captcha" placeholder="" class="hidden-field"/>
+										<input name="username" placeholder="Username" required value="2"/>
+										<input name="hashword1" value="2" placeholder="Password" type="Password" required/>
 										<button type="submit">Login</button>
 									</form>
 								</label>
@@ -186,7 +217,8 @@
 							<summary>Recover</summary>
 							<div class="user-form">
 								<label>Change password / recover your account
-									<form method="POST" action="?controller=user&action=recover">
+									<form method="POST" action="?controller=user&action=recover" onsubmit="onsubmit_recover(this, event)">
+										<input name="captcha" placeholder="" class="hidden-field"/>
 										<input name="email" placeholder="Your recovery@email.com" required/>
 										<button type="submit">Send Email</button>
 									</form>

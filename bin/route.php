@@ -1,5 +1,84 @@
 <?PHP 
-	
+
+	require ("config.php");
+	require ("dbcontext.php");
+
+	require ("controllers/controller.php");
+	require ("controllers/usercontroller.php");
+
+	class Route {
+		/* todo: 
+		instead of query strings https://anotherprophecy.com/?controller=mycontroller&action=myaction&randomarg1=more&randomarg2=things
+		routing needs to become https://anotherprophecy.com/mycontroller/myaction/more/things
+
+		so relying on this hardcoded method is probably a big no no
+		*/
+		/*private $action = NULL;
+		private $controller = NULL;
+
+		public $clientIP = NULL;
+		public $username = NULL;*/
+
+
+		function __construct() {
+
+			if (session_status() !== PHP_SESSION_ACTIVE ) {
+				session_start();
+			}
+			
+			$uri = preg_split("/[?#&\/]/", $_SERVER['REQUEST_URI']);
+
+			$uri_tokens = array();
+			$uri_length = count($uri);
+
+			if ($uri_length >= 3) {
+				$uri_tokens = [	"controller" => $uri[1], 
+								"action" => $uri[2]];
+			}
+			else {
+				$uri_tokens["controller"] = "default";
+				$uri_tokens["action"] = "none";
+			}
+
+			for($i1 = 3; $i1 < $uri_length; $i1++) {
+				$uri_tokens["query".($i1-2)] = $uri[$i1];
+			}
+			$this->tokens = $uri_tokens;
+			//print_r($_POST);
+
+
+			// fallback gets
+			if (isset($_GET['controller'])) {
+				$this->tokens["controller"] = strtolower($_GET['controller']);
+			}
+
+			if (isset($_GET['action'])) {
+				$this->tokens["action"] = strtolower($_GET['action']);
+			}
+
+			//print_r($uri);
+		}
+		function __destruct() {
+			//$this->dbContext = NULL;
+		}
+		public function getAction() {
+			return $this->tokens["action"];
+		}
+		public function getController() {
+			switch ($this->tokens["controller"]) {
+				case "user": {
+					return new UserController($this);
+				}
+				default: {
+					return new Controller($this);
+				}
+			}
+		}
+
+	}
+
+
+	/*
 	require ("config.php");
 	require ("dbcontext.php");
 
@@ -78,4 +157,5 @@
 		}
 
 	}
+	*/
 ?>
