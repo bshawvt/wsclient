@@ -125,6 +125,11 @@
 			function showCaptcha(e) {
 				var html = document.createElement("div");
 				html.setAttribute("class", "modal");
+				html.onclick = function(e) {
+					if (e.target.className === "modal") {
+						html.remove();
+					}
+				}
 
 				var container = document.createElement("div");
 				container.setAttribute("class", "modal-contents");
@@ -133,17 +138,19 @@
 				img.src = "views/captcha.php";
 
 				var input = document.createElement("input");
-				input.placeholder = "_ _ _"
+				input.placeholder = "_ _ _";
 				input.onkeydown = function(e) {
 					if (e.keyCode == 13) {
 						button.click();
 					}
 				}
+
 				var button = document.createElement("button");
 				button.innerText = "Continue";
 				button.onclick = function() {
 					awaitSubmit(e, input.value);
-					document.body.remove(html);
+					//document.body.remove(html);
+					html.remove();
 				}
 
 				var label = document.createElement("label");

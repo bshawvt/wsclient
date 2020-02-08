@@ -18,6 +18,7 @@
 			$captchaCmp = "";
 			if(isset($_SESSION["generated_captcha"])) {
 				$captchaCmp = $_SESSION["generated_captcha"];
+				unset($_SESSION['generated_captcha']);
 			}
 			else {
 				return -1;
@@ -25,7 +26,6 @@
 			$captchaCmp = explode("|", $captchaCmp);
 			$captchaCmp = implode("", $captchaCmp);
 
-			unset($_SESSION['generated_captcha']);
 			return strcmp($captcha, $captchaCmp);
 		}
 
@@ -40,7 +40,7 @@
 
 			for($i = 0; $i < $numDigits; $i++) {
 				$set = array(rand(0, 255), rand(0, 255), rand(0, 255));
-				$color[] = [ "fg" => imagecolorallocatealpha($image, 255 - $set[0], 255 - $set[1], 255 - $set[2], 40), 
+				$color[] = [ "fg" => imagecolorallocatealpha($image, 255 - $set[0], 255 - $set[1], 255 - $set[2], 30), 
 							 "bg" => imagecolorallocatealpha($image, $set[0], $set[1], $set[2], 80 ) ];
 			}
 			$colors = count($color) - 1;
@@ -49,8 +49,8 @@
 			$randomDigits = implode("|", $word);
 			for($x = 0; $x < count($word); $x++) {
 				
-				$offsetX = rand(-10, 10);
-				$offsetY = rand(-10, 10);
+				$offsetX = rand(0, 15);
+				$offsetY = rand(-10, 15);
 				$rngfont = rand(0, 5);
 				switch ($rngfont) {
 					case 1: {
@@ -67,7 +67,7 @@
 						break;
 					}
 				}
-				imagefttext($image, rand(50, 75), 0, 30 + $x * 50 + $offsetX, 80 + $offsetY, $color[$x]["fg"], $fontfile, $word[$x]);
+				imagefttext($image, rand(50, 75), 0, 30 + $x * 35 + $offsetX, 80 + $offsetY, $color[$x]["fg"], $fontfile, $word[$x]);
 			}
 			
 			for($ix = 0; $ix < $width; $ix++) {
@@ -88,7 +88,7 @@
 			}
 			$_SESSION['generated_captcha'] = $randomDigits;
 
-			//header("Content-Type: image/png");
+			header("Content-Type: image/png");
 			imagepng($image);
 			imagedestroy($image);
 		}
