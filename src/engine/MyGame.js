@@ -12,7 +12,7 @@ function Game(opt) {
 	this.TimeStep = opt.timeStep || 1000/30; // used by animator, here for convenience
 	this.animator = null; // not instanced here because looping begins immediately
 	this.soundManager = null; // not instanced here because most browsers and mobile flip out 
-	this.network = new Network(); // the login token needs to be used immediately
+	this.network = new Network({invoker: this}); // the login token needs to be used immediately
 	this.controller = null;
 
 	this.scene = null;
@@ -83,8 +83,8 @@ Game.prototype.start = function() {
 	this.renderer.setClearColor(0xc8c8ff);
 	this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-	var cube = new SceneCube(); 
-	this.sceneObjectsQueue.push(cube);
+	//var cube = new SceneCube(); 
+	//this.sceneObjectsQueue.push(cube);
 	this.camera.position.z = 5;
 
 	// i don't know if it matters but it's probably better to start animator after the other things

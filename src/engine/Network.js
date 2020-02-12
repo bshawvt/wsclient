@@ -21,31 +21,61 @@ function Network(opts) {
 	// expire the token because it is one time use and limited time only anyway
 	document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/bin.html";
 
+	this.game = opts.invoker || null;
 	this.console = null;
 	this.connect();
 
 };
 Network.prototype.process = function(message) {
+	console.log(message);
 	switch(message.type) {
-		case 0: {
+		case Network.BlobTypes.None: {
 			break;
 		}
-		case 1: { // chatblob
-	
+		case Network.BlobTypes.Chat: {
 			break;
 		}
-		case 2: { // authenticate blob
+		case Network.BlobTypes.Join: {
 			if (message.ready) {
 				new ContainerCharacterSelect(this, message);
 				this.state = 2;
 			}
 			else {
-				this.out("there a server error.");
+				console.log("there was a server error.");
 				this.close();
 			}
 			break;//
 		}
-		case 3: { 
+		case Network.BlobTypes.State: { 
+			console.log("State blob yay");
+			var id = "0" + message.id; // converted to a string for map
+			
+			if (message.removed) {
+				console.log("received update to remove object");
+			}
+
+			if ( this.netObjects[id] === undefined ) {
+				console.log("received update for unknown object");
+				var sceneObj = new SceneCube();
+				this.netObjects[id] = sceneObj;
+				this.game.sceneObjectsQueue.push(sceneObj);
+			}
+
+			this.netObjects[id].setState(message);
+
+			/*var type = message.objectType;
+			switch (type) {
+				case NetObject.Types.Player: {
+					this.netObjects[id] = new PlayerNetObject();
+					break;
+				}
+				case NetObject.Types.Default:
+				default: {
+					console.log("unknown object type");
+					break;
+				}
+			}*/
+			
 
 			break;
 		}
@@ -111,6 +141,10 @@ Network.prototype.sendFrame = function() {
 };
 /* called when Game has been activated to propagate messages received before it was activated */
 Network.prototype.start = function() {
+	if (this.game == null) { 
+		console.error("Network class was never created with a reference to the game");
+		return; 
+	}
 	new ContainerCharacterSelect(this, {ready: true, characters: [], id: 0, type: 2 });
 	this.console = new ContainerConsole(this);
 	var self = this;
@@ -123,8 +157,10 @@ Network.prototype.start = function() {
 Network.prototype.close = function() {
 	this.socket.close();
 };
+// mirror of MessageBlob.java types
 Network.BlobTypes = {};
 Network.BlobTypes.None = 0;
 Network.BlobTypes.Chat = 1;
 Network.BlobTypes.Join = 2;
 Network.BlobTypes.State = 3;
+

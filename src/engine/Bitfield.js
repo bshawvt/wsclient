@@ -1,4 +1,27 @@
-function Bitmask() {
+function Bitfield(bitfield) {
+	this.field = bitfield || 0;
+}
+/* sets bit to 1 */
+Bitfield.prototype.add = function(bit) {
+	this.field |= bit;
+}
+/* sets bit to 0 */
+Bitfield.prototype.subtract = function(bit) {
+	this.field &= ~bit;
+}
+/* returns bits */
+Bitfield.prototype.get = function() {
+	return this.field;
+}
+/* returns 0 if the bit is unset */
+Bitfield.prototype.compare = function(bit) {
+	return this.field & bit;
+}
+/* overwrite bits  */
+Bitfield.prototype.set = function(bitfield) {
+	this.field = bitfield;
+}
+/*function Bitmask() {
 	this.mask = 0;
 }
 Bitmask.prototype.add = function(x) {
@@ -27,7 +50,7 @@ Bitmask.prototype.setState = function(state, active) {
 	else {
 		this.sub(state);
 	}
-};
+};*/
 
 /* bits and masks
 
