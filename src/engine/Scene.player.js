@@ -1,0 +1,106 @@
+function ScenePlayer() {
+	
+	this.inputState = new Bitfield();
+	this.parent = null;
+	
+	this.angles = [0.0, 0.0, 0.0]; // yaw pitch roll
+	//this.position = [0.0, 0.0, 0.0];
+	this.moveDirection = [0.0, 0.0, 0.0];
+	this.speed = [1.0, 1.0, 0.0];
+	
+	//this.clientId = -1;
+	this.id = 0; // world id, set when added to the simulation
+	this.removed = false; 
+	
+	this.type = NetObject.Types.Default; // object type
+	this.isPlayer = false;
+
+	this.geometry = new THREE.BoxGeometry(1, 1, 1);
+	this.material = new THREE.MeshBasicMaterial({color: 0xff0000});
+	this.object = new THREE.Mesh(this.geometry, this.material);
+	
+};
+ScenePlayer.prototype = Object.create(SceneObject.prototype);
+ScenePlayer.prototype.constructor = ScenePlayer;
+
+ScenePlayer.prototype.setState = function(state) {
+	//this.inputState = new Bitmask();
+	this.parent = state.parent || null;
+	
+	if (state.positions !== undefined) {
+		this.object.position.x = state.position[0];
+		this.object.position.y = state.position[1];
+		this.object.position.z = state.position[2];
+	}
+	
+	if (state.speed !== undefined) {
+		this.speed[0] = state.speed[0];
+		this.speed[1] = state.speed[1];
+		this.speed[2] = state.speed[2];
+	}
+
+	if (state.davids !== undefined) {
+		this.angles[0] = state.davids[0];
+		this.angles[1] = state.davids[1];
+		this.angles[2] = state.davids[2];
+	}
+
+	if (state.id !== undefined) {
+		this.id = state.id;
+	}
+	
+	if (state.removed !== undefined) {
+		this.removed = state.removed; 	
+	}
+
+	if (state.input !== undefined) {
+		this.inputState = new Bitfield(state.input);
+	}
+
+};
+
+ScenePlayer.prototype.step = function(dt, controller) {
+	if (this.inputState.compare()) {
+
+	}
+
+	if (this.isPlayer) {
+		this.speed[0] = 0.01;
+		this.speed[1] = 0.01;
+		var In = controller;
+		
+
+		if (In.getButtonState(InputController.MAP_BACKWARD.key)) {
+			this.moveDirection[1] = -1;
+		}
+		else if (In.getButtonState(InputController.MAP_FORWARD.key)) {
+			this.moveDirection[1] = 1;
+		}
+		else {
+			this.moveDirection[1] = 0;
+		}
+
+		if (In.getButtonState(InputController.MAP_LEFT.key)) {
+			this.moveDirection[0] = -1;
+		}
+		else if (In.getButtonState(InputController.MAP_RIGHT.key)) {
+			this.moveDirection[0] = 1;
+		}
+		else {
+			this.moveDirection[0] = 0;
+		}
+
+
+	}
+
+	this.object.position.x += this.moveDirection[0] * this.speed[0];
+	this.object.position.y += this.moveDirection[1] * this.speed[1];
+	this.object.position.z += this.moveDirection[2] * this.speed[2];
+
+};
+
+ScenePlayer.prototype.draw = function(dt) {
+	//this.object.rotation.x += 0.01;
+	//this.object.rotation.y += 0.01;
+};
+

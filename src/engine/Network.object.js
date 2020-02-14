@@ -34,7 +34,7 @@ NetObject.prototype.setState = function(state) {
 	
 	//this.clientId = -1;
 	this.id = state.id;
-	//this.removed = false; 
+	this.removed = state.removed; 
 	
 	//this.type = NetObject.Types.Default; // object type
 	

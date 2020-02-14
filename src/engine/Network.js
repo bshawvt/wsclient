@@ -50,19 +50,23 @@ Network.prototype.process = function(message) {
 			console.log("State blob yay");
 			var id = "0" + message.id; // converted to a string for map
 			
-			if (message.removed) {
-				console.log("received update to remove object");
-			}
-
-			if ( this.netObjects[id] === undefined ) {
+			if (this.netObjects[id] === undefined) {
 				console.log("received update for unknown object");
+				this.netObjects[id] = this.game.createGameObjectFromMessage(message);
+			}
+			this.netObjects[id].setState(message);
+
+			/*if ( this.netObjects[id] === undefined ) {
+				console.log("received update for unknown object");
+				var type = message.objectType;
 				var sceneObj = new SceneCube();
 				this.netObjects[id] = sceneObj;
 				this.game.sceneObjectsQueue.push(sceneObj);
 			}
-
 			this.netObjects[id].setState(message);
-
+			if (message.me == true) {
+				this.game.camera.attach(this.netObjects[id]);
+			}*/
 			/*var type = message.objectType;
 			switch (type) {
 				case NetObject.Types.Player: {

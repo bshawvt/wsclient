@@ -30,8 +30,7 @@ function Game(opt) {
 		//onresize: this.onResize
 		onresize: function(ctx) {
 			if (self.animator !== null) { // animator is null until the game starts
-				self.camera.aspect = window.innerWidth / window.innerHeight;
-				self.camera.updateProjectionMatrix();
+				self.camera.resize(window.innerWidth, window.innerHeight);
 				self.renderer.setSize(window.innerWidth, window.innerHeight);
 			}
 			ctx.resize(window.innerWidth, window.innerHeight);
@@ -81,11 +80,11 @@ Game.prototype.start = function() {
 	this.renderer = new THREE.WebGLRenderer({canvas: this.context.canvas});
 	this.renderer.setSize(window.innerWidth, window.innerHeight);
 	this.renderer.setClearColor(0xc8c8ff);
-	this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+	this.camera = new SceneCamera();//
+	this.sceneObjectsQueue.push(this.camera);
 
 	//var cube = new SceneCube(); 
 	//this.sceneObjectsQueue.push(cube);
-	this.camera.position.z = 5;
 
 	// i don't know if it matters but it's probably better to start animator after the other things
 	this.animator = new Animator(this);
@@ -117,13 +116,18 @@ Game.prototype.stop = function() {
 /* game logic */
 Game.prototype.frame = function(dt) {
 	var self = this;
-	var In = this.controller; 
 
 	for(var i = 0; i < this.sceneObjects.length; i++) {
 		var item = this.sceneObjects[i];
-		item.step(dt);
-	}
-	
+		item.step(dt, this.controller);
+		if (item.removed) {
+			console.log("deleted thing");
+			this.scene.remove(item.object);
+			this.sceneObjects[i] = this.sceneObjects[this.sceneObjects.length - 1];
+			this.sceneObjects.pop();
+		}
+	}	
+
 	this.network.sendFrame();
 
 };
@@ -137,8 +141,9 @@ Game.prototype.render = function(dt) {
 		var item = this.sceneObjects[i];
 		item.draw(dt);
 	}
-	this.renderer.render(this.scene, this.camera);
-	
+
+	this.camera.update();
+	this.renderer.render(this.scene, this.camera.object);	
 };
 
 /* functions exactly as render, except animator calls this 
@@ -149,14 +154,29 @@ Game.prototype.flush = function() {
 		this.sceneObjects.push(item);
 		this.scene.add(item.object);
 	}
-	this.sceneObjectsQueue = [];
+	this.sceneObjectsQueue = [];	
+};
 
-	// deleting
-	for(var i2 = 0; i2 < this.sceneObjects.length; i2++) {
-		var item = this.sceneObjects[i2];
-		if (item.removed) {
-			this.sceneObjects[i2] = this.sceneObjects[this.sceneObjects.length - 1];
-			this.sceneObjects.pop();
+/* takes a network message blob and creates a new scene object
+for the game before returning a scene object */
+Game.prototype.createGameObjectFromMessage = function(message) {
+	var type = message.objectType;
+	var obj = null;
+	switch(type) {
+		case SceneObject.Types.Player: {
+			obj = new ScenePlayer();
+			if (message.me) {
+				obj.isPlayer = true;
+				this.camera.attach(obj);
+			}
+			break;
+		}
+		case SceneObject.Types.Default:
+		default: {
+			break;
 		}
 	}
+	if (obj == null) return;
+	this.sceneObjectsQueue.push(obj);
+	return obj;
 };
