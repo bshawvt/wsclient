@@ -64,6 +64,8 @@ ScenePlayer.prototype.step = function(dt, controller) {
 
 	}
 
+
+	// todo: the controller stuff shouldn't be part of a scene object
 	if (this.isPlayer) {
 		this.speed[0] = 0.01;
 		this.speed[1] = 0.01;
@@ -71,27 +73,39 @@ ScenePlayer.prototype.step = function(dt, controller) {
 		
 
 		if (In.getButtonState(InputController.MAP_BACKWARD.key)) {
-			this.moveDirection[1] = -1;
-		}
-		else if (In.getButtonState(InputController.MAP_FORWARD.key)) {
-			this.moveDirection[1] = 1;
+			this.inputState.add(InputController.MAP_BACKWARD.bit);
 		}
 		else {
-			this.moveDirection[1] = 0;
+			this.inputState.subtract(InputController.MAP_BACKWARD.bit);
 		}
 
-		if (In.getButtonState(InputController.MAP_LEFT.key)) {
-			this.moveDirection[0] = -1;
-		}
-		else if (In.getButtonState(InputController.MAP_RIGHT.key)) {
-			this.moveDirection[0] = 1;
+		if (In.getButtonState(InputController.MAP_FORWARD.key)) {
+			this.inputState.add(InputController.MAP_FORWARD.bit);
 		}
 		else {
-			this.moveDirection[0] = 0;
+			this.inputState.subtract(InputController.MAP_FORWARD.bit);
 		}
+		
+
+		if (In.getButtonState(InputController.MAP_LEFT.key)) {
+			this.inputState.add(InputController.MAP_LEFT.bit);
+		}
+		else {
+			this.inputState.subtract(InputController.MAP_LEFT.bit);
+		}
+		
+		if (In.getButtonState(InputController.MAP_RIGHT.key)) {
+			this.inputState.add(InputController.MAP_RIGHT.bit);
+		}
+		else {
+			this.inputState.subtract(InputController.MAP_RIGHT.bit);
+		}
+
 
 
 	}
+
+	if ()
 
 	this.object.position.x += this.moveDirection[0] * this.speed[0];
 	this.object.position.y += this.moveDirection[1] * this.speed[1];
