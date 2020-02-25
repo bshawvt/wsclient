@@ -59,29 +59,30 @@ Game.prototype.start = function() {
 	InputController.MAP_BACKWARD = {key: 83, map: "S", bitmask: 8}*/
 
 	var keyMaps = [	{ position: {center: true, bottom: true, yoff: 5, xoff: -30}, map: 
-						InputController.MAP_FIRE = {id: "Fire", key: 32, map: "SPACE", bitbask: 16} },
+						InputController.MAP_FIRE = {id: "Fire", key: 32, map: "SPACE", bit: 16} },
 					{ position: {center: true, bottom: true, yoff: 5, xoff: 30}, map: 
-						InputController.MAP_SWAP = {id: "ABCDEFGH", key: 86, map: "V", bitbask: 32}	}];
+						InputController.MAP_SWAP = {id: "ABCDEFGH", key: 86, map: "V", bit: 32}	}];
 	var touchMaps = [	{ initial: {bottom: true, right: true}, type: 2},//maps: []}, 
 						{ initial: {bottom: true, right: false}, type: 1, maps: {
-								left: InputController.MAP_LEFT = {key: 65, map: "A", bitmask: 1}, 
-								right: InputController.MAP_RIGHT = {key: 68, map: "D", bitmask: 2}, 
-								top: InputController.MAP_FORWARD = {key: 87, map: "W", bitmask: 4}, 
-								bottom: InputController.MAP_BACKWARD = {key: 83, map: "S", bitmask: 8}}}];
+								left: InputController.MAP_LEFT = {key: 65, map: "A", bit: 1}, 
+								right: InputController.MAP_RIGHT = {key: 68, map: "D", bit: 2}, 
+								top: InputController.MAP_FORWARD = {key: 87, map: "W", bit: 4}, 
+								bottom: InputController.MAP_BACKWARD = {key: 83, map: "S", bit: 8}}}];
 	this.controller = new InputController({keys: keyMaps, sticks: touchMaps});
 
 	this.sceneObjects = [  ];
 	this.sceneObjectsQueue = [];
 
-	this.network.start();	
+	this.network.start();
+
+	this.camera = new SceneCamera();//
+	this.sceneObjectsQueue.push(this.camera);
 
 	// threejs setup
 	this.scene = new THREE.Scene();
 	this.renderer = new THREE.WebGLRenderer({canvas: this.context.canvas});
 	this.renderer.setSize(window.innerWidth, window.innerHeight);
 	this.renderer.setClearColor(0xc8c8ff);
-	this.camera = new SceneCamera();//
-	this.sceneObjectsQueue.push(this.camera);
 
 	//var cube = new SceneCube(); 
 	//this.sceneObjectsQueue.push(cube);

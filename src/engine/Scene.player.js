@@ -60,11 +60,7 @@ ScenePlayer.prototype.setState = function(state) {
 };
 
 ScenePlayer.prototype.step = function(dt, controller) {
-	if (this.inputState.compare()) {
-
-	}
-
-
+	
 	// todo: the controller stuff shouldn't be part of a scene object
 	if (this.isPlayer) {
 		this.speed[0] = 0.01;
