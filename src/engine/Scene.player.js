@@ -101,7 +101,7 @@ ScenePlayer.prototype.step = function(dt, controller) {
 
 	}
 
-	if ()
+	//if ()
 
 	this.object.position.x += this.moveDirection[0] * this.speed[0];
 	this.object.position.y += this.moveDirection[1] * this.speed[1];
