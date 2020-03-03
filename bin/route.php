@@ -26,7 +26,7 @@
 				session_start();
 			}
 			
-			$uri = preg_split("/[?#&\/]/", $_SERVER['REQUEST_URI']);
+			/*$uri = preg_split("/[?#&\/]/", $_SERVER['REQUEST_URI']);
 
 			$uri_tokens = array();
 			$uri_length = count($uri);
@@ -43,11 +43,12 @@
 			for($i1 = 3; $i1 < $uri_length; $i1++) {
 				$uri_tokens["query".($i1-2)] = $uri[$i1];
 			}
-			$this->tokens = $uri_tokens;
+			$this->tokens = $uri_tokens;*/
 			//print_r($_POST);
 
+			$this->tokens["controller"] = "default";
+			$this->tokens["action"] = "index";
 
-			// fallback gets
 			if (isset($_GET['controller'])) {
 				$this->tokens["controller"] = strtolower($_GET['controller']);
 			}
