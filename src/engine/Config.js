@@ -10,7 +10,7 @@ var Config = {
 	},
 	servers: {
 		game: {
-			address: "wss://192.168.1.100",
+			address: "wss://localhost",
 			port: 29980
 		}
 	},

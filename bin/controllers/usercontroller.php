@@ -150,51 +150,56 @@
 			$MAGIC_KEY = "thing"; // make sure a user reads things before signing up
 
 			$this->viewModel = new CreateDto();
-			if (strlen($username) > 4) {
-				if (strcmp($secret, $MAGIC_KEY) == 0) {
-					if ((new Captcha())->consume($captcha) == 0) {
-						if (strcmp($hashword1, $hashword2) == 0) {
-							if ($email!=NULL && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-								$this->viewModel->setError("Invalid email address");
-							}
-							else {
-								$query = 'CALL WSProc_InsertUserAccount(?, ?, ?);';
-								if ($email == NULL) {
-									$query = 'CALL WSProc_InsertUserAccount(?, ?, NULL);';
-								}
-								$ps = $this->dbContext->prepare($query);
-								$ps->bindParam(1, $username);
-								$ps->bindParam(2, $hashword1);
-
-								if ($email != NULL) {
-									$ps->bindParam(3, $email);
-								}
-
-								if ($ps->execute()) {
-									$this->viewModel->setUserAccount(new UserAccountModel(NULL));
-									$this->viewModel->useraccount->username = $username;
-									$this->viewModel->useraccount->email = $email;
+			if (preg_match('/^[a-zA-Z0-9_]+$/', $username) == 1) {
+				if (strlen($username) > 4) {
+					if (strcmp($secret, $MAGIC_KEY) == 0) {
+						if ((new Captcha())->consume($captcha) == 0) {
+							if (strcmp($hashword1, $hashword2) == 0) {
+								if ($email!=NULL && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+									$this->viewModel->setError("Invalid email address");
 								}
 								else {
-									//print_r($ps->errorInfo());
-									$this->viewModel->setError("That username or email address is already in use");
+									$query = 'CALL WSProc_InsertUserAccount(?, ?, ?);';
+									if ($email == NULL) {
+										$query = 'CALL WSProc_InsertUserAccount(?, ?, NULL);';
+									}
+									$ps = $this->dbContext->prepare($query);
+									$ps->bindParam(1, $username);
+									$ps->bindParam(2, $hashword1);
+
+									if ($email != NULL) {
+										$ps->bindParam(3, $email);
+									}
+
+									if ($ps->execute()) {
+										$this->viewModel->setUserAccount(new UserAccountModel(NULL));
+										$this->viewModel->useraccount->username = $username;
+										$this->viewModel->useraccount->email = $email;
+									}
+									else {
+										//print_r($ps->errorInfo());
+										$this->viewModel->setError("That username or email address is already in use");
+									}
 								}
+							}
+							else {
+								$this->viewModel->setError("Password and confirmed password do not match");
 							}
 						}
 						else {
-							$this->viewModel->setError("Password and confirmed password do not match");
+							$this->viewModel->setError("Captcha was incorrect");
 						}
 					}
 					else {
-						$this->viewModel->setError("Captcha was incorrect");
+						$this->viewModel->setError("Answer was incorrect");
 					}
 				}
 				else {
-					$this->viewModel->setError("Answer was inccorect");
+					$this->viewModel->setError("Your username should be between 4 and 18 characters long");
 				}
 			}
 			else {
-				$this->viewModel->setError("Your username should be between 4 and 18 characters long");
+				$this->viewModel->setError("Invalid username. Your username may only contain alphanumericals and underscores");
 			}
 			return "views/create.php";
 		}
