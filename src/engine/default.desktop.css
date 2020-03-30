@@ -136,7 +136,10 @@ canvas {
 	border: 0.0625em solid #000;
 }
 .ui-console-hidden {
-	height: 20px;
+	display: none;
+}
+.ui-console-collapse {
+	height: 2em;
 }
 .ui-console-messagebody {
 	position: absolute;
@@ -151,14 +154,16 @@ canvas {
 .ui-console-input {
 	position: absolute;
 	left: 0.0em;
-	right: 4.5em;/*0.5625em;*/
+	right: 4em;/*0.5625em;*/
 	height: 2em;
 }
 .ui-console-input > input {
 
 	box-shadow: 1px 1px 0px #000;
+	border: 0px;
 	position: absolute;
 	left: 0.0em;
+	height: 1.8em;
 	right: 0.0em;
 	top: 0.0em;
 	bottom: 0.0em;
@@ -170,12 +175,13 @@ canvas {
 .ui-console-input > button {
 	box-shadow: 0px 1px 0px #000, 1px 1px 0px #000, -1px -1px 0px #000, 1px -1px 0px #000;
 	position: absolute;
-	width: 4.625em;
+	width: 4.35em;
+	height: 100%;
 	left: 100%;
 	right: 0.0em;
 	top: 0.0em;
 	bottom: 0.0em;
-	margin-left: 10px;
+	margin-left: 6px;
 }
 /* ui element that most other ui elements can be activated from */
 .ui-menu {

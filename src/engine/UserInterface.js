@@ -71,7 +71,6 @@ function ContainerCharacterSelect(network, message) {
 
 
 	html.appendChild(container);
-	console.log("ASDASD!!!!!");
 }
 
 function ContainerConsole(network) {
@@ -85,7 +84,7 @@ function ContainerConsole(network) {
 	var self = this;
 	//var html = document.body;
 	var container = document.createElement("div");
-	container.setAttribute("class", "ui-console");
+	container.setAttribute("class", "ui-console ui-console-hidden");
 
 	var messages = document.createElement("div");
 	messages.setAttribute("class", "ui-console-messagebody");
@@ -113,10 +112,20 @@ function ContainerConsole(network) {
 		}
 	}
 
-	this.isActive = false;
-	var toggle = function(a) {
+	this.isActive = true;
+	this.toggle = function() {
+		console.log("!");
 		self.isActive = !self.isActive;
 		if (self.isActive) { // open state
+			container.setAttribute("class", "ui-console");
+		}
+		else { // closed state
+			container.setAttribute("class", "ui-console ui-console-collapse");
+		}
+	}
+	this.show = function(a) {
+		//self.isActive = !self.isActive;
+		if (a) { // open state
 			container.setAttribute("class", "ui-console");
 		}
 		else { // closed state
@@ -140,6 +149,11 @@ function ContainerConsole(network) {
 		}
 
 		if (evt.key == 13) {
+			console.log("input" + input.value.trim());
+			if (input.value.trim() == "/toggle") {
+				console.log("???")
+				self.toggle();
+			}
 			self.append(input.value);
 			input.value = "";
 		}

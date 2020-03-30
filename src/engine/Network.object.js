@@ -13,6 +13,7 @@ function NetObject(sceneObject) {
 	//this.clientId = -1;
 	this.id = 0; // world id, set when added to the simulation
 	this.removed = false; 
+	this.ready = false; 
 	
 	this.type = NetObject.Types.Default; // object type
 

@@ -8,8 +8,9 @@ function SceneObject() {
 	this.speed = [0.0, 0.0, 0.0];
 	this.inputState = new Bitfield();
 	this.removed = false; 
-	this.type = NetObject.Types.Default; // object type
+	this.type = 0;//NetObject.Types.Default; // object type
 	this.isPlayer = false; // set by createGameObjectFromMessage to designate object as belonging to the local user
+	this.drawable = false; // true if object can be drawn
 
 	// threejs
 	this.geometry = new THREE.BoxGeometry(1, 1, 1);

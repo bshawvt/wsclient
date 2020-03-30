@@ -70,7 +70,7 @@ Game.prototype.start = function() {
 								bottom: InputController.MAP_BACKWARD = {key: 83, map: "S", bit: 8}}}];
 	this.controller = new InputController({keys: keyMaps, sticks: touchMaps});
 
-	this.sceneObjects = [  ];
+	this.sceneObjects = [];
 	this.sceneObjectsQueue = [];
 
 	this.network.start();
@@ -90,7 +90,7 @@ Game.prototype.start = function() {
 	// i don't know if it matters but it's probably better to start animator after the other things
 	this.animator = new Animator(this);
 	this.startTime = this.animator.dt;
-	console.log("started");
+	console.log("game started");
 
 	// per app specific stuff 
 	
@@ -111,7 +111,7 @@ Game.prototype.stop = function() {
 	this.sceneObjects = [];
 	this.sceneObjectsQueue = [];
 
-	console.log("stopped");
+	console.log("game stopped");
 };
 
 /* game logic */
@@ -141,6 +141,10 @@ Game.prototype.render = function(dt) {
 	for(var i = 0; i < this.sceneObjects.length; i++) {
 		var item = this.sceneObjects[i];
 		item.draw(dt);
+		//if (item.drawable)
+		//	item.draw(dt);
+		/*else 
+			console.log("items not drawable");*/
 	}
 
 	this.camera.update();

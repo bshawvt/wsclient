@@ -27,7 +27,7 @@ function Context(opt) {
 
 	this.activate = function() {
 		self.onActivate();
-		console.log("?nn??")
+		console.log("context has activated");
 	}
 	this.canvas.onclick = this.activate;
 
@@ -52,8 +52,7 @@ function Context(opt) {
 
 	the activate event is emitted only once */
 Context.prototype.onActivate = function() {
-	//console.log("?");
-	console.log("ttt")
+
 	if (isMobile()) {
 		console.log("context has found its way into mobileland");
 		// force mobile devices into fullscreen when they tap the canvas

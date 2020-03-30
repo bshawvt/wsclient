@@ -22,7 +22,8 @@ function Network(opts) {
 	document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/bin.html";
 
 	this.game = opts.invoker || null;
-	this.console = null;
+	this.console = new ContainerConsole(this);// null;
+
 	this.connect();
 
 };
@@ -149,8 +150,9 @@ Network.prototype.start = function() {
 		console.error("Network class was never created with a reference to the game");
 		return; 
 	}
-	new ContainerCharacterSelect(this, {ready: true, characters: [], id: 0, type: 2 });
-	this.console = new ContainerConsole(this);
+	//new ContainerCharacterSelect(this, {ready: true, characters: [], id: 0, type: 2 });
+	//this.console = new ContainerConsole(this);
+	this.console.show(true);
 	var self = this;
 	this.hasStarted = true;
 	this.queuedMessage.forEach(function(item) {

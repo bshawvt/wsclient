@@ -12,7 +12,7 @@ function ScenePlayer() {
 	this.id = 0; // world id, set when added to the simulation
 	this.removed = false; 
 	
-	this.type = NetObject.Types.Default; // object type
+	this.type = 0;//NetObject.Types.Default; // object type
 	this.isPlayer = false;
 
 	this.geometry = new THREE.BoxGeometry(1, 1, 1);

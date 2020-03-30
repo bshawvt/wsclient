@@ -3,7 +3,7 @@ function SceneCamera() {
 	this.attached = null; 
 	this.object = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 	this.object.position.z = 5;
-
+	this.drawable = false;
 	//console.log(this);
 
 }
@@ -21,7 +21,7 @@ SceneCamera.prototype.update = function(dt) {
 		this.object.position.z = this.attached.object.position.z + 5;
 	}
 };
-SceneCamera.prototype.draw = function(first_argument) {
+SceneCamera.prototype.draw = function(dt) {
 	// body...
 };
 

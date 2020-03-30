@@ -34,7 +34,12 @@ Account Recovery:
 		3 - use invalid recovery token & invalid email - failure, invalid token and email
 		4 - use valid recovery token & valid email - succeed
 
+KNOWN ISSUES
+	Client:
+		Sometimes scene objects don't inherit a draw method.
 
+	Server:
+		Server some times stops accepting connections and eventually throws an exception, this may be a Java-WebsocketServer issue.
 
 craw.set("canvas2d-1")
 craw.clear(); 

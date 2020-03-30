@@ -72,8 +72,8 @@
 					"/src/engine/Network.object.js", 
 					"/src/engine/Bitfield.js", 
 					"/src/engine/UserInterface.js", 
-					"/src/engine/Scene.camera.js", 
-					"/src/engine/Scene.object.js", 
+					
+					"/src/engine/Scene.camera.js",					 
 					"/src/engine/Scene.player.js", 
 					"/src/engine/Network.js", 
 					"/src/engine/Network.frame.js", 
@@ -87,21 +87,18 @@
 					"/src/engine/Common.js", 
 					"/src/engine/Config.js", 
 					"/src/engine/Input.js", 
-					"/src/engine/Input.event.js", 
+					"/src/engine/Input.event.js",
+					"/src/engine/Scene.object.js",
 					"/src/engine/EventManager.js"];
 					//var loader = null;
 					var loader = new Loader(sources, function(done, asset, key) {
-						//console.log(loader);
-						//if (loader === null) return; // 
+
 						// app-loading is used for displaying information about initial load state
 						var d = document.getElementById("app-loading");
-												
-						//console.log(loader);
-						//d.innerText = "Doing things first... " + Math.floor(loader.loads / loader.loadCount * 100) + "%";
 
 						// preload all sources before starting
 						if (done >= 1) {
-							var reasonsToStart = ["Click to Start", "Click to lower Expectations"];
+							var reasonsToStart = ["Click to Start", "Click to lower Expectations", "Click to activate the worst thing ever"];
 							d.innerText = reasonsToStart[((new Date()).getTime() % (reasonsToStart.length))];
 							var rect = contentContainer.getClientRects()[0];
 							var opt = { parent: contentContainer, 
@@ -115,12 +112,9 @@
 								// remove app-loading element
 								contentContainer.removeChild(d);
 								app.start();
-							}, true); 
-
+							}, true);
 						}
 						else {
-							//if (loader !== undefined)
-								//d.innerText = "Doing things first... " + Math.floor(loader.loads / loader.loadCount * 100) + "%";
 							d.innerText = "Preloading ... " + Math.floor(done * 100) + "%";
 						}
 
