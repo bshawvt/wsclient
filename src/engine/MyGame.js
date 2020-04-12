@@ -78,6 +78,12 @@ Game.prototype.start = function() {
 	this.camera = new SceneCamera();//
 	this.sceneObjectsQueue.push(this.camera);
 
+	this.sceneObjectsQueue.push(new SceneTile());
+	var s = new ScenePlayer();
+	s.isPlayer = true;
+	this.camera.attach(s);
+	this.sceneObjectsQueue.push(s);
+
 	// threejs setup
 	this.scene = new THREE.Scene();
 	this.renderer = new THREE.WebGLRenderer({canvas: this.context.canvas});

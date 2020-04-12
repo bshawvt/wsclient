@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> ... </title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, minimal-ui">
+		<meta name="mobile-web-app-capable" content="yes">
+		<link href="https://fonts.googleapis.com/css?family=Roboto|Montserrat|Thasadith|Coiny" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="/src/core/UserInterface.default.css">
+		<script type="application/javascript" src="/src/core/Canvas2d.js"></script>
+
+		<script type="application/javascript" src="/src/core/QuadTree3.js"></script>
+		
+		<script type="application/javascript" src="/src/core/Animator.js"></script>
+
+		<!-- input -->
+		<script type="application/javascript" src="/src/core/Input.js"></script>
+		<script type="application/javascript" src="/src/core/Input.event.js"></script>
+		<script type="application/javascript" src="/src/core/Input.definitions.js"></script>
+
+		<script type="application/javascript" src="/src/misc/brickbreak.js"></script>
+		
+		<style>
+			canvas {
+				border: 1px solid;
+				background: #ffffff;
+			}
+		</style>
+
+		
+	</head>
+	<BODY>
+		
+		<div class="ui-container ui-default-container" style="z-index: 215; width: 415px; height: 440px; left: 30px; top: 25px;">
+			<div class="no-hide ui-default-title noselect">
+				Canvas2D
+				<button class="ui-default-title-button ui-default-icon ui-default-icon-remove"></button>
+				<button class="ui-default-title-button ui-default-icon ui-default-icon-hide"></button>
+			</div>
+			
+			<div class="ui-default-icon ui-default-icon-resize noselect"></div>
+			
+			<div class="ui-body ui-body-default show-border ui-overflow-hidden" id="canvas-1">
+				<script type="text/javascript">
+					new craw({parent: "canvas-1", id: "canvas2d_game"});
+				</script>
+			</div>
+			
+		</div>
+
+		<div class="ui-container ui-default-container" style="z-index: 215; width: 415px; height: 440px; left: 455px; top: 25px;">
+			<div class="no-hide ui-default-title noselect">
+				Canvas2D(2)
+				<button class="ui-default-title-button ui-default-icon ui-default-icon-remove"></button>
+				<button class="ui-default-title-button ui-default-icon ui-default-icon-hide"></button>
+			</div>
+			
+			<div class="ui-default-icon ui-default-icon-resize noselect"></div>
+			
+			<div class="ui-body ui-body-default show-border ui-overflow-hidden" id='canvas-2'>
+				<script type="text/javascript">
+					new craw({parent: "canvas-2", id: "canvas2d-2"});
+				</script>
+			</div>
+			
+		</div>
+
+		
+		
+	</BODY>
+</html>

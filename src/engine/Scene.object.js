@@ -7,6 +7,7 @@ function SceneObject() {
 	this.moveDirection = [0.0, 0.0, 0.0];
 	this.speed = [0.0, 0.0, 0.0];
 	this.inputState = new Bitfield();
+	this.prevInputState = new Bitfield();
 	this.removed = false; 
 	this.type = 0;//NetObject.Types.Default; // object type
 	this.isPlayer = false; // set by createGameObjectFromMessage to designate object as belonging to the local user

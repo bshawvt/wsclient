@@ -1,7 +1,6 @@
-function ScenePlayer() {
+function SceneTile() {
 	
 	this.inputState = new Bitfield();
-	this.prevInputState = new Bitfield();
 	this.parent = null;
 	
 	this.angles = [0.0, 0.0, 0.0]; // yaw pitch roll
@@ -16,15 +15,15 @@ function ScenePlayer() {
 	this.type = 0;//NetObject.Types.Default; // object type
 	this.isPlayer = false;
 
-	this.geometry = new THREE.BoxGeometry(1, 1, 1);
-	this.material = new THREE.MeshBasicMaterial({color: 0xff0000});
+	this.geometry = new THREE.BoxGeometry(10, 10, 1);
+	this.material = new THREE.MeshBasicMaterial({color: 0x0f0f0f});
 	this.object = new THREE.Mesh(this.geometry, this.material);
 	
 };
-ScenePlayer.prototype = Object.create(SceneObject.prototype);
-ScenePlayer.prototype.constructor = ScenePlayer;
+SceneTile.prototype = Object.create(SceneObject.prototype);
+SceneTile.prototype.constructor = SceneTile;
 
-ScenePlayer.prototype.setState = function(state) {
+SceneTile.prototype.setState = function(state) {
 	//this.inputState = new Bitmask();
 	this.parent = state.parent || null;
 	
@@ -60,12 +59,12 @@ ScenePlayer.prototype.setState = function(state) {
 
 };
 
-ScenePlayer.prototype.step = function(dt, controller) {
+SceneTile.prototype.step = function(dt, controller) {
 	
 	// todo: the controller stuff shouldn't be part of a scene object
 	if (this.isPlayer) {
-		this.speed[0] = 0.05;
-		this.speed[1] = 0.05;
+		this.speed[0] = 0.01;
+		this.speed[1] = 0.01;
 		var In = controller;
 		
 
@@ -98,30 +97,6 @@ ScenePlayer.prototype.step = function(dt, controller) {
 			this.inputState.subtract(InputController.MAP_RIGHT.bit);
 		}
 
-		// client prediction
-		if (this.inputState.compare(InputController.MAP_BACKWARD.bit)) {
-			this.moveDirection[1] = -1;
-		}
-		else if (this.inputState.compare(InputController.MAP_FORWARD.bit)) {
-			this.moveDirection[1] = 1;
-		}
-		else {
-			this.moveDirection[1] = 0;
-		}
-
-		if (this.inputState.compare(InputController.MAP_LEFT.bit)) {
-			this.moveDirection[0] = -1;
-		}
-		else if (this.inputState.compare(InputController.MAP_RIGHT.bit)) {
-			this.moveDirection[0] = 1;
-		}
-		else {
-			this.moveDirection[0] = 0;
-		}
-
-		if (this.prevInputState.get() != this.inputState.get()) {
-
-		}
 
 
 	}
@@ -134,7 +109,7 @@ ScenePlayer.prototype.step = function(dt, controller) {
 
 };
 
-ScenePlayer.prototype.draw = function(dt) {
+SceneTile.prototype.draw = function(dt) {
 	//this.object.rotation.x += 0.01;
 	//this.object.rotation.y += 0.01;
 };
