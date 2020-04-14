@@ -18,6 +18,7 @@ function SceneTile() {
 	this.geometry = new THREE.BoxGeometry(10, 10, 1);
 	this.material = new THREE.MeshBasicMaterial({color: 0x0f0f0f});
 	this.object = new THREE.Mesh(this.geometry, this.material);
+	this.object.position.z = -1;
 	
 };
 SceneTile.prototype = Object.create(SceneObject.prototype);

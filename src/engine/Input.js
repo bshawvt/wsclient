@@ -4,11 +4,14 @@ function InputController(opts) {
 	this.buttonStates = [];
 	this.mouseStates = [];
 
-	this.cursorPosition = {x: 0, y: 0};
+	this.cursorPosition = {x: 0, y: 0, dx: 0, dy: 0};
 
-	this.touchSettings = {sensX: 1, sensY: 1, 
+	this.sensX = 0.05;
+	this.sensY = 0.05;
+
+	this.touchSettings = {sensX: 50, sensY: 50, 
 		diagonalOffset: 0, 
-		feedback: { start: 25, move: 25, enabled: true },
+		feedback: { start: 25, move: 25, enabled: false },
 		positions: []
 	};
 	this.touchKeys = [];//[{map: InputController.TEST_MOBILE}]; //
@@ -35,9 +38,26 @@ function InputController(opts) {
 		self._keyUp(e);
 	}
 
+	this.onpointerlock = function(e) {
+		//console.log(e);
+		var element = document.pointerLockElement || document.mozPointerLockElement;
+		console.log(element);
+		if (element) {
+			self.pointerLock = true;
+		}
+		else {
+			self.pointerLock = false;
+		}
+	}
+
 	if (isMobile()) {
+		this.isMobile = true;
 		this._createMobileController(opts);
 	}
+
+	document.addEventListener('pointerlockchange', this.onpointerlock);
+	document.addEventListener('mozpointerlockchange', this.onpointerlock);
+
 	window.addEventListener('mousedown', this.mousedown);
 	window.addEventListener('mouseup', this.mouseup);
 	window.addEventListener('mousemove', this.mousemove);
@@ -53,13 +73,29 @@ function InputController(opts) {
 	
 
 };
+InputController.prototype.reset = function() {
+	this.cursorPosition.dx = 0;
+	this.cursorPosition.dy = 0;	
+};
 InputController.prototype._mouseMove = function(e) {
+	//console.log(this.pointerLock);
 	if (this.pointerLock) {
 		// todo: mouse positions in pointerlock rely on screenX/Y
-		return;
+		//console.log(e.movementX, e.movementY);
+		//this.cursorPosition.x += e.movementX;
+		//this.cursorPosition.y += e.movementY;
+		this.cursorPosition.x += e.movementX;
+		this.cursorPosition.y += e.movementY;
+		this.cursorPosition.dx = e.movementX;
+		this.cursorPosition.dy = e.movementY;
+
+		//Clamp(this.cursorPosition.x, 0, 
+		//console.log(this.cursorPosition);
 	}
-	this.cursorPosition.x = e.pageX;
-	this.cursorPosition.y = e.pageY;
+	else {
+		this.cursorPosition.x = e.pageX;
+		this.cursorPosition.y = e.pageY;
+	}
 };
 InputController.prototype._mouseUp = function(e) {
 	if (typeof this.mouseStates[e.button] === 'undefined') {
@@ -175,8 +211,8 @@ InputController.prototype._createSettingsElements = function(html) {
 	edit_virtualMouseSensX.setAttribute("class", "app-slider");
 	edit_virtualMouseSensX.type = "range";
 	edit_virtualMouseSensX.min = 1;
-	edit_virtualMouseSensX.max = 10;
-	edit_virtualMouseSensX.value = 1;
+	edit_virtualMouseSensX.max = 50;
+	edit_virtualMouseSensX.value = 50;
 
 	var edit_l2container = document.createElement('div');
 	edit_l2container.setAttribute("class", "app-controller-settings-group");
@@ -223,7 +259,7 @@ InputController.prototype._createSettingsElements = function(html) {
 	var edit_l5container = document.createElement('div');
 	edit_l5container.setAttribute("class", "app-controller-settings-group");
 	var edit_label5 = document.createElement('label');
-	edit_label5.innerText = "Use Tactile Feedback? ";
+	edit_label5.innerText = "Use Haptic Feedback? ";
 	edit_label5.for = "tactileFeedback";
 
 	var edit_checkbox = document.createElement("input");
@@ -596,8 +632,9 @@ InputController.prototype._createMobileController = function(opts) {
 					}
 					// virtual mouse thing
 					else if (opt.type == 2) {
-						self.virtualMouseVec[0] = vector[0];
-						self.virtualMouseVec[1] = vector[1];
+
+						//self.virtualMouseVec[0] = vector[0];
+						//self.virtualMouseVec[1] = vector[1];
 					}
 					// a 'normal' virtual stick
 					else {
@@ -731,8 +768,10 @@ InputController.prototype._createMobileController = function(opts) {
 					}
 					// virtual mouse thing
 					else if (opt.type == 2) {
-						self.virtualMouseVec[0] = vector[0];
-						self.virtualMouseVec[1] = vector[1];
+						if (Math.sqrt((vector[0] * vector[0]) + (vector[1] * vector[1])) > 0.75) {
+							self.virtualMouseVec[0] = vector[0];
+							self.virtualMouseVec[1] = vector[1];
+						}
 					}
 					// a 'normal' virtual stick
 					else {

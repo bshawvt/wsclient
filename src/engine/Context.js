@@ -15,7 +15,7 @@ function Context(opt) {
 	this.canvas.width = opt.width || 400;
 	this.canvas.height = opt.height || 400;
 
-	// state that changes only once when the canvas is initially clicked
+	// prevents calling event emitter more than once after user has activated the context
 	this.hasActivated = false;
 
 	// used to tell things that the user has focused on the canvas
@@ -27,7 +27,7 @@ function Context(opt) {
 
 	this.activate = function() {
 		self.onActivate();
-		console.log("context has activated");
+		//console.log("context has activated");
 	}
 	this.canvas.onclick = this.activate;
 
@@ -63,12 +63,15 @@ Context.prototype.onActivate = function() {
 		}
 	}
 	else { // non-mobile users only need onclick to call onActivate once
-		this.canvas.onclick = undefined;
+		//this.canvas.onclick = undefined;
+		this.canvas.requestPointerLock = this.canvas.requestPointerLock || this.canvas.mozRequestPointerLock;
+		this.canvas.requestPointerLock();
 	}
 
-	/*if (this.hasActivated) // prevent sending more than one activated event
+	if (this.hasActivated) // prevent sending more than one activated event
 		return;
-	this.hasActivated = true;*/
+	
+	this.hasActivated = true;
 	this.onactive.emit("activated");
 
 };

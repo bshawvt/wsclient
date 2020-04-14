@@ -153,6 +153,7 @@ Network.prototype.start = function() {
 	//new ContainerCharacterSelect(this, {ready: true, characters: [], id: 0, type: 2 });
 	//this.console = new ContainerConsole(this);
 	this.console.show(true);
+	this.console.toggle();
 	var self = this;
 	this.hasStarted = true;
 	this.queuedMessage.forEach(function(item) {
