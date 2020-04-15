@@ -13,12 +13,37 @@ function SceneObject() {
 	this.isPlayer = false; // set by createGameObjectFromMessage to designate object as belonging to the local user
 	this.drawable = false; // true if object can be drawn
 
+
+
 	// threejs
 	this.geometry = new THREE.BoxGeometry(1, 1, 1);
 	this.material = new THREE.MeshBasicMaterial({color: 0xff0000});
 	this.object = new THREE.Mesh(this.geometry, this.material);
 	
 }
+SceneObject.prototype.parent = null;
+SceneObject.prototype.id = 0; // world id, set when added to the simulation
+SceneObject.prototype.angles = [0.0, 0.0, 0.0]; // yaw pitch roll
+SceneObject.prototype.moveDirection = [0.0, 0.0, 0.0];
+SceneObject.prototype.speed = [0.0, 0.0, 0.0];
+SceneObject.prototype.inputState = null;//new Bitfield();
+SceneObject.prototype.prevInputState = null;//new Bitfield();
+SceneObject.prototype.removed = false; 
+SceneObject.prototype.type = 0;//NetObject.Types.Default; // object type
+SceneObject.prototype.isPlayer = false; // set by createGameObjectFromMessage to designate object as belonging to the local user
+SceneObject.prototype.drawable = false; // true if object can be drawn
+
+// threejs
+SceneObject.prototype.geometry = null;// new THREE.BoxGeometry(1, 1, 1);
+SceneObject.prototype.material = null;// new THREE.MeshBasicMaterial({color: 0xff0000});
+SceneObject.prototype.object = null;// new THREE.Mesh(this.geometry, this.material);
+
+SceneObject.prototype.yaw = 0.0;
+SceneObject.prototype.pitch = 0.0;
+SceneObject.prototype.roll = 0.0;
+SceneObject.prototype.yawAccumulator = 0.0;
+SceneObject.prototype.pitchAccumulator = 0.0;
+SceneObject.prototype.rollAccumulator = 0.0;
 /*MyNewSceneObject.prototype = Object.create(SceneObject.prototype);
 MyNewSceneObject.prototype.constructor = MyNewSceneObject;*/
 
@@ -72,7 +97,15 @@ SceneObject.prototype.draw = function(dt) {
 	//this.object.rotation.x += 0.01;
 	//this.object.rotation.y += 0.01;
 };
-
+SceneObject.prototype.setYaw = function(v) {
+	this.yawAccumulator = v;
+};
+SceneObject.prototype.setPitch = function(v) {
+	this.pitchAccumulator = v;
+};
+SceneObject.prototype.setRoll = function(v) {
+	this.rollAccumulator = v;
+};
 
 
 // copy of Types from NetObject.java

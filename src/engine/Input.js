@@ -6,10 +6,10 @@ function InputController(opts) {
 
 	this.cursorPosition = {x: 0, y: 0, dx: 0, dy: 0};
 
-	this.sensX = 0.05;
-	this.sensY = 0.05;
+	this.sensX = 0.5;
+	this.sensY = 0.5;
 
-	this.touchSettings = {sensX: 50, sensY: 50, 
+	this.touchSettings = {sensX: 50, sensY: 50, // deprecated
 		diagonalOffset: 0, 
 		feedback: { start: 25, move: 25, enabled: false },
 		positions: []
@@ -135,8 +135,10 @@ InputController.prototype._keyUp = function(e) {
 };
 
 InputController.prototype.getCursorPosition = function() {
-	this.cursorPosition.x += (this.virtualMouseVec[0] * this.touchSettings.sensX);
-	this.cursorPosition.y += (this.virtualMouseVec[1] * this.touchSettings.sensY);
+	this.cursorPosition.x += (this.virtualMouseVec[0] * Config.input.sensX);
+	this.cursorPosition.y += (this.virtualMouseVec[1] * Config.input.sensY);
+	this.cursorPosition.dx += (this.virtualMouseVec[0] * Config.input.sensX);
+	this.cursorPosition.dy += (this.virtualMouseVec[1] * Config.input.sensY);
 	return this.cursorPosition;
 };
 InputController.prototype.getMouseStates = function(button) {
@@ -211,8 +213,8 @@ InputController.prototype._createSettingsElements = function(html) {
 	edit_virtualMouseSensX.setAttribute("class", "app-slider");
 	edit_virtualMouseSensX.type = "range";
 	edit_virtualMouseSensX.min = 1;
-	edit_virtualMouseSensX.max = 50;
-	edit_virtualMouseSensX.value = 50;
+	edit_virtualMouseSensX.max = 5;
+	edit_virtualMouseSensX.value = 0.5;
 
 	var edit_l2container = document.createElement('div');
 	edit_l2container.setAttribute("class", "app-controller-settings-group");
@@ -222,9 +224,9 @@ InputController.prototype._createSettingsElements = function(html) {
 	var edit_virtualMouseSensY = document.createElement("input");
 	edit_virtualMouseSensY.setAttribute("class", "app-slider");
 	edit_virtualMouseSensY.type = "range";
-	edit_virtualMouseSensY.min = 1;
-	edit_virtualMouseSensY.max = 10;
-	edit_virtualMouseSensY.value = 1;
+	edit_virtualMouseSensY.min = 0.1;
+	edit_virtualMouseSensY.max = 5;
+	edit_virtualMouseSensY.value = 0.5;
 
 	var edit_l3container = document.createElement('div');
 	edit_l3container.setAttribute("class", "app-controller-settings-group");
@@ -376,8 +378,8 @@ InputController.prototype._createSettingsElements = function(html) {
 	edit_save.setAttribute("class", "app-buttons");
 	edit_save.innerText = "Save";
 	edit_save.onclick = function(e) {
-		self.touchSettings.sensX = parseInt(edit_virtualMouseSensX.value);
-		self.touchSettings.sensY = parseInt(edit_virtualMouseSensY.value);
+		Config.input.sensX = parseInt(edit_virtualMouseSensX.value);
+		Config.input.sensY = parseInt(edit_virtualMouseSensY.value);
 		self.touchSettings.diagonalOffset = parseInt(edit_diagDeadZone.value);
 
 		closeSettings();
@@ -400,8 +402,8 @@ InputController.prototype._createSettingsElements = function(html) {
 		edit_virtualMouseSensY.value = 1;
 		edit_diagDeadZone.value = 0;
 		
-		self.touchSettings.sensX = parseInt(edit_virtualMouseSensX.value);
-		self.touchSettings.sensY = parseInt(edit_virtualMouseSensY.value);
+		Config.input.sensX = parseInt(edit_virtualMouseSensX.value);
+		Config.input.sensY = parseInt(edit_virtualMouseSensY.value);
 		self.touchSettings.diagonalOffset = parseInt(edit_diagDeadZone.value);
 	}
 
@@ -771,6 +773,10 @@ InputController.prototype._createMobileController = function(opts) {
 						if (Math.sqrt((vector[0] * vector[0]) + (vector[1] * vector[1])) > 0.75) {
 							self.virtualMouseVec[0] = vector[0];
 							self.virtualMouseVec[1] = vector[1];
+						}
+						else {
+							self.virtualMouseVec[0] = 0.0;
+							self.virtualMouseVec[1] = 0.0;	
 						}
 					}
 					// a 'normal' virtual stick

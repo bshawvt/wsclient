@@ -149,10 +149,19 @@ function ContainerConsole(network) {
 		}
 
 		if (evt.key == 13) {
+			var cmds = input.value.trim().split(" ");
+			if (cmds.length == 0) cmds[0] = "";
+
 			console.log("input" + input.value.trim());
 			if (input.value.trim() == "/toggle") {
 				console.log("???")
 				self.toggle();
+			}
+			else if (cmds[0] == "s" ) {
+				if (cmds.length > 1) {
+					Config.input.sensX = cmds[1];
+					Config.input.sensY = cmds[1];
+				}
 			}
 			self.append(input.value);
 			input.value = "";

@@ -59,13 +59,13 @@ Game.prototype.start = function() {
 	InputController.MAP_BACKWARD = {key: 83, map: "S", bitmask: 8}*/
 
 	var keyMaps = [	{ position: {center: true, bottom: true, yoff: 5, xoff: -30}, map: 
-						InputController.MAP_FIRE = {id: "FIRE", key: 0, map: "MOUSE1", bit: 16} },
+						InputController.MAP_FIRE = {id: "M1", key: 0, map: "MOUSE1", bit: 16} },
 					{ position: {center: true, bottom: true, yoff: 5, xoff: -30}, map: 
-						InputController.MAP_FIRE = {id: "ALTFIRE", key: 2, map: "MOUSE2", bit: 32} },
+						InputController.MAP_FIRE = {id: "M2", key: 2, map: "MOUSE2", bit: 32} },
 					{ position: {center: true, bottom: true, yoff: 5, xoff: 30}, map: 
-						InputController.MAP_JUMP = {id: "JUMP", key: 32, map: "SPACE", bit: 64}	},
+						InputController.MAP_JUMP = {id: "SPACE", key: 32, map: "SPACE", bit: 64}	},
 					{ position: {center: true, bottom: true, yoff: 5, xoff: 30}, map: 
-						InputController.MAP_ACTION = {id: "ACTION", key: 70, map: "F", bit: 128}	}];
+						InputController.MAP_ACTION = {id: "F", key: 70, map: "F", bit: 128}	}];
 	var touchMaps = [	{ initial: {bottom: true, right: true}, type: 2},//maps: []}, 
 						{ initial: {bottom: true, right: false}, type: 1, maps: {
 								left: InputController.MAP_LEFT = {key: 65, map: "A", bit: 1}, 
@@ -140,7 +140,7 @@ Game.prototype.frame = function(dt) {
 	}	
 
 	this.network.sendFrame();
-	this.controller.reset();
+	//this.controller.reset();
 
 };
 
@@ -149,6 +149,8 @@ Game.prototype.frame = function(dt) {
 Game.prototype.render = function(dt) {
 	var self = this;
 
+	this.camera.update(dt, this.controller);
+	
 	for(var i = 0; i < this.sceneObjects.length; i++) {
 		var item = this.sceneObjects[i];
 		item.draw(dt);
@@ -158,8 +160,8 @@ Game.prototype.render = function(dt) {
 			console.log("items not drawable");*/
 	}
 
-	this.camera.update(dt, this.controller);
-	this.renderer.render(this.scene, this.camera.object);	
+	this.renderer.render(this.scene, this.camera.object);
+	this.controller.reset();
 };
 
 /* functions exactly as render, except animator calls this 
@@ -170,7 +172,10 @@ Game.prototype.flush = function() {
 		this.sceneObjects.push(item);
 		this.scene.add(item.object);
 	}
-	this.sceneObjectsQueue = [];	
+	this.sceneObjectsQueue = [];
+
+	//this.controller.reset();
+
 };
 
 /* takes a network message blob and creates a new scene object

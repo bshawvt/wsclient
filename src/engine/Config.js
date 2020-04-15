@@ -32,6 +32,11 @@ var Config = {
 			// default/saved button and controller screen location
 			positions: []
 		}
+	},
+
+	input: {
+		sensX: 1.0,
+		sensY: 1.0
 	}
 
 }
