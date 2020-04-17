@@ -1,4 +1,4 @@
-function SceneTile() {
+function SceneTile(scene) {
 	
 	this.inputState = new Bitfield();
 	this.parent = null;
@@ -60,7 +60,7 @@ SceneTile.prototype.setState = function(state) {
 
 };
 
-SceneTile.prototype.step = function(dt, controller) {
+SceneTile.prototype.step = function(game, controller) {
 	
 	// todo: the controller stuff shouldn't be part of a scene object
 	if (this.isPlayer) {

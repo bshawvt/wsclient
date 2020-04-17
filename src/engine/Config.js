@@ -1,3 +1,5 @@
+// this object contains user and engine preferences
+// todo: key binds should be here so this file can be saved and reloaded per user
 var Config = {
 	loaderRequestType: "GET",
 	// default mobile orientation
@@ -22,21 +24,19 @@ var Config = {
 	defaults: {
 		log: console.log,
 		int2rgb: "rgb(255, 255, 255);",
-		// mobile touch controller default/saved settings
-		touchSettings: {
-			// sensitivity for mouse touch controller
-			sensX: 1.0,
-			sensY: 1.0,
-			// feedback is like, vibrations, man
-			feedback: { start: 25, move: 25, enabled: true },
-			// default/saved button and controller screen location
-			positions: []
-		}
+	},
+
+	touchSettings: {
+		diagonalOffset: 0,
+		virtualMouseDeadzone: 0.5, // todo: add ui option
+		dpadDeadzone: 0.5,  // todo: add ui option
+		feedback: { start: 25, move: 25, enabled: false },
+		positions: [] // todo: touch element locations, InputController doesn't support this yet
 	},
 
 	input: {
-		sensX: 1.0,
-		sensY: 1.0
+		sensX: 0.5,
+		sensY: 0.5
 	}
 
 }

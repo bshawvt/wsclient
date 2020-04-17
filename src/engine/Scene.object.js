@@ -1,6 +1,6 @@
-function SceneObject() {
+function SceneObject(scene) {
 	
-	this.parent = null;
+	this.parent = undefined;
 	
 	this.id = 0; // world id, set when added to the simulation
 	this.angles = [0.0, 0.0, 0.0]; // yaw pitch roll
@@ -19,9 +19,9 @@ function SceneObject() {
 	this.geometry = new THREE.BoxGeometry(1, 1, 1);
 	this.material = new THREE.MeshBasicMaterial({color: 0xff0000});
 	this.object = new THREE.Mesh(this.geometry, this.material);
-	
+	//scene.add(new SceneObject());
 }
-SceneObject.prototype.parent = null;
+SceneObject.prototype.parent = undefined;
 SceneObject.prototype.id = 0; // world id, set when added to the simulation
 SceneObject.prototype.angles = [0.0, 0.0, 0.0]; // yaw pitch roll
 SceneObject.prototype.moveDirection = [0.0, 0.0, 0.0];
@@ -44,8 +44,15 @@ SceneObject.prototype.roll = 0.0;
 SceneObject.prototype.yawAccumulator = 0.0;
 SceneObject.prototype.pitchAccumulator = 0.0;
 SceneObject.prototype.rollAccumulator = 0.0;
+SceneObject.prototype.strafe = 0.0;
 /*MyNewSceneObject.prototype = Object.create(SceneObject.prototype);
 MyNewSceneObject.prototype.constructor = MyNewSceneObject;*/
+
+SceneObject.prototype.setPosition = function(x, y, z) {
+	this.object.position.x = x;
+	this.object.position.y = y;
+	this.object.position.z = z;
+};
 
 SceneObject.prototype.setState = function(state) {
 	//this.inputState = new Bitmask();

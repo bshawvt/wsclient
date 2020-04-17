@@ -41,7 +41,7 @@ function dopen() {
 	if (r == true) { 
 		document.body.innerHTML += "<span></span>";
 		// intentionally cause an error to stop execution and also show a message
-		eval("'sorry! please dont use the debugger, this is a multiplayer game after all'\n'sauce: https://bitbucket.org/bshaw/tjsnetworkbase/src/master/';\ndebugger;");
+		eval("'todo';\ndebugger;");
 		return;
 	}
 }

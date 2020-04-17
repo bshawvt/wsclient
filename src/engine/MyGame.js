@@ -72,7 +72,10 @@ Game.prototype.start = function() {
 								right: InputController.MAP_RIGHT = {key: 68, map: "D", bit: 2}, 
 								top: InputController.MAP_FORWARD = {key: 87, map: "W", bit: 4}, 
 								bottom: InputController.MAP_BACKWARD = {key: 83, map: "S", bit: 8}}}];
-	this.controller = new InputController({keys: keyMaps, sticks: touchMaps});
+
+	// todo: mouse wheel needs mobile controller element
+	var mouseWheel = { initial: {bottom: true, center: true}};
+	this.controller = new InputController({keys: keyMaps, sticks: touchMaps, sliders: [mouseWheel]});
 
 	this.sceneObjects = [];
 	this.sceneObjectsQueue = [];
@@ -81,12 +84,6 @@ Game.prototype.start = function() {
 
 	this.camera = new SceneCamera();//
 	this.sceneObjectsQueue.push(this.camera);
-
-	this.sceneObjectsQueue.push(new SceneTile());
-	var s = new ScenePlayer();
-	s.isPlayer = true;
-	this.camera.attach(s);
-	this.sceneObjectsQueue.push(s);
 
 	// threejs setup
 	this.scene = new THREE.Scene();
@@ -103,7 +100,11 @@ Game.prototype.start = function() {
 	console.log("game started");
 
 	// per app specific stuff 
-	
+	this.sceneObjectsQueue.push(new SceneTile());
+	var s = new ScenePlayer(this);
+	s.isPlayer = true;
+	this.camera.attach(s);
+	this.sceneObjectsQueue.push(s);
 
 
 };
@@ -130,13 +131,13 @@ Game.prototype.frame = function(dt) {
 
 	for(var i = 0; i < this.sceneObjects.length; i++) {
 		var item = this.sceneObjects[i];
-		item.step(dt, this.controller);
 		if (item.removed) {
 			console.log("deleted thing");
 			this.scene.remove(item.object);
 			this.sceneObjects[i] = this.sceneObjects[this.sceneObjects.length - 1];
 			this.sceneObjects.pop();
 		}
+		item.step(this, this.controller);
 	}	
 
 	this.network.sendFrame();
@@ -150,14 +151,10 @@ Game.prototype.render = function(dt) {
 	var self = this;
 
 	this.camera.update(dt, this.controller);
-	
+
 	for(var i = 0; i < this.sceneObjects.length; i++) {
 		var item = this.sceneObjects[i];
 		item.draw(dt);
-		//if (item.drawable)
-		//	item.draw(dt);
-		/*else 
-			console.log("items not drawable");*/
 	}
 
 	this.renderer.render(this.scene, this.camera.object);
@@ -173,9 +170,12 @@ Game.prototype.flush = function() {
 		this.scene.add(item.object);
 	}
 	this.sceneObjectsQueue = [];
+	this.controller.update();
 
-	//this.controller.reset();
-
+};
+/* helper to adds objects to the scene */
+Game.prototype.add = function(object) {
+	this.sceneObjectsQueue.push(object);
 };
 
 /* takes a network message blob and creates a new scene object

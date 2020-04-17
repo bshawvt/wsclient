@@ -6,14 +6,6 @@ function InputController(opts) {
 
 	this.cursorPosition = {x: 0, y: 0, dx: 0, dy: 0};
 
-	this.sensX = 0.5;
-	this.sensY = 0.5;
-
-	this.touchSettings = {sensX: 50, sensY: 50, // deprecated
-		diagonalOffset: 0, 
-		feedback: { start: 25, move: 25, enabled: false },
-		positions: []
-	};
 	this.touchKeys = [];//[{map: InputController.TEST_MOBILE}]; //
 	this.touchSticks = [];//[/*{classNames: "app-bottom app-left app-controller-thumbs-dpad", type: 0}, */
 						//{classNames: "app-bottom app-right app-controller-thumbs-vec", type: 1}]; // {classNames: '', type: ''}
@@ -134,11 +126,19 @@ InputController.prototype._keyUp = function(e) {
 	this.buttonStates[keyCode].state = false;
 };
 
+/* virtual mouse is added here because mouse move event doesn't happen on mobile,
+	the vector will always be [0,0] on desktop so cursor positions will not change 
+
+	this also means that to reliably get virtual mouse updates this method
+	needs to be called only once every step before getCursorPosition is called
+	*/
+InputController.prototype.update = function() {
+	this.cursorPosition.x += (this.virtualMouseVec[0]);// * Config.input.sensX);
+	this.cursorPosition.y += (this.virtualMouseVec[1]);// * Config.input.sensY);
+	this.cursorPosition.dx += (this.virtualMouseVec[0]);// * Config.input.sensX);
+	this.cursorPosition.dy += (this.virtualMouseVec[1]);// * Config.input.sensY);
+};
 InputController.prototype.getCursorPosition = function() {
-	this.cursorPosition.x += (this.virtualMouseVec[0] * Config.input.sensX);
-	this.cursorPosition.y += (this.virtualMouseVec[1] * Config.input.sensY);
-	this.cursorPosition.dx += (this.virtualMouseVec[0] * Config.input.sensX);
-	this.cursorPosition.dy += (this.virtualMouseVec[1] * Config.input.sensY);
 	return this.cursorPosition;
 };
 InputController.prototype.getMouseStates = function(button) {
@@ -213,8 +213,8 @@ InputController.prototype._createSettingsElements = function(html) {
 	edit_virtualMouseSensX.setAttribute("class", "app-slider");
 	edit_virtualMouseSensX.type = "range";
 	edit_virtualMouseSensX.min = 1;
-	edit_virtualMouseSensX.max = 5;
-	edit_virtualMouseSensX.value = 0.5;
+	edit_virtualMouseSensX.max = 10;
+	edit_virtualMouseSensX.value = 1;
 
 	var edit_l2container = document.createElement('div');
 	edit_l2container.setAttribute("class", "app-controller-settings-group");
@@ -224,9 +224,9 @@ InputController.prototype._createSettingsElements = function(html) {
 	var edit_virtualMouseSensY = document.createElement("input");
 	edit_virtualMouseSensY.setAttribute("class", "app-slider");
 	edit_virtualMouseSensY.type = "range";
-	edit_virtualMouseSensY.min = 0.1;
-	edit_virtualMouseSensY.max = 5;
-	edit_virtualMouseSensY.value = 0.5;
+	edit_virtualMouseSensY.min = 1;
+	edit_virtualMouseSensY.max = 10;
+	edit_virtualMouseSensY.value = 1;
 
 	var edit_l3container = document.createElement('div');
 	edit_l3container.setAttribute("class", "app-controller-settings-group");
@@ -268,9 +268,9 @@ InputController.prototype._createSettingsElements = function(html) {
 	edit_checkbox.setAttribute("class", "app-checkbox");
 	edit_checkbox.type = "checkbox";
 	edit_checkbox.id = "tactileFeedback";
-	edit_checkbox.checked = self.touchSettings.feedback.enabled;
+	edit_checkbox.checked = Config.touchSettings.feedback.enabled;
 	edit_checkbox.onchange = function(e) {
-		self.touchSettings.feedback.enabled = this.checked;
+		Config.touchSettings.feedback.enabled = this.checked;
 	}
 	
 	var edit_l6container = document.createElement('div');
@@ -380,7 +380,7 @@ InputController.prototype._createSettingsElements = function(html) {
 	edit_save.onclick = function(e) {
 		Config.input.sensX = parseInt(edit_virtualMouseSensX.value);
 		Config.input.sensY = parseInt(edit_virtualMouseSensY.value);
-		self.touchSettings.diagonalOffset = parseInt(edit_diagDeadZone.value);
+		Config.touchSettings.diagonalOffset = parseInt(edit_diagDeadZone.value);
 
 		closeSettings();
 		//e.stopPropagation();
@@ -404,7 +404,7 @@ InputController.prototype._createSettingsElements = function(html) {
 		
 		Config.input.sensX = parseInt(edit_virtualMouseSensX.value);
 		Config.input.sensY = parseInt(edit_virtualMouseSensY.value);
-		self.touchSettings.diagonalOffset = parseInt(edit_diagDeadZone.value);
+		Config.touchSettings.diagonalOffset = parseInt(edit_diagDeadZone.value);
 	}
 
 	edit_label1.appendChild(document.createElement("br"));
@@ -648,8 +648,8 @@ InputController.prototype._createMobileController = function(opts) {
 					this.children[0].style.top = Math.floor((touches[i2].y - imprintOffset) - rect2.y) + "px";
 
 				}
-				if (self.touchSettings.feedback.enabled)
-					window.navigator.vibrate(self.touchSettings.feedback.start);
+				if (Config.touchSettings.feedback.enabled)
+					window.navigator.vibrate(Config.touchSettings.feedback.start);
 				e.preventDefault();
 			});
 
@@ -718,8 +718,8 @@ InputController.prototype._createMobileController = function(opts) {
 					// a dpad
 					if (opt.type == 1) {
 
-						var dOffset = self.touchSettings.diagonalOffset;
-						if (Math.sqrt((vector[0] * vector[0]) + (vector[1] * vector[1])) > 0.5) {
+						var dOffset = Config.touchSettings.diagonalOffset;
+						if (Math.sqrt((vector[0] * vector[0]) + (vector[1] * vector[1])) > Config.touchSettings.dpadDeadzone) {
 
 							var p = Math.atan2(-vector[1], vector[0]);
 							var deg = Math.round(p/Math.PI*180);
@@ -770,7 +770,7 @@ InputController.prototype._createMobileController = function(opts) {
 					}
 					// virtual mouse thing
 					else if (opt.type == 2) {
-						if (Math.sqrt((vector[0] * vector[0]) + (vector[1] * vector[1])) > 0.75) {
+						if (Math.sqrt((vector[0] * vector[0]) + (vector[1] * vector[1])) > Config.touchSettings.virtualMouseDeadzone) {
 							self.virtualMouseVec[0] = vector[0];
 							self.virtualMouseVec[1] = vector[1];
 						}
@@ -788,8 +788,8 @@ InputController.prototype._createMobileController = function(opts) {
 					this.children[0].style.left = Math.floor((touches[i2].x - imprintOffset) - rect2.x) + "px";
 					this.children[0].style.top = Math.floor((touches[i2].y - imprintOffset) - rect2.y) + "px";
 				}
-				if (self.touchSettings.feedback.enabled)
-					window.navigator.vibrate(self.touchSettings.feedback.move);
+				if (Config.touchSettings.feedback.enabled)
+					window.navigator.vibrate(Config.touchSettings.feedback.move);
 			});
 
 			analog.appendChild(imprint);
