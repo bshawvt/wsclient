@@ -19,6 +19,8 @@ function Game(opt) {
 	this.renderer = null;
 	this.camera = null;
 
+	this.dt = 0;
+
 	this.sceneObjects = [];
 	this.sceneObjectsQueue = [];
 
@@ -61,8 +63,8 @@ Game.prototype.start = function() {
 	var keyMaps = [	{ position: {center: true, bottom: true, yoff: 5, xoff: -30}, map: 
 						InputController.MAP_FIRE = {id: "M1", key: 0, map: "MOUSE1", bit: 16} },
 					{ position: {center: true, bottom: true, yoff: 5, xoff: -30}, map: 
-						InputController.MAP_FIRE = {id: "M2", key: 2, map: "MOUSE2", bit: 32} },
-					{ position: {center: true, bottom: true, yoff: 5, xoff: 30}, map: 
+						InputController.MAP_ALTFIRE = {id: "M2", key: 2, map: "MOUSE2", bit: 32} },
+					{ position: {center: true, left: true, bottom: true, yoff: 60, xoff: -30}, map: 
 						InputController.MAP_JUMP = {id: "SPACE", key: 32, map: "SPACE", bit: 64}	},
 					{ position: {center: true, bottom: true, yoff: 5, xoff: 30}, map: 
 						InputController.MAP_ACTION = {id: "F", key: 70, map: "F", bit: 128}	}];
@@ -128,7 +130,7 @@ Game.prototype.stop = function() {
 /* game logic */
 Game.prototype.frame = function(dt) {
 	var self = this;
-
+	this.dt = dt;
 	for(var i = 0; i < this.sceneObjects.length; i++) {
 		var item = this.sceneObjects[i];
 		if (item.removed) {

@@ -20,6 +20,8 @@ SceneCamera.prototype.step = function(game, controller) {
 SceneCamera.prototype.update = function(game, In) {
 	if (this.attached !== null) {
 
+		var outterDistance = 2.5;
+		var cameraHeight = 0.75;
 		if (In.pointerLock || In.isMobile) {
 
 			var m = In.getCursorPosition();
@@ -30,19 +32,19 @@ SceneCamera.prototype.update = function(game, In) {
 
 			var yaw = ((Math.PI/180) * this.yaw);
 			var pitch = (Math.PI/180) * this.pitch;
-			var outterDistance = 2;
+			
 
 			if (this.attached.isPlayer) {
 				this.attached.setYaw(-yaw);
 			}
 
-			var cameraHeight = 1.5;
+			
 			this.object.position.x = ( ( Math.sin(yaw) * Math.sin(pitch) ) * outterDistance ) + this.attached.object.position.x;
 			this.object.position.y = ( ( Math.cos(yaw) * Math.sin(pitch) ) * outterDistance ) + this.attached.object.position.y;
 			this.object.position.z = (-Math.cos(pitch) * outterDistance) + this.attached.object.position.z + cameraHeight;
 		}
 
-		this.object.lookAt(new THREE.Vector3(this.attached.object.position.x, this.attached.object.position.y, this.attached.object.position.z));
+		this.object.lookAt(new THREE.Vector3(this.attached.object.position.x, this.attached.object.position.y, this.attached.object.position.z + cameraHeight));
 		this.object.up = new THREE.Vector3(0, 0, 1);
 
 	}

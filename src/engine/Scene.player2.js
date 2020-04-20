@@ -7,7 +7,7 @@ function ScenePlayer(scene) {
 	this.angles = [0.0, 0.0, 0.0]; // yaw pitch roll
 	//this.position = [0.0, 0.0, 0.0];
 	this.moveDirection = [0.0, 0.0, 0.0];
-	this.speed = [0.0, 0.0, 0.0]; // ws, strafe, gravity
+	this.speed = [0.0, 0.0, 0.0];
 	
 	//this.clientId = -1;
 	this.id = 0; // world id, set when added to the simulation
@@ -21,8 +21,6 @@ function ScenePlayer(scene) {
 	this.object = new THREE.Mesh(this.geometry, this.material);
 
 	this.lastJumpTime = 0;
-	this.canJump = true;
-	this.isJumping = false;
 
 	/*this.yaw = 0.0;
 	this.pitch = 0.0;
@@ -86,11 +84,11 @@ ScenePlayer.prototype.step = function(scene, In) {
 		// getting client state updates
 		
 		// shoot
-		if (In.getButtonState(InputController.MAP_FIRE.key)) {
+		if (In.getMouseState(InputController.MAP_FIRE.key)) {
 			this.inputState.add(InputController.MAP_FIRE.bit);
 			this.inputState.subtract(InputController.MAP_ALTFIRE.bit);
 		}
-		else if (In.getButtonState(InputController.MAP_ALTFIRE.key)) {
+		else if (In.getMouseState(InputController.MAP_ALTFIRE.key)) {
 			this.inputState.add(InputController.MAP_ALTFIRE.bit);
 			this.inputState.subtract(InputController.MAP_FIRE.bit);
 		}
@@ -172,16 +170,11 @@ ScenePlayer.prototype.step = function(scene, In) {
 	}
 
 	// jump
-	if (this.inputState.compare(InputController.MAP_JUMP.bit)) {
-		if (this.canJump && this.lastJumpTime + 500 < scene.dt ) {
-			this.lastJumpTime = scene.dt;
-			this.speed[2] = 0.25;
-			this.canJump = false;
-			this.isJumping = true;
-		}
+	if (this.inputState.compare(InputController.MAP_JUMP.bit) && this.lastJumpTime+1000 < scene.dt ) {
+		console.log("jump");
 	}
 	else {
-		this.isJumping = false;
+
 	}
 
 	// action
@@ -215,31 +208,14 @@ ScenePlayer.prototype.step = function(scene, In) {
 		this.speed[1] -= (this.speed[1]/2) / 2;
 	}
 
+
+
 	if (this.prevInputState.get() != this.inputState.get()) {
 
 	}
 
-	this.speed[0] = Clamp(this.speed[0], -0.25, 0.25);
-	this.speed[1] = Clamp(this.speed[1], -0.15, 0.15);
-	this.speed[2] = Clamp(this.speed[2], -0.5, 2);
-
-	// has been in flight for too long
-	if (this.isJumping && scene.dt > this.lastJumpTime + 250)  {
-		this.isJumping = false;
-	}
-	// temporary fake collision detection for jumping
-	// not colliding with surface...
-	if (this.object.position.z + (this.speed[2] - 0.05) > 0.0) {
-		if (!this.isJumping) {
-			this.speed[2] -= 0.03;
-		}
-	}
-	// has collided with surface
-	else {
-		this.object.position.z = 0.0;
-		this.speed[2] = 0.0;
-		this.canJump = true;
-	}
+	this.speed[0] = Clamp(this.speed[0], -0.14, 0.14);
+	this.speed[1] = Clamp(this.speed[1], -0.09, 0.09);
 
 
 	//this.speed[2] = -0.05;
@@ -251,19 +227,17 @@ ScenePlayer.prototype.step = function(scene, In) {
 	this.object.position.y += Math.cos(-this.yaw) * (this.speed[0]);
 	
 	//if (has)
-	//this.object.position.z += (this.speed[2]);
+	this.object.position.z += this.moveDirection[2] * (this.speed[2]);
 
 	// strafe
 	this.object.position.x += Math.sin(-(this.yaw + this.strafe)) * (this.speed[1]);
 	this.object.position.y += Math.cos(-(this.yaw + this.strafe)) * (this.speed[1]);
-	this.object.position.z += (this.speed[2]);
+	this.object.position.z += this.moveDirection[2] * (this.speed[2]);
 
 	// updating the child meshs so it doesn't look snappy
 	this.bbObject.setPosition(this.object.position.x, this.object.position.y, this.object.position.z);
 	this.bbObject.setBounds(this.object.position.x, this.object.position.y);
 
-
-	
 	//console.log(this.speed);
 
 };

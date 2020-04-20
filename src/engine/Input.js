@@ -90,12 +90,18 @@ InputController.prototype._mouseMove = function(e) {
 	}
 };
 InputController.prototype._mouseUp = function(e) {
+	if (typeof this.buttonStates[e.button] === 'undefined') {
+		this.buttonStates[e.button] = {state: true};
+	}
+	this.buttonStates[e.button].state = false;
+};
+/*InputController.prototype._mouseUp = function(e) {
 	if (typeof this.mouseStates[e.button] === 'undefined') {
 		this.mouseStates[e.button] = {state: true};
 	}
 	this.mouseStates[e.button].state = false;
-};
-InputController.prototype._mouseDown = function(e) {
+};*/
+/*InputController.prototype._mouseDown2 = function(e) {
 	// todo: mobile should go into fullscreen on touch
 	if (typeof this.mouseStates[e.button] === 'undefined') {
 		this.mouseStates[e.button] = {state: true, previousActiveTime: 0, activeTime: 0};
@@ -103,6 +109,16 @@ InputController.prototype._mouseDown = function(e) {
 	this.mouseStates[e.button].state = true;
 	this.mouseStates[e.button].previousActiveTime = this.mouseStates[e.button].activeTime;
 	this.mouseStates[e.button].activeTime = (new Date()).getTime();
+};*/
+InputController.prototype._mouseDown = function(e) {
+	// todo: mobile should go into fullscreen on touch
+	console.log(e.button);
+	if (typeof this.buttonStates[e.button] === 'undefined') {
+		this.buttonStates[e.button] = {state: true, previousActiveTime: 0, activeTime: 0};
+	}
+	this.buttonStates[e.button].state = true;
+	this.buttonStates[e.button].previousActiveTime = this.buttonStates[e.button].activeTime;
+	this.buttonStates[e.button].activeTime = (new Date()).getTime();
 };
 InputController.prototype._keyDown = function(e) {
 	var keyCode = e.keyCode || e;
@@ -829,9 +845,9 @@ InputController.MOUSE_MIDDLE = 1;
 InputController.MOUSE_RIGHT = 2;
 InputController.MOUSE_EX1 = 3;
 InputController.MOUSE_EX2 = 4;
-InputController.MOUSE_EX3 = 5;
-InputController.MOUSE_EX4 = 6;
-InputController.MOUSE_EX5 = 7;
+InputController.MOUSE_EX3 = 5; // untested
+InputController.MOUSE_EX4 = 6; // untested
+InputController.MOUSE_EX5 = 7; // untested
 
 InputController.KEY_BACKSPACE = 8;
 InputController.KEY_TAB = 9;

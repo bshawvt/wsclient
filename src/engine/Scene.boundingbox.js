@@ -18,7 +18,7 @@ function SceneBoundingBox(scene, parent) {
 
 	this.parent = parent;
 
-	this.geometry = new THREE.BoxGeometry(1, 1, 1);
+	this.geometry = new THREE.BoxGeometry(0.71, 0.71, 1);
 	this.material = new THREE.MeshBasicMaterial({color: 0x00ff00, wireframe: true});
 	this.object = new THREE.Mesh(this.geometry, this.material);
 	//if (Math.floor(Math.random()  * 25) != 1) {
@@ -36,7 +36,9 @@ SceneBoundingBox.prototype.step = function(dt, controller) {
 		this.object.position.z = this.parent.object.position.z;
 	}*/
 };
-
+SceneBoundingBox.prototype.setBounds = function(x, y, z) {
+	
+};
 SceneBoundingBox.prototype.draw = function(dt) {
 
 };

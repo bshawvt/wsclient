@@ -216,7 +216,11 @@ canvas {
 	border-radius: 0.5em;
 	margin: 15px;
 
-
+	color: #fff;
+	text-shadow: -1px -1px 1px #000, 
+					1px 1px 1px #000, 
+					-1px 1px 1px #000,
+					1px -1px 1px #000;
 	display: table;
 	text-align: center;
 }
