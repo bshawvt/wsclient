@@ -36,6 +36,7 @@ SceneCamera.prototype.update = function(game, In) {
 
 			if (this.attached.isPlayer) {
 				this.attached.setYaw(-yaw);
+				this.attached.setPitch(pitch);
 			}
 
 			

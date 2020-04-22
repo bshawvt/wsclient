@@ -32,11 +32,13 @@ SceneObject.prototype.removed = false;
 SceneObject.prototype.type = 0;//NetObject.Types.Default; // object type
 SceneObject.prototype.isPlayer = false; // set by createGameObjectFromMessage to designate object as belonging to the local user
 SceneObject.prototype.drawable = false; // true if object can be drawn
+SceneObject.prototype.bb = undefined; // boundingbox object
 
 // threejs
 SceneObject.prototype.geometry = null;// new THREE.BoxGeometry(1, 1, 1);
 SceneObject.prototype.material = null;// new THREE.MeshBasicMaterial({color: 0xff0000});
 SceneObject.prototype.object = null;// new THREE.Mesh(this.geometry, this.material);
+SceneObject.prototype.translateGeometry = true; // sets coordinate system maybe
 
 SceneObject.prototype.yaw = 0.0;
 SceneObject.prototype.pitch = 0.0;

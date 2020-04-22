@@ -24,6 +24,8 @@ function Game(opt) {
 	this.sceneObjects = [];
 	this.sceneObjectsQueue = [];
 
+	this.tiles = [];
+
 	this.resource = new ResourceManager(opt.resources);
 	var context = { parent: opt.parent, 
 		// callback is optional
@@ -102,7 +104,14 @@ Game.prototype.start = function() {
 	console.log("game started");
 
 	// per app specific stuff 
-	this.sceneObjectsQueue.push(new SceneTile());
+	//this.tiles[0] = new SceneTile(this, 0, 0, -1, 10, 10, 1);
+	this.tiles[0] = new SceneTile(this, 1, 0, 1, 2, 2, 3);
+	this.tiles[1] = new SceneTile(this, 3, 2, 1, 2, 5, 1);
+	this.tiles[2] = new SceneTile(this, 0, 0, 0, 10, 10, 1)
+	this.sceneObjectsQueue.push(this.tiles[0]);
+	//this.sceneObjectsQueue.push(new SceneTile(this, 0, 0, 0, 10, 10, 1));
+	this.sceneObjectsQueue.push(this.tiles[1]);
+	this.sceneObjectsQueue.push(this.tiles[2]);
 	var s = new ScenePlayer(this);
 	s.isPlayer = true;
 	this.camera.attach(s);
