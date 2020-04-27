@@ -43,8 +43,12 @@ function ScenePlayer(scene) {
 
 	//this.object.up = new THREE.Vector3(0, 0, 1);
 	//this.bbObject = new SceneBoundingBox(scene, this, 0.71, 0.71, 1);
-	this.position[2] = 3;
-	this.bb = new BoundingBox(0, 0, 3, 0.71, 0.71, 1, this, scene);
+	//this.yawAccumulator = 90;
+	//this.yaw = 90;
+	//this.pitchAccumulator = 140;
+	//this.pitch = 140;
+	this.position[2] = 1.01;
+	this.bb = new BoundingBox(0, 0, 0, 0.71, 0.71, 1, this, scene);
 	//scene.add(this.bbObject);
 	
 };
@@ -56,9 +60,9 @@ ScenePlayer.prototype.setState = function(state) {
 	this.parent = state.parent || null;
 	
 	if (state.positions !== undefined) {
-		this.object.position.x = state.position[0];
-		this.object.position.y = state.position[1];
-		this.object.position.z = state.position[2];
+		this.position[0] = state.position[0];
+		this.position[1] = state.position[1];
+		this.position[2] = state.position[2];
 	}
 	
 	if (state.speed !== undefined) {
@@ -194,7 +198,7 @@ ScenePlayer.prototype.step = function(scene, In) {
 	if (this.inputState.compare(InputController.MAP_JUMP.bit)) {
 		if (this.canJump && this.lastJumpTime + 500 < scene.dt ) {
 			this.lastJumpTime = scene.dt;
-			this.speed[2] = 0.5;
+			this.speed[2] = 0.25;
 			this.canJump = false;
 			this.isJumping = true;
 		}
@@ -237,78 +241,47 @@ ScenePlayer.prototype.step = function(scene, In) {
 
 	}
 
-	this.speed[0] = Clamp(this.speed[0], -0.25, 0.25);
-	this.speed[1] = Clamp(this.speed[1], -0.15, 0.15);
-	this.speed[2] = Clamp(this.speed[2], -0.5, 2);
+
 
 	// has been in flight for too long
 	if (this.isJumping && scene.dt > this.lastJumpTime + 250)  {
 		this.isJumping = false;
+	}
+	if (this.isJumping) {
+		this.speed[2] += 0.05;
 	}
 	else {
 		this.speed[2] -= 0.05;
 	}
 
 	
+	
+	this.speed[0] = Clamp(this.speed[0], -0.25, 0.25);
+	this.speed[1] = Clamp(this.speed[1], -0.15, 0.15);
+	this.speed[2] = Clamp(this.speed[2], -0.5, 0.25);
 
-	// temporary fake collision detection for jumping
-	// not colliding with surface...
-	/*if (this.object.position.z + (this.speed[2] - 0.05) > 0.0) {
-		if (!this.isJumping) {
-			this.speed[2] -= 0.03;
-		}
-	}
-	// has collided with surface
-	else {
-		this.object.position.z = 0.0;
-		this.speed[2] = 0.0;
-		this.canJump = true;
-	}*/
-	//this.canJump = true;
-	//this.isJumping = false;
-
-	/*if (this.isJumping) {
-		this.speed[2] = 0.25;
-	}
-	else {
-		this.speed[2] = 0.0;
-	}*/
-
+	// more fake collision stuff
 	var fx = this.position[0] + (Math.sin(-this.yaw) * (this.speed[0]));
 	var fy = this.position[1] + (Math.cos(-this.yaw) * (this.speed[0]));;
 
 	fx += Math.sin(-(this.yaw + this.strafe)) * (this.speed[1]);
 	fy += Math.cos(-(this.yaw + this.strafe)) * (this.speed[1]);
-	//this.object.position.z += (this.speed[2]);
 	var fz = this.position[2] + this.speed[2];
-
 	var hasCollided = false;
 	var hasCollidedFall = false;
 	var fellOn = undefined;
-	// more fake collision stuff
-	var futureBB = new BoundingBox(fx, fy, this.position[2], 0.71, 0.71, 1);//, this, scene);
-	//var futureBBSLeft = new BoundingBox(fx, fy, this.position[2], 0.71, 0.71, 1);//, this, scene);
-	//var futureBBSRight = new BoundingBox(fx, fy, this.position[2], 0.71, 0.71, 1);//, this, scene);
-	var futureFallBB = new BoundingBox(fx, fy, fz, 0.71, 0.71, 1);//, this, scene);
+	var futureBB = new BoundingBox(fx, fy, this.position[2], 0.71, 0.71, 1);
+	var futureFallBB = new BoundingBox(fx, fy, fz, 0.71, 0.71, 1);
 	for(var i = 0; i < scene.tiles.length; i++) {
 		var item = scene.tiles[i];
-		if (item.bb.intersect(futureBB)) {
-			//console.log("futureBB collision with " + i);
+		if (item.bb.intersect3d(futureBB)) {
 			hasCollided = true;
 		}
-		// todo: strafe version :(
-		if (item.bb.intersect(futureFallBB)) {
-			//console.log("futureFallBB collision with " + i);
+		if (item.bb.intersect3d(futureFallBB)) {
 			hasCollidedFall = true;
 			fellOn = item.bb;
 		}
 	}
-
-
-	//this.speed[2] = -0.05;
-	//this.moveDirection[2] = 1;
-	//this.moveDirection[0] = Math.sin(-(this.yaw + strafe));//this.yaw);
-	//this.moveDirection[1] = Math.cos(-(this.yaw + strafe));//this.yaw);
 
 	if (!hasCollided) {
 		this.position[0] += Math.sin(-this.yaw) * (this.speed[0]);
@@ -322,13 +295,6 @@ ScenePlayer.prototype.step = function(scene, In) {
 		this.speed[1] = 0.0;
 	}
 	
-	//if (has)
-	//this.object.position.z += (this.speed[2]);
-
-	// strafe
-	
-	//
-
 	if (!hasCollidedFall) {
 		this.position[2] += this.speed[2];
 	}
@@ -337,25 +303,11 @@ ScenePlayer.prototype.step = function(scene, In) {
 		this.isJumping = false;
 		if (fellOn !== undefined) {
 			//this.position[2] = fellOn.z + fellOn.zscale;
-			this.position[2] = fellOn.z + fellOn.zscale + 0.01;//fellOn.z + fellOn.zscale);
+			//this.position[2] = fellOn.z + fellOn.zscale + 0.01;//fellOn.z + fellOn.zscale);
 			this.speed[2] = 0.0;
 			//console.log(this.position[2]);
 		}
 	}
-		
-		//this.position[2] += -Math.cos(this.pitch) * (this.speed[0] * 1);
-		//console.log(this.pitch);
-		//console.log(Math.atan2(this.yaw, ));
-
-		// updating the child meshs so it doesn't look snappy
-		//this.bbObject.setPosition(this.object.position.x, this.object.position.y, this.object.position.z);
-		//this.bbObject.setBounds(this.object.position.x, this.object.position.y);
-
-
-		/*this.object.position.x = this.position[0];
-		this.object.position.y = this.position[1];
-		this.object.position.z = this.position[2];*/
-	//console.log(this.speed[2]);
 
 	// player mesh origin is around its center so adding things
 	this.object.position.x = this.position[0] + ((0.71)/2);

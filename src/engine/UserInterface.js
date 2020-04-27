@@ -73,7 +73,7 @@ function ContainerCharacterSelect(network, message) {
 	html.appendChild(container);
 }
 
-function ContainerConsole(network) {
+function ContainerConsole(game) {
 	var html = document.getElementById("ui-container");
 	if (html==null) {
 		html = document.createElement("div");
@@ -153,8 +153,8 @@ function ContainerConsole(network) {
 			if (cmds.length == 0) cmds[0] = "";
 
 			console.log("input" + input.value.trim());
-			if (input.value.trim() == "/toggle") {
-				console.log("???")
+			if (input.value.trim() == "toggle") {
+				console.log("???");
 				self.toggle();
 			}
 			else if (cmds[0] == "s" ) {
@@ -162,6 +162,13 @@ function ContainerConsole(network) {
 					Config.input.sensX = cmds[1];
 					Config.input.sensY = cmds[1];
 				}
+			}
+			else if (cmds[0] == "playertest") {
+				var s = new ScenePlayer(game);
+				s.isPlayer = true;
+				//console.log(game);
+				game.camera.attach(s);
+				game.add(s);
 			}
 			self.append(input.value);
 			input.value = "";

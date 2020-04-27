@@ -12,7 +12,7 @@ function Game(opt) {
 	this.TimeStep = opt.timeStep || 1000/30; // used by animator, here for convenience
 	this.animator = null; // not instanced here because looping begins immediately
 	this.soundManager = null; // not instanced here because most browsers and mobile flip out 
-	this.network = new Network({invoker: this}); // the login token needs to be used immediately
+	this.network = new Network(this); // the login token needs to be used immediately
 	this.controller = null;
 
 	this.scene = null;
@@ -105,17 +105,23 @@ Game.prototype.start = function() {
 
 	// per app specific stuff 
 	//this.tiles[0] = new SceneTile(this, 0, 0, -1, 10, 10, 1);
+
+	// fake collision stuff
 	this.tiles[0] = new SceneTile(this, 1, 0, 1, 2, 2, 3);
 	this.tiles[1] = new SceneTile(this, 3, 2, 1, 2, 5, 1);
-	this.tiles[2] = new SceneTile(this, 0, 0, 0, 10, 10, 1)
+	this.tiles[2] = new SceneTile(this, 0, 0, 0, 10, 10, 1);
+	this.tiles[3] = new SceneTile(this, 3, 3, 4, 2, 2, 4);
+	this.tiles[4] = new SceneTile(this, 3.5, 3.5, 2, 0.25, 0.25, 2);
 	this.sceneObjectsQueue.push(this.tiles[0]);
-	//this.sceneObjectsQueue.push(new SceneTile(this, 0, 0, 0, 10, 10, 1));
 	this.sceneObjectsQueue.push(this.tiles[1]);
 	this.sceneObjectsQueue.push(this.tiles[2]);
-	var s = new ScenePlayer(this);
+	this.sceneObjectsQueue.push(this.tiles[3]);
+	this.sceneObjectsQueue.push(this.tiles[4]);
+	
+	/*var s = new ScenePlayer(this);
 	s.isPlayer = true;
 	this.camera.attach(s);
-	this.sceneObjectsQueue.push(s);
+	this.sceneObjectsQueue.push(s);*/
 
 
 };
@@ -196,7 +202,7 @@ Game.prototype.createGameObjectFromMessage = function(message) {
 	var obj = null;
 	switch(type) {
 		case SceneObject.Types.Player: {
-			obj = new ScenePlayer();
+			obj = new ScenePlayer(this);
 			if (message.me) {
 				obj.isPlayer = true;
 				this.camera.attach(obj);

@@ -64,8 +64,10 @@ Context.prototype.onActivate = function() {
 	}
 	else { // non-mobile users only need onclick to call onActivate once
 		//this.canvas.onclick = undefined;
-		this.canvas.requestPointerLock = this.canvas.requestPointerLock || this.canvas.mozRequestPointerLock;
-		this.canvas.requestPointerLock();
+		if (this.hasActivated) {
+			this.canvas.requestPointerLock = this.canvas.requestPointerLock || this.canvas.mozRequestPointerLock;
+			this.canvas.requestPointerLock();
+		}
 	}
 
 	if (this.hasActivated) // prevent sending more than one activated event

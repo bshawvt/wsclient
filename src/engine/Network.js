@@ -1,4 +1,4 @@
-function Network(opts) {
+function Network(game) {
 	var opts = opts || {};
 	this.queuedMessage = []; // holds messages that shouldn't be processed immediately
 	this.netObjects = []; // a list of scene objects synchronized over a network
@@ -21,8 +21,8 @@ function Network(opts) {
 	// expire the token because it is one time use and limited time only anyway
 	document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/bin.html";
 
-	this.game = opts.invoker || null;
-	this.console = new ContainerConsole(this);// null;
+	this.game = game;//opts.invoker || null;
+	this.console = new ContainerConsole(this.game);// null;
 
 	this.connect();
 

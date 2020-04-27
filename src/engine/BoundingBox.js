@@ -23,7 +23,7 @@ BoundingBox.prototype.xscale = 0;
 BoundingBox.prototype.yscale = 0;
 BoundingBox.prototype.zscale = 0;
 
-BoundingBox.prototype.intersect = function(bb) {
+BoundingBox.prototype.intersect3d = function(bb) {
 	var ax = this.x;
 	var ay = this.y;
 	var az = this.z;
@@ -38,9 +38,27 @@ BoundingBox.prototype.intersect = function(bb) {
 	var bv = bb.y + bb.yscale;
 	var bw = bb.z + bb.zscale;
 
-	return ((ax <= bu && au >= bx && // x
+	return (ax <= bu && au >= bx && // x
 				ay <= bv && av >= by && // y
-					az <= bw && aw >= bz)); // z
+					az <= bw && aw >= bz); // z
+}
+BoundingBox.prototype.intersect2d = function(bb) {
+	var ax = this.x;
+	var ay = this.y;
+	var az = this.z;
+	var au = this.x + this.xscale;
+	var av = this.y + this.yscale;
+	//var aw = this.z + this.zscale;
+
+	var bx = bb.x;
+	var by = bb.y;
+	var bz = bb.z;
+	var bu = bb.x + bb.xscale;
+	var bv = bb.y + bb.yscale;
+	//var bw = bb.z + bb.zscale;
+
+	return (ax <= bu && au >= bx && // x
+				ay <= bv && av >= by);// && // y
 }
 BoundingBox.prototype.set = function(x, y, z, xscale, yscale, zscale) {
 	this.x = x;
@@ -50,8 +68,12 @@ BoundingBox.prototype.set = function(x, y, z, xscale, yscale, zscale) {
 	this.yscale = yscale;
 	this.zscale = zscale;
 
-	this.sceneObject.setPosition(x, y, z);
-	this.sceneObject.setBounds(xscale, yscale, zscale);
+	if (this.sceneObject !== undefined) {
+
+		this.sceneObject.setPosition(x, y, z);
+		this.sceneObject.setBounds(xscale, yscale, zscale);
+
+	}
 };
 
 /*public boolean intersect(ObjectBoundingBox bb) {
