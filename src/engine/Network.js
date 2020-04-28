@@ -24,9 +24,18 @@ function Network(game) {
 	this.game = game;//opts.invoker || null;
 	this.console = new ContainerConsole(this.game);// null;
 
+	this.localNetObject = null;
+
 	this.connect();
 
 };
+// mirror of MessageBlob.java types
+Network.BlobTypes = {};
+Network.BlobTypes.None = 0;
+Network.BlobTypes.Chat = 1;
+Network.BlobTypes.Join = 2;
+Network.BlobTypes.State = 3;
+
 Network.prototype.process = function(message) {
 	console.log(message);
 	switch(message.type) {
@@ -53,35 +62,15 @@ Network.prototype.process = function(message) {
 			
 			if (this.netObjects[id] === undefined) {
 				console.log("received update for unknown object");
-				this.netObjects[id] = this.game.createGameObjectFromMessage(message);
+				var sceneObject = this.game.createGameObjectFromMessage(message);
+				var netObject = new NetObject(sceneObject);
+
+				if (sceneObject.isPlayer) {
+					this.localNetObject = netObject;
+				}
+				this.netObjects[id] = netObject
 			}
 			this.netObjects[id].setState(message);
-
-			/*if ( this.netObjects[id] === undefined ) {
-				console.log("received update for unknown object");
-				var type = message.objectType;
-				var sceneObj = new SceneCube();
-				this.netObjects[id] = sceneObj;
-				this.game.sceneObjectsQueue.push(sceneObj);
-			}
-			this.netObjects[id].setState(message);
-			if (message.me == true) {
-				this.game.camera.attach(this.netObjects[id]);
-			}*/
-			/*var type = message.objectType;
-			switch (type) {
-				case NetObject.Types.Player: {
-					this.netObjects[id] = new PlayerNetObject();
-					break;
-				}
-				case NetObject.Types.Default:
-				default: {
-					console.log("unknown object type");
-					break;
-				}
-			}*/
-			
-
 			break;
 		}
 		default: {
@@ -114,6 +103,7 @@ Network.prototype.connect = function() {
 
 Network.prototype.onClose = function(event) {
 	console.log("Disconnected: " + event.reason);
+	this.socket = null;
 	//this.setState(0);
 };
 Network.prototype.onError = function(event) {
@@ -138,7 +128,9 @@ Network.prototype.onOpen = function(event) {
 };
 
 Network.prototype.sendFrame = function() {
-	//console.log(this.socket, this.state);
+	if (this.localNetObject != null && this.localNetObject.isStateChanged()) {
+		this.frame.push(this.localNetObject.getStateBlob());
+	}
 	if (this.socket !== null && this.state > 0 && this.frame.messages.length > 0) {
 		this.socket.send(this.frame.serialize());
 		this.frame.clear();
@@ -164,10 +156,5 @@ Network.prototype.start = function() {
 Network.prototype.close = function() {
 	this.socket.close();
 };
-// mirror of MessageBlob.java types
-Network.BlobTypes = {};
-Network.BlobTypes.None = 0;
-Network.BlobTypes.Chat = 1;
-Network.BlobTypes.Join = 2;
-Network.BlobTypes.State = 3;
+
 

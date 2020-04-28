@@ -66,10 +66,6 @@ function ContainerCharacterSelect(network, message) {
 		group.appendChild(select);
 	}
 	container.appendChild(group);
-
-
-
-
 	html.appendChild(container);
 }
 
@@ -89,9 +85,9 @@ function ContainerConsole(game) {
 	var messages = document.createElement("div");
 	messages.setAttribute("class", "ui-console-messagebody");
 
-	this.cl = console.log;
+	//this.cl = console.log;
 	this.append = function(arguewithmem8) {
-		self.cl(arguewithmem8);
+		//self.cl(arguewithmem8);
 		for(var i = 0; i < arguments.length; i++) {
 			var arg = arguments[i];
 			var m = arg;
@@ -139,6 +135,8 @@ function ContainerConsole(game) {
 	var input = document.createElement("input");
 	input.placeholder = "> Press enter to send";
 
+	var player = null;
+
 	function send(event) {
 		var evt = {};
 		if (event === null) { // null only when send is clicked
@@ -154,21 +152,28 @@ function ContainerConsole(game) {
 
 			console.log("input" + input.value.trim());
 			if (input.value.trim() == "toggle") {
-				console.log("???");
+				console.log("toggled console");
 				self.toggle();
 			}
-			else if (cmds[0] == "s" ) {
+			else if (cmds[0] == "yawspeed" ) {
 				if (cmds.length > 1) {
 					Config.input.sensX = cmds[1];
 					Config.input.sensY = cmds[1];
 				}
 			}
 			else if (cmds[0] == "playertest") {
+				console.log("doing bad things...");
 				var s = new ScenePlayer(game);
+				player = s;
 				s.isPlayer = true;
-				//console.log(game);
 				game.camera.attach(s);
 				game.add(s);
+			}
+			else if (cmds[0] == "accel") {
+				console.log("doing bad things...");
+				if (player != null) {
+					player.speed[0] = 2;
+				}
 			}
 			self.append(input.value);
 			input.value = "";
@@ -184,7 +189,7 @@ function ContainerConsole(game) {
 	inputContainer.appendChild(input);
 	inputContainer.appendChild(sendBtn);
 
-	console.log = this.append;
+	//console.log = this.append;
 	container.appendChild(messages);
 	container.appendChild(inputContainer);
 

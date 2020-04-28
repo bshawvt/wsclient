@@ -3,11 +3,11 @@ function SceneObject(scene) {
 	this.parent = undefined;
 	
 	this.id = 0; // world id, set when added to the simulation
-	this.angles = [0.0, 0.0, 0.0]; // yaw pitch roll
-	this.moveDirection = [0.0, 0.0, 0.0];
+	//this.angles = [0.0, 0.0, 0.0]; // yaw pitch roll
+	//this.moveDirection = [0.0, 0.0, 0.0];
 	this.speed = [0.0, 0.0, 0.0];
 	this.inputState = new Bitfield();
-	this.prevInputState = new Bitfield();
+	//this.prevInputState = new Bitfield();
 	this.removed = false; 
 	this.type = 0;//NetObject.Types.Default; // object type
 	this.isPlayer = false; // set by createGameObjectFromMessage to designate object as belonging to the local user
@@ -21,16 +21,17 @@ function SceneObject(scene) {
 	this.object = new THREE.Mesh(this.geometry, this.material);
 	//scene.add(new SceneObject());
 }
+
 SceneObject.prototype.parent = undefined;
 SceneObject.prototype.id = 0; // world id, set when added to the simulation
-SceneObject.prototype.angles = [0.0, 0.0, 0.0]; // yaw pitch roll
-SceneObject.prototype.moveDirection = [0.0, 0.0, 0.0];
-SceneObject.prototype.speed = [0.0, 0.0, 0.0];
+//SceneObject.prototype.angles = [0.0, 0.0, 0.0]; // yaw pitch roll
+SceneObject.prototype.position = [0.0, 0.0, 0.0]; // [x y z] eventually added to threejs object position vector
+SceneObject.prototype.speed = [0.0, 0.0, 0.0]; // [forward/backward, strafe, jump/fall] speed of scene object
 SceneObject.prototype.inputState = null;//new Bitfield();
-SceneObject.prototype.prevInputState = null;//new Bitfield();
-SceneObject.prototype.removed = false; 
+//SceneObject.prototype.prevInputState = null;//new Bitfield();
+SceneObject.prototype.removed = false; // set to true to remove 
 SceneObject.prototype.type = 0;//NetObject.Types.Default; // object type
-SceneObject.prototype.isPlayer = false; // set by createGameObjectFromMessage to designate object as belonging to the local user
+SceneObject.prototype.isPlayer = false; // set by createGameObjectFromMessage, designates object as belonging to the local user
 SceneObject.prototype.drawable = false; // true if object can be drawn
 SceneObject.prototype.bb = undefined; // boundingbox object
 
@@ -40,13 +41,17 @@ SceneObject.prototype.material = null;// new THREE.MeshBasicMaterial({color: 0xf
 SceneObject.prototype.object = null;// new THREE.Mesh(this.geometry, this.material);
 SceneObject.prototype.translateGeometry = true; // sets coordinate system maybe
 
+// current angle
 SceneObject.prototype.yaw = 0.0;
 SceneObject.prototype.pitch = 0.0;
 SceneObject.prototype.roll = 0.0;
+// new angle
 SceneObject.prototype.yawAccumulator = 0.0;
 SceneObject.prototype.pitchAccumulator = 0.0;
 SceneObject.prototype.rollAccumulator = 0.0;
-SceneObject.prototype.strafe = 0.0;
+
+SceneObject.prototype.strafe = 0.0; // 
+
 /*MyNewSceneObject.prototype = Object.create(SceneObject.prototype);
 MyNewSceneObject.prototype.constructor = MyNewSceneObject;*/
 

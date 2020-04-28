@@ -1,12 +1,10 @@
-function ScenePlayer(scene) {
+function ScenePlayer(game) {
 	
 	this.inputState = new Bitfield();
 	this.prevInputState = new Bitfield();
 	this.parent = null;
 	
-	this.angles = [0.0, 0.0, 0.0]; // yaw pitch roll
 	this.position = [0.0, 0.0, 0.0];
-	this.moveDirection = [0.0, 0.0, 0.0];
 	this.speed = [0.0, 0.0, 0.0]; // ws, strafe, gravity
 	
 	//this.clientId = -1;
@@ -48,7 +46,7 @@ function ScenePlayer(scene) {
 	//this.pitchAccumulator = 140;
 	//this.pitch = 140;
 	this.position[2] = 1.01;
-	this.bb = new BoundingBox(0, 0, 0, 0.71, 0.71, 1, this, scene);
+	this.bb = new BoundingBox(0, 0, 0, 0.71, 0.71, 1, this, game);
 	//scene.add(this.bbObject);
 	
 };
@@ -93,20 +91,18 @@ ScenePlayer.prototype.setState = function(state) {
 
 ScenePlayer.prototype.step = function(scene, In) {
 	
-	// todo: the controller stuff shouldn't be part of a scene object
-	if (this.isPlayer) {
 
-		var ydiff = (this.yawAccumulator - this.yaw) / 3;
-		this.yaw += ydiff;
+	var ydiff = (this.yawAccumulator - this.yaw) / 3;
+	this.yaw += ydiff;
 
-		var pdiff = (this.pitchAccumulator - this.pitch) / 3;
-		this.pitch += pdiff;
+	var pdiff = (this.pitchAccumulator - this.pitch) / 3;
+	this.pitch += pdiff;
 
-		var rdiff = (this.rollAccumulator - this.roll) / 3;
-		this.roll += rdiff;
+	var rdiff = (this.rollAccumulator - this.roll) / 3;
+	this.roll += rdiff;
 
-		// getting client state updates
-		
+	// player is in control of this object and controls input state
+	if (this.isPlayer ) {	
 		// shoot
 		if (In.getButtonState(InputController.MAP_FIRE.key)) {
 			this.inputState.add(InputController.MAP_FIRE.bit);
@@ -137,7 +133,6 @@ ScenePlayer.prototype.step = function(scene, In) {
 			this.inputState.subtract(InputController.MAP_ACTION.bit);
 		}
 
-
 		// movement
 		// accelerate
 		if (In.getButtonState(InputController.MAP_FORWARD.key)) {
@@ -167,12 +162,6 @@ ScenePlayer.prototype.step = function(scene, In) {
 		else {
 			this.inputState.subtract(InputController.MAP_RIGHT.bit);
 		}
-
-		//this.speed[0] = Clamp(this.speed[0], -0.5, 0.5);
-		//this.speed[1] = Clamp(this.speed[1], -0.5, 0.5);
-
-		//this.moveDirection[0] = Math.sin(-this.yaw);
-		//this.moveDirection[1] = Math.cos(-this.yaw);
 	}
 	
 
