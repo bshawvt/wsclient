@@ -25,7 +25,7 @@ SceneCamera.prototype.step = function(game, controller) {
 	
 };
 // basically step but called by the render method
-SceneCamera.prototype.update = function(game, In) {
+SceneCamera.prototype.setLocalState = function(game, In) {
 	if (this.attached !== null) {
 
 		var outterDistance = 2.5;

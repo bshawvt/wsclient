@@ -61,7 +61,71 @@ SceneObject.prototype.setPosition = function(x, y, z) {
 	this.object.position.z = z;
 };
 
-SceneObject.prototype.setState = function(state) {
+// sets the state of a scene object that the local user is in control of
+SceneObject.prototype.setLocalState = function(In) {
+
+	// shoot
+	if (In.getButtonState(InputController.MAP_FIRE.key)) {
+		this.inputState.add(InputController.MAP_FIRE.bit);
+		this.inputState.subtract(InputController.MAP_ALTFIRE.bit);
+	}
+	else if (In.getButtonState(InputController.MAP_ALTFIRE.key)) {
+		this.inputState.add(InputController.MAP_ALTFIRE.bit);
+		this.inputState.subtract(InputController.MAP_FIRE.bit);
+	}
+	else {
+		this.inputState.subtract(InputController.MAP_FIRE.bit);
+		this.inputState.subtract(InputController.MAP_ALTFIRE.bit);
+	}
+
+	// jump
+	if (In.getButtonState(InputController.MAP_JUMP.key)) {
+		this.inputState.add(InputController.MAP_JUMP.bit);
+	}
+	else {
+		this.inputState.subtract(InputController.MAP_JUMP.bit);
+	}
+
+	// action
+	if (In.getButtonState(InputController.MAP_ACTION.key)) {
+		this.inputState.add(InputController.MAP_ACTION.bit);
+	}
+	else {
+		this.inputState.subtract(InputController.MAP_ACTION.bit);
+	}
+
+	// movement
+	// accelerate
+	if (In.getButtonState(InputController.MAP_FORWARD.key)) {
+		this.inputState.add(InputController.MAP_FORWARD.bit);
+	}
+	else {
+		this.inputState.subtract(InputController.MAP_FORWARD.bit);
+	}
+	// decelerate
+	if (In.getButtonState(InputController.MAP_BACKWARD.key)) {
+		this.inputState.add(InputController.MAP_BACKWARD.bit);
+	}
+	else {
+		this.inputState.subtract(InputController.MAP_BACKWARD.bit);
+	}
+	// strafe left
+	if (In.getButtonState(InputController.MAP_LEFT.key)) {
+		this.inputState.add(InputController.MAP_LEFT.bit);
+	}
+	else {
+		this.inputState.subtract(InputController.MAP_LEFT.bit);
+	}
+	// strafe right
+	if (In.getButtonState(InputController.MAP_RIGHT.key)) {
+		this.inputState.add(InputController.MAP_RIGHT.bit);
+	}
+	else {
+		this.inputState.subtract(InputController.MAP_RIGHT.bit);
+	}
+};
+
+/*SceneObject.prototype.setState = function(state) {
 	//this.inputState = new Bitmask();
 	this.parent = state.parent || null;
 	
@@ -95,28 +159,24 @@ SceneObject.prototype.setState = function(state) {
 		this.inputState = new Bitfield(state.input);
 	}
 
-};
+};*/
+
 SceneObject.prototype.step = function(dt, controller) {
-	if (this.inputState.compare()) {
-
-	}
-
-	if (!this.isPlayer) {
-		this.object.position.x +=  ((-1 + Math.random() * 2) + 0.0001) / 2
-		this.object.position.y +=  ((-1 + Math.random() * 2) + 0.0001) / 2
-	}
 
 };
+
 SceneObject.prototype.draw = function(dt) {
-	//this.object.rotation.x += 0.01;
-	//this.object.rotation.y += 0.01;
+
 };
+
 SceneObject.prototype.setYaw = function(v) {
 	this.yawAccumulator = v;
 };
+
 SceneObject.prototype.setPitch = function(v) {
 	this.pitchAccumulator = v;
 };
+
 SceneObject.prototype.setRoll = function(v) {
 	this.rollAccumulator = v;
 };

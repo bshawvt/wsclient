@@ -53,45 +53,11 @@ function ScenePlayer(game) {
 ScenePlayer.prototype = Object.create(SceneObject.prototype);
 ScenePlayer.prototype.constructor = ScenePlayer;
 
-ScenePlayer.prototype.setState = function(state) {
-	//this.inputState = new Bitmask();
-	this.parent = state.parent || null;
-	
-	if (state.positions !== undefined) {
-		this.position[0] = state.position[0];
-		this.position[1] = state.position[1];
-		this.position[2] = state.position[2];
-	}
-	
-	if (state.speed !== undefined) {
-		this.speed[0] = state.speed[0];
-		this.speed[1] = state.speed[1];
-		this.speed[2] = state.speed[2];
-	}
-
-	if (state.davids !== undefined) {
-		this.angles[0] = state.davids[0];
-		this.angles[1] = state.davids[1];
-		this.angles[2] = state.davids[2];
-	}
-
-	if (state.id !== undefined) {
-		this.id = state.id;
-	}
-	
-	if (state.removed !== undefined) {
-		this.removed = state.removed; 	
-	}
-
-	if (state.input !== undefined) {
-		this.inputState = new Bitfield(state.input);
-	}
-
-};
-
 ScenePlayer.prototype.step = function(scene, In) {
-	
 
+	if (this.isPlayer)
+		this.setLocalState(In);
+	
 	var ydiff = (this.yawAccumulator - this.yaw) / 3;
 	this.yaw += ydiff;
 
@@ -100,76 +66,6 @@ ScenePlayer.prototype.step = function(scene, In) {
 
 	var rdiff = (this.rollAccumulator - this.roll) / 3;
 	this.roll += rdiff;
-
-	// player is in control of this object and controls input state
-	if (this.isPlayer ) {	
-		// shoot
-		if (In.getButtonState(InputController.MAP_FIRE.key)) {
-			this.inputState.add(InputController.MAP_FIRE.bit);
-			this.inputState.subtract(InputController.MAP_ALTFIRE.bit);
-		}
-		else if (In.getButtonState(InputController.MAP_ALTFIRE.key)) {
-			this.inputState.add(InputController.MAP_ALTFIRE.bit);
-			this.inputState.subtract(InputController.MAP_FIRE.bit);
-		}
-		else {
-			this.inputState.subtract(InputController.MAP_FIRE.bit);
-			this.inputState.subtract(InputController.MAP_ALTFIRE.bit);
-		}
-
-		// jump
-		if (In.getButtonState(InputController.MAP_JUMP.key)) {
-			this.inputState.add(InputController.MAP_JUMP.bit);
-		}
-		else {
-			this.inputState.subtract(InputController.MAP_JUMP.bit);
-		}
-
-		// action
-		if (In.getButtonState(InputController.MAP_ACTION.key)) {
-			this.inputState.add(InputController.MAP_ACTION.bit);
-		}
-		else {
-			this.inputState.subtract(InputController.MAP_ACTION.bit);
-		}
-
-		// movement
-		// accelerate
-		if (In.getButtonState(InputController.MAP_FORWARD.key)) {
-			this.inputState.add(InputController.MAP_FORWARD.bit);
-		}
-		else {
-			this.inputState.subtract(InputController.MAP_FORWARD.bit);
-		}
-		// decelerate
-		if (In.getButtonState(InputController.MAP_BACKWARD.key)) {
-			this.inputState.add(InputController.MAP_BACKWARD.bit);
-		}
-		else {
-			this.inputState.subtract(InputController.MAP_BACKWARD.bit);
-		}
-		// strafe left
-		if (In.getButtonState(InputController.MAP_LEFT.key)) {
-			this.inputState.add(InputController.MAP_LEFT.bit);
-		}
-		else {
-			this.inputState.subtract(InputController.MAP_LEFT.bit);
-		}
-		// strafe right
-		if (In.getButtonState(InputController.MAP_RIGHT.key)) {
-			this.inputState.add(InputController.MAP_RIGHT.bit);
-		}
-		else {
-			this.inputState.subtract(InputController.MAP_RIGHT.bit);
-		}
-	}
-	
-
-	var dirX = 0;
-	var dirY = 0;
-
-	var strafe = 0;
-	//var shifty = 0.25; // debug for freeroam camera
 
 	// client prediction
 	// attack

@@ -39,12 +39,15 @@ Network.BlobTypes.State = 3;
 Network.prototype.process = function(message) {
 	console.log(message);
 	switch(message.type) {
+
 		case Network.BlobTypes.None: {
 			break;
 		}
+
 		case Network.BlobTypes.Chat: {
 			break;
 		}
+
 		case Network.BlobTypes.Join: {
 			if (message.ready) {
 				new ContainerCharacterSelect(this, message);
@@ -56,6 +59,7 @@ Network.prototype.process = function(message) {
 			}
 			break;//
 		}
+
 		case Network.BlobTypes.State: { 
 			console.log("State blob yay");
 			var id = "0" + message.id; // converted to a string for map
@@ -73,11 +77,14 @@ Network.prototype.process = function(message) {
 			this.netObjects[id].setState(message);
 			break;
 		}
+
 		default: {
 			break;
 		}
+
 	}
 };
+
 Network.prototype.connect = function() {
 
 	if (this.session === null) {
@@ -106,9 +113,11 @@ Network.prototype.onClose = function(event) {
 	this.socket = null;
 	//this.setState(0);
 };
+
 Network.prototype.onError = function(event) {
 	console.log("Network error!");
 };
+
 Network.prototype.onMessage = function(event) {
 	//this.invoker.ui.console("Network: " + event.data);
 	var json = JSON.parse(event.data);
@@ -122,6 +131,7 @@ Network.prototype.onMessage = function(event) {
 		this.process(message);
 	}
 };
+
 Network.prototype.onOpen = function(event) {
 	console.log("Authenticating...");
 	this.state = 1;
@@ -129,10 +139,12 @@ Network.prototype.onOpen = function(event) {
 
 Network.prototype.sendFrame = function() {
 	if (this.localNetObject != null && this.localNetObject.isStateChanged()) {
-		this.frame.push(this.localNetObject.getStateBlob());
+		this.frame.push(this.localNetObject.buildStateBlob());
 	}
 	if (this.socket !== null && this.state > 0 && this.frame.messages.length > 0) {
-		this.socket.send(this.frame.serialize());
+		var data = this.frame.serialize();
+		console.log("sent " + data.length + " bytes");
+		this.socket.send(data);
 		this.frame.clear();
 	}
 };

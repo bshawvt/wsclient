@@ -167,7 +167,7 @@ Game.prototype.frame = function(dt) {
 Game.prototype.render = function(dt) {
 	var self = this;
 
-	this.camera.update(dt, this.controller);
+	this.camera.setLocalState(this, this.controller);
 
 	for(var i = 0; i < this.sceneObjects.length; i++) {
 		var item = this.sceneObjects[i];
@@ -190,6 +190,7 @@ Game.prototype.flush = function() {
 	this.controller.update();
 
 };
+
 /* helper to adds objects to the scene */
 Game.prototype.add = function(object) {
 	this.sceneObjectsQueue.push(object);

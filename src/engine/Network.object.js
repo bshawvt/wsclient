@@ -8,17 +8,40 @@ function NetObject(sceneObject, isPlayer) {
 	this.prevRoll = 0.0;
 
 }
+
 // compares local user scene object with its previous state
 NetObject.prototype.isStateChanged = function() {
-	if (this.prevInputState.get() != this.sceneObject.inputState.get() ||
+
+	if (this.prevInputState.get() != this.sceneObject.inputState.get()) {
+		this.prevInputState = new Bitfield(this.sceneObject.inputState.get());
+		return true;
+	}
+
+	if (this.prevYaw != this.sceneObject.yawAccumulator) {
+		this.prevYaw = this.sceneObject.yawAccumulator;
+		return true;
+	}
+
+	if (this.prevPitch != this.sceneObject.pitchAccumulator) {
+		this.prevPitch = this.sceneObject.pitchAccumulator;
+		return true;
+	}
+
+	if (this.prevRoll != this.sceneObject.rollAccumulator) {
+		this.prevRoll = this.sceneObject.rollAccumulator;
+		return true;
+	}
+	/*if (this.prevInputState.get() != this.sceneObject.inputState.get() ||
 		(this.prevYaw != this.sceneObject.yaw) ||
 		(this.prevPitch != this.sceneObject.pitch) ||
 		(this.prevRoll != this.sceneObject.roll)) {
 		return true;
-	}
+	}*/
 	return false;
 };
-NetObject.prototype.getStateBlob = function() {
+
+// pieces together state changes 
+NetObject.prototype.buildStateBlob = function() {
 	var blob = {type: Network.BlobTypes.State };
 	if (this.prevInputState.get() != this.sceneObject.inputState.get()) {
 		blob.input = this.sceneObject.inputState.get();
@@ -44,6 +67,8 @@ NetObject.prototype.getStateBlob = function() {
 
 	return blob;
 };
+
+// takes received state and applies it to a scene object
 NetObject.prototype.setState = function(state) {
 
 	// some things the player has total control over, such as pitch, roll, yaw and keyboard state
@@ -65,18 +90,19 @@ NetObject.prototype.setState = function(state) {
 			this.sceneObject.inputState = new Bitfield(state.input);
 		}
 
-		if (state.position !== undefined) {
-			//if (this.sceneObject.position[0] )
-			//this.sceneObject.position[0] = state.position[0];
-			//this.sceneObject.position[1] = state.position[1];
-			//this.sceneObject.position[2] = state.position[2];
-		}
-
 		if (state.speed !== undefined) {
-			//this.sceneObject.speed[0] = state.speed[0];
-			//this.sceneObject.speed[1] = state.speed[1];
-			//this.sceneObject.speed[2] = state.speed[2];
+			this.sceneObject.speed[0] = state.speed[0];
+			this.sceneObject.speed[1] = state.speed[1];
+			this.sceneObject.speed[2] = state.speed[2];
 		}
+	}
+
+	//if (this.sceneObject.position)
+	if (state.position !== undefined) {
+		//if (this.sceneObject.position[0] )
+		this.sceneObject.position[0] = state.position[0];
+		this.sceneObject.position[1] = state.position[1];
+		this.sceneObject.position[2] = state.position[2];
 	}
 
 	
@@ -86,6 +112,7 @@ NetObject.prototype.setState = function(state) {
 												state.bb[3], state.bb[4], state.bb[5] );
 
 };
+
 
 // mirror of NetObject.java types
 NetObject.Types = {};

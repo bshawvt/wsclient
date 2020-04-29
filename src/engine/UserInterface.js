@@ -150,9 +150,7 @@ function ContainerConsole(game) {
 			var cmds = input.value.trim().split(" ");
 			if (cmds.length == 0) cmds[0] = "";
 
-			console.log("input" + input.value.trim());
 			if (input.value.trim() == "toggle") {
-				console.log("toggled console");
 				self.toggle();
 			}
 			else if (cmds[0] == "yawspeed" ) {
@@ -162,7 +160,6 @@ function ContainerConsole(game) {
 				}
 			}
 			else if (cmds[0] == "playertest") {
-				console.log("doing bad things...");
 				var s = new ScenePlayer(game);
 				player = s;
 				s.isPlayer = true;
@@ -170,7 +167,6 @@ function ContainerConsole(game) {
 				game.add(s);
 			}
 			else if (cmds[0] == "accel") {
-				console.log("doing bad things...");
 				if (player != null) {
 					player.speed[0] = 2;
 				}
