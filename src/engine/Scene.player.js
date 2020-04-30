@@ -1,5 +1,15 @@
-function ScenePlayer(game) {
-	
+function ScenePlayer(args) {
+	//if (args !== undefined) {
+		console.log("sceneplayer hello world");
+	var game = args.game || undefined;
+	var x = args.x || 0;
+	var y = args.y || 0;
+	var z = args.z || 1.01;
+	var xscale = args.xscale || 0.71;
+	var yscale = args.yscale || 0.71;
+	var zscale = args.zscale || 1;
+	//}
+
 	this.inputState = new Bitfield();
 	this.prevInputState = new Bitfield();
 	this.parent = null;
@@ -45,8 +55,9 @@ function ScenePlayer(game) {
 	//this.yaw = 90;
 	//this.pitchAccumulator = 140;
 	//this.pitch = 140;
-	this.position[2] = 1.01;
-	this.bb = new BoundingBox(0, 0, 0, 0.71, 0.71, 1, this, game);
+	this.position[2] = z;//1.01;
+	// 0.71
+	this.bb = new BoundingBox(x, y, z, xscale, yscale, zscale, this, game);
 	//scene.add(this.bbObject);
 	
 };
@@ -157,8 +168,8 @@ ScenePlayer.prototype.step = function(scene, In) {
 	var fellOn = undefined;
 	var futureBB = new BoundingBox(fx, fy, this.position[2], 0.71, 0.71, 1);
 	var futureFallBB = new BoundingBox(fx, fy, fz, 0.71, 0.71, 1);
-	for(var i = 0; i < scene.tiles.length; i++) {
-		var item = scene.tiles[i];
+	for(var i = 0; i < scene.staticSceneObjects.length; i++) {
+		var item = scene.staticSceneObjects[i];
 		if (item.bb.intersect3d(futureBB)) {
 			hasCollided = true;
 		}

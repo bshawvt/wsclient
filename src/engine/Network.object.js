@@ -10,6 +10,7 @@ function NetObject(sceneObject, isPlayer) {
 }
 
 // compares local user scene object with its previous state
+// and overwrites with new data
 NetObject.prototype.isStateChanged = function() {
 
 	if (this.prevInputState.get() != this.sceneObject.inputState.get()) {
@@ -68,7 +69,9 @@ NetObject.prototype.buildStateBlob = function() {
 	return blob;
 };
 
-// takes received state and applies it to a scene object
+/* takes received state and applies it to a scene object
+	this is used in Network sendFrame class
+*/
 NetObject.prototype.setState = function(state) {
 
 	// some things the player has total control over, such as pitch, roll, yaw and keyboard state
@@ -104,8 +107,6 @@ NetObject.prototype.setState = function(state) {
 		this.sceneObject.position[1] = state.position[1];
 		this.sceneObject.position[2] = state.position[2];
 	}
-
-	
 
 	if (state.bb !== undefined)
 		this.sceneObject.bb = new BoundingBox( state.bb[0], state.bb[1], state.bb[2],

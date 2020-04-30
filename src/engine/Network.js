@@ -94,8 +94,7 @@ Network.prototype.connect = function() {
 
 	if (this.socket == null) {
 		console.log("Connecting to server...");
-		var connectionString = [ Config.servers.game.address, ":",
-			Config.servers.game.port, "/", this.session, "/", Config.version.build ];
+		var connectionString = [ Config.servers.game.address, ":", Config.servers.game.port, "/", this.session, "/", Config.version.build ];
 
 		var socket = new WebSocket(connectionString.join(''));
 
@@ -109,9 +108,10 @@ Network.prototype.connect = function() {
 };
 
 Network.prototype.onClose = function(event) {
+
 	console.log("Disconnected: " + event.reason);
 	this.socket = null;
-	//this.setState(0);
+
 };
 
 Network.prototype.onError = function(event) {
@@ -119,7 +119,7 @@ Network.prototype.onError = function(event) {
 };
 
 Network.prototype.onMessage = function(event) {
-	//this.invoker.ui.console("Network: " + event.data);
+
 	var json = JSON.parse(event.data);
 	console.log(json);
 	for(var i = 0; i < json.messages.length; i++) {
@@ -130,23 +130,29 @@ Network.prototype.onMessage = function(event) {
 		}
 		this.process(message);
 	}
+
 };
 
 Network.prototype.onOpen = function(event) {
+
 	console.log("Authenticating...");
 	this.state = 1;
+
 };
 
 Network.prototype.sendFrame = function() {
+
 	if (this.localNetObject != null && this.localNetObject.isStateChanged()) {
 		this.frame.push(this.localNetObject.buildStateBlob());
 	}
+
 	if (this.socket !== null && this.state > 0 && this.frame.messages.length > 0) {
 		var data = this.frame.serialize();
 		console.log("sent " + data.length + " bytes");
 		this.socket.send(data);
 		this.frame.clear();
 	}
+
 };
 /* called when Game has been activated to propagate messages received before it was activated */
 Network.prototype.start = function() {

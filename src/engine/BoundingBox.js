@@ -7,7 +7,7 @@ function BoundingBox(x, y, z, xscale, yscale, zscale, parent, scene) {
 	this.zscale = zscale;
 
 	if (scene !== undefined) {
-		this.sceneObject = new SceneBoundingBox(scene, this, xscale, yscale, zscale);
+		this.sceneObject = new SceneBoundingBox({game: scene, parent: this, xscale: xscale, yscale: yscale, zscale: zscale});
 		this.sceneObject.setPosition(x, y, z);
 		scene.add(this.sceneObject);
 	}

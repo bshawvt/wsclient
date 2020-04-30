@@ -1,5 +1,9 @@
-function SceneBoundingBox(scene, parent, xscale, yscale, zscale) {
-	
+function SceneBoundingBox(args) {
+	var scene = args.game || undefined;
+	var parent = args.parent || undefined;
+	var xscale = args.xscale || 0;
+	var yscale = args.yscale || 0;
+	var zscale = args.zscale || 0;
 	this.inputState = new Bitfield();
 	this.prevInputState = new Bitfield();
 	this.parent = undefined;

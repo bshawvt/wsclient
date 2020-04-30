@@ -21,10 +21,12 @@ function Game(opt) {
 
 	this.dt = 0;
 
+	// scene objects that don't change position, rotation or scale
+	this.staticSceneObjects = [];
+	this.staticSceneObjectsQueue = [];
+	// dynamic scene objects
 	this.sceneObjects = [];
 	this.sceneObjectsQueue = [];
-
-	this.tiles = [];
 
 	this.resource = new ResourceManager(opt.resources);
 	var context = { parent: opt.parent, 
@@ -43,6 +45,9 @@ function Game(opt) {
 	this.context = new Context(context);
 
 	this.startTime = 0xffffffffffffff; // crazy number because it becomes dt after animator starts
+
+	
+	
 }
 
 /* begins main loop because of animator
@@ -84,10 +89,16 @@ Game.prototype.start = function() {
 	this.sceneObjects = [];
 	this.sceneObjectsQueue = [];
 
+	var worldloader = new WorldLoader(this);
+	new Loader(["/bin/client/data/map.dat"], function(done, data, resourceName) {
+		//var worldFile = JSON.parse(Bytes2Ascii(new Int8Array(data.data)).join(""));
+		worldloader.load(Bytes2Ascii(new Int8Array(data.data)).join(""));
+	});
+
 	this.network.start();
 
-	this.camera = new SceneCamera();//
-	this.sceneObjectsQueue.push(this.camera);
+	//this.camera = new SceneCamera({game: this});//
+	//this.sceneObjectsQueue.push(this.camera);
 
 	// threejs setup
 	this.scene = new THREE.Scene();
@@ -102,21 +113,23 @@ Game.prototype.start = function() {
 	this.animator = new Animator(this);
 	this.startTime = this.animator.dt;
 	console.log("game started");
+	
 
 	// per app specific stuff 
 	//this.tiles[0] = new SceneTile(this, 0, 0, -1, 10, 10, 1);
 
 	// fake collision stuff
-	this.tiles[0] = new SceneTile(this, 1, 0, 1, 2, 2, 3);
-	this.tiles[1] = new SceneTile(this, 3, 2, 1, 2, 5, 1);
-	this.tiles[2] = new SceneTile(this, 0, 0, 0, 10, 10, 1);
-	this.tiles[3] = new SceneTile(this, 3, 3, 4, 2, 2, 4);
-	this.tiles[4] = new SceneTile(this, 3.5, 3.5, 2, 0.25, 0.25, 2);
+	/*this.tiles = [];
+	this.tiles[0] = new SceneTile({game: this, x: 1, y: 0, z: 1, xscale: 2, yscale: 2, zscale: 3});
+	this.tiles[1] = new SceneTile({game: this, x: 3, y: 2, z: 1, xscale: 2, yscale: 5, zscale: 1});
+	this.tiles[2] = new SceneTile({game: this, x: 0, y: 0, z: 0, xscale: 10, yscale: 10, zscale: 1});
+	this.tiles[3] = new SceneTile({game: this, x: 3, y: 3, z: 4, xscale: 2, yscale: 2, zscale: 4});
+	this.tiles[4] = new SceneTile({game: this, x: 3.5, y: 3.5, z: 2, xscale: 0.25, yscale: 0.25, zscale: 2});
 	this.sceneObjectsQueue.push(this.tiles[0]);
 	this.sceneObjectsQueue.push(this.tiles[1]);
 	this.sceneObjectsQueue.push(this.tiles[2]);
 	this.sceneObjectsQueue.push(this.tiles[3]);
-	this.sceneObjectsQueue.push(this.tiles[4]);
+	this.sceneObjectsQueue.push(this.tiles[4]);*/
 	
 	/*var s = new ScenePlayer(this);
 	s.isPlayer = true;
@@ -166,7 +179,7 @@ Game.prototype.frame = function(dt) {
 	in most web browsers it will be limited at 60fps */
 Game.prototype.render = function(dt) {
 	var self = this;
-
+	if (this.camera == null) return;
 	this.camera.setLocalState(this, this.controller);
 
 	for(var i = 0; i < this.sceneObjects.length; i++) {
@@ -186,13 +199,24 @@ Game.prototype.flush = function() {
 		this.sceneObjects.push(item);
 		this.scene.add(item.object);
 	}
+	/*for(var i2 = 0; i2 < this.staticSceneObjectsQueue.length; i2++) {
+		var item = this.staticSceneObjectsQueue[i2];
+		this.staticSceneObjects.push(item);
+		this.scene.add(item.object);
+	}*/
 	this.sceneObjectsQueue = [];
+	//this.staticSceneObjectsQueue = [];
 	this.controller.update();
 
 };
 
 /* helper to adds objects to the scene */
-Game.prototype.add = function(object) {
+Game.prototype.add = function(object, static) {
+console.log("game.add...");
+	console.log(this);
+	if (static == true) {
+		this.staticSceneObjects.push(object);
+	}
 	this.sceneObjectsQueue.push(object);
 };
 
@@ -203,7 +227,7 @@ Game.prototype.createGameObjectFromMessage = function(message) {
 	var obj = null;
 	switch(type) {
 		case SceneObject.Types.Player: {
-			obj = new ScenePlayer(this);
+			obj = new ScenePlayer({game: this});
 			if (message.me) {
 				obj.isPlayer = true;
 				this.camera.attach(obj);

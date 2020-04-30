@@ -1,15 +1,27 @@
 // a camera that orbits around the player character
-function SceneCamera(scene) {
+function SceneCamera(args) {
+	console.log("scenecamera hello world");
+	//if (args !== undefined) {
+	var game = args.game || undefined;
+	var x = args.x || 0.0;
+	var y = args.y || 0.0;
+	var z = args.z || 0.0;
+	var xscale = args.xscale || 0;
+	var yscale = args.yscale || 0;
+	var zscale = args.zscale || 0;
+	var yaw = args.yaw || 0.0;
+	var pitch = args.pitch || 0.0;
+	//}
 	
 	this.attached = null; 
 	this.object = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 	
-	this.object.position.x = 1.01;//0.33;
-	this.object.position.y = 2.39;//0.52;
-	this.object.position.z = 1.01;
+	this.object.position.x = x;//0.33;
+	this.object.position.y = y;//0.52;
+	this.object.position.z = z;
 	this.drawable = false;
-	this.pitch = 61;
-	this.yaw = 17.5;
+	this.pitch = pitch;
+	this.yaw = yaw;
 
 	//this.pitchAccumulator = 40;
 	//this.pitch = 40;

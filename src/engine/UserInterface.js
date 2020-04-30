@@ -159,8 +159,15 @@ function ContainerConsole(game) {
 					Config.input.sensY = cmds[1];
 				}
 			}
+			else if (cmds[0] == "worldloadtest" ) {
+				var worldloader = new WorldLoader(game);
+				new Loader(["/bin/client/data/map.dat"], function(done, data, resourceName) {
+					//var worldFile = JSON.parse(Bytes2Ascii(new Int8Array(data.data)).join(""));
+					worldloader.load(Bytes2Ascii(new Int8Array(data.data)).join(""));
+				});
+			}
 			else if (cmds[0] == "playertest") {
-				var s = new ScenePlayer(game);
+				var s = new ScenePlayer({game: game});
 				player = s;
 				s.isPlayer = true;
 				game.camera.attach(s);

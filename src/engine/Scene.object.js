@@ -1,4 +1,4 @@
-function SceneObject(scene) {
+function SceneObject(args) {
 	
 	this.parent = undefined;
 	

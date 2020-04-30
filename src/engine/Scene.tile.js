@@ -1,5 +1,15 @@
-function SceneTile(scene, x, y, z, u, w, v) {
-	
+//function SceneTile(scene, x, y, z, u, w, v) {
+function SceneTile(args) {
+	console.log("scenetile hello world");
+	var game = args.game || undefined;
+	var x = args.x || 0;
+	var y = args.y || 0;
+	var z = args.z || 0;
+	var xscale = args.xscale || 0;
+	var yscale = args.yscale || 0;
+	var zscale = args.zscale || 0;
+
+
 	this.inputState = new Bitfield();
 	this.parent = null;
 	
@@ -15,8 +25,8 @@ function SceneTile(scene, x, y, z, u, w, v) {
 	this.type = 0;//NetObject.Types.Default; // object type
 	this.isPlayer = false;
 
-	this.geometry = new THREE.BoxGeometry(u, w, v);
-	this.geometry.applyMatrix( new THREE.Matrix4().makeTranslation( u/2, w/2, v/2 ) );
+	this.geometry = new THREE.BoxGeometry(xscale, yscale, zscale);
+	this.geometry.applyMatrix( new THREE.Matrix4().makeTranslation( xscale/2, yscale/2, zscale/2 ) );
 	this.material = new THREE.MeshBasicMaterial({color: Math.floor(Math.random() * (255*255*255))});
 	this.object = new THREE.Mesh(this.geometry, this.material);
 	//this.object.applyMatrix( new THREE.Matrix4().makeTranslation( u/2, w/2, v/2 ) );
@@ -27,9 +37,9 @@ function SceneTile(scene, x, y, z, u, w, v) {
 
 	//this.geometry.translate(x, y, z);
 
-	this.bb = new BoundingBox(x, y, z, u, w, v, undefined, scene);
+	this.bb = new BoundingBox(x, y, z, xscale, yscale, zscale, undefined, game);
 	
-	this.bb.set(x, y, z, u, w, v);
+	this.bb.set(x, y, z, xscale, yscale, zscale);
 	
 };
 SceneTile.prototype = Object.create(SceneObject.prototype);
