@@ -14,22 +14,22 @@ function NetObject(sceneObject, isPlayer) {
 NetObject.prototype.isStateChanged = function() {
 
 	if (this.prevInputState.get() != this.sceneObject.inputState.get()) {
-		this.prevInputState = new Bitfield(this.sceneObject.inputState.get());
+		//this.prevInputState = new Bitfield(this.sceneObject.inputState.get());
 		return true;
 	}
 
 	if (this.prevYaw != this.sceneObject.yawAccumulator) {
-		this.prevYaw = this.sceneObject.yawAccumulator;
+		//this.prevYaw = this.sceneObject.yawAccumulator;
 		return true;
 	}
 
 	if (this.prevPitch != this.sceneObject.pitchAccumulator) {
-		this.prevPitch = this.sceneObject.pitchAccumulator;
+		//this.prevPitch = this.sceneObject.pitchAccumulator;
 		return true;
 	}
 
 	if (this.prevRoll != this.sceneObject.rollAccumulator) {
-		this.prevRoll = this.sceneObject.rollAccumulator;
+		//this.prevRoll = this.sceneObject.rollAccumulator;
 		return true;
 	}
 	/*if (this.prevInputState.get() != this.sceneObject.inputState.get() ||
@@ -43,27 +43,33 @@ NetObject.prototype.isStateChanged = function() {
 
 // pieces together state changes 
 NetObject.prototype.buildStateBlob = function() {
-	var blob = {type: Network.BlobTypes.State };
+	var blob = { type: Network.BlobTypes.State, input: this.sceneObject.inputState.get() };
+	//console.log(this.sceneObject.inputState.get(), this.prevInputState.get());
+	//blob.input = 
 	if (this.prevInputState.get() != this.sceneObject.inputState.get()) {
-		blob.input = this.sceneObject.inputState.get();
-	} 
+		//blob.input = this.sceneObject.inputState.get();
+		this.prevInputState = new Bitfield(this.sceneObject.inputState.get());
+	}
 	if (this.prevYaw != this.sceneObject.yaw) {
 		if (blob.angles === undefined) {
 			blob.angles = [0, 0, 0];
 		}
 		blob.angles[0] = this.sceneObject.yaw;
+		this.prevYaw = this.sceneObject.yawAccumulator;
 	}
 	if (this.prevPitch != this.sceneObject.pitch) {
 		if (blob.angles === undefined) {
 			blob.angles = [0, 0, 0];
 		}
 		blob.angles[1] = this.sceneObject.pitch;
+		this.prevPitch = this.sceneObject.pitchAccumulator;
 	}
 	if (this.prevRoll != this.sceneObject.roll) {
 		if (blob.angles === undefined) {
 			blob.angles = [0, 0, 0];
 		}
 		blob.angles[2] = this.sceneObject.roll;
+		this.prevRoll = this.sceneObject.rollAccumulator;
 	}
 
 	return blob;
@@ -89,7 +95,7 @@ NetObject.prototype.setState = function(state) {
 		}
 		
 		if (state.input !== undefined) {
-			this.prevInputState = new Bitfield(this.sceneObject.inputState);
+			this.prevInputState = new Bitfield(this.sceneObject.inputState.get());
 			this.sceneObject.inputState = new Bitfield(state.input);
 		}
 
@@ -103,9 +109,9 @@ NetObject.prototype.setState = function(state) {
 	//if (this.sceneObject.position)
 	if (state.position !== undefined) {
 		//if (this.sceneObject.position[0] )
-		this.sceneObject.position[0] = state.position[0];
-		this.sceneObject.position[1] = state.position[1];
-		this.sceneObject.position[2] = state.position[2];
+		this.sceneObject.x = state.position[0];
+		this.sceneObject.y = state.position[1];
+		this.sceneObject.z = state.position[2];
 	}
 
 	if (state.bb !== undefined)

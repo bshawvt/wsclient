@@ -55,7 +55,7 @@ function ScenePlayer(args) {
 	//this.yaw = 90;
 	//this.pitchAccumulator = 140;
 	//this.pitch = 140;
-	this.z = z;//1.01;
+	this.position[2] = z;//1.01;
 	// 0.71
 	this.bb = new BoundingBox(x, y, z, xscale, yscale, zscale, this, game);
 	//scene.add(this.bbObject);
@@ -63,12 +63,12 @@ function ScenePlayer(args) {
 };
 ScenePlayer.prototype = Object.create(SceneObject.prototype);
 ScenePlayer.prototype.constructor = ScenePlayer;
-var _Spd = [0.0, 0.0, 0.0];
+
 ScenePlayer.prototype.step = function(scene, In) {
 
 	if (this.isPlayer)
 		this.setLocalState(In);
-
+	
 	var ydiff = (this.yawAccumulator - this.yaw) / 3;
 	this.yaw += ydiff;
 
@@ -92,77 +92,125 @@ ScenePlayer.prototype.step = function(scene, In) {
 
 	// jump
 	if (this.inputState.compare(InputController.MAP_JUMP.bit) != 0) {
-
+		if (this.canJump && this.lastJumpTime + 500 < scene.dt ) {
+			this.lastJumpTime = scene.dt;
+			this.speed[2] = 0.25;
+			this.canJump = false;
+			this.isJumping = true;
+		}
 	}
 	else {
-
+		this.isJumping = false;
 	}
 
 	// action
 	if (this.inputState.compare(InputController.MAP_ACTION.bit) != 0) {
-
+		console.log("action");
 	}
 	else {
-
 	}
 
-	var strafe = 0.0;
-	var accel = false;
-	var dir = 0.0;
 	// forward and reverse
 	if (this.inputState.compare(InputController.MAP_FORWARD.bit) != 0) {
-		this.speed[0] = -0.1;
+		this.speed[0] -= 0.01;
 	}
 	else if (this.inputState.compare(InputController.MAP_BACKWARD.bit) != 0) {
-		this.speed[0] = 0.1;
+		this.speed[0] += 0.01;
 	}
 	else {
-		this.speed[0] = 0;
+		this.speed[0] -= (this.speed[0]/2) / 2;
 	}
-
 	// strafe
 	if (this.inputState.compare(InputController.MAP_LEFT.bit) != 0) {
-		this.speed[1] = 0.1;
-		//strafe = (Math.PI / 180) * 90;
+		this.speed[1] -= 0.01;
+		this.strafe = (Math.PI / 180) * 90;
 	}
 	else if (this.inputState.compare(InputController.MAP_RIGHT.bit) != 0) {
-		this.speed[1] = -0.1;
-		//strafe = (Math.PI / 180) * 90;
+		this.speed[1] += 0.01;
+		this.strafe = (Math.PI / 180) * 90;
 	}
 	else {
-		this.speed[1] = 0.0;
-		strafe = 0.0;
+		this.speed[1] -= (this.speed[1]/2) / 2;
 	}
 
-	//var yaw = BadMath.D0TR / this.yaw;
-	//console.log(Math.sin(this.yaw));
+	if (this.prevInputState.get() != this.inputState.get()) {
 
-	this.speed[2] = 0.0;
+	}
 
-	//var pitch = BadMath.D0TR * this.pitch;
-	var nx = Math.sin(-this.yaw) * this.speed[0];
-	var ny = Math.cos(-this.yaw) * this.speed[0];
-	var nz = this.speed[2];
 
-	if (this.speed[1] != 0.0) {
 
-		nx += Math.sin(-this.yaw + BadMath.D90TR) * this.speed[1];
-		ny += Math.cos(-this.yaw + BadMath.D90TR) * this.speed[1];
+	// has been in flight for too long
+	if (this.isJumping && scene.dt > this.lastJumpTime + 250)  {
+		this.isJumping = false;
+	}
+	if (this.isJumping) {
+		this.speed[2] += 0.05;
+	}
+	else {
+		this.speed[2] -= 0.05;
 	}
 
 	
+	
+	this.speed[0] = Clamp(this.speed[0], -0.25, 0.25);
+	this.speed[1] = Clamp(this.speed[1], -0.15, 0.15);
+	this.speed[2] = Clamp(this.speed[2], -0.5, 0.25);
 
-	this.x += nx;
-	this.y += ny;
-	this.z += nz;
+	// more fake collision stuff
+	var fx = this.position[0] + (Math.sin(-this.yaw) * (this.speed[0]));
+	var fy = this.position[1] + (Math.cos(-this.yaw) * (this.speed[0]));;
 
-	/* player mesh origin is around its center so adding things
-		this is purely visual and does not affect prediction afaik */
-	this.object.position.x = this.x + ((0.71)/2);
-	this.object.position.y = this.y + ((0.71)/2);
-	this.object.position.z = this.z + 0.5;
+	fx += Math.sin(-(this.yaw + this.strafe)) * (this.speed[1]);
+	fy += Math.cos(-(this.yaw + this.strafe)) * (this.speed[1]);
+	var fz = this.position[2] + this.speed[2];
+	var hasCollided = false;
+	var hasCollidedFall = false;
+	var fellOn = undefined;
+	var futureBB = new BoundingBox(fx, fy, this.position[2], 0.71, 0.71, 1);
+	var futureFallBB = new BoundingBox(fx, fy, fz, 0.71, 0.71, 1);
+	for(var i = 0; i < scene.staticSceneObjects.length; i++) {
+		var item = scene.staticSceneObjects[i];
+		if (item.bb.intersect3d(futureBB)) {
+			hasCollided = true;
+		}
+		if (item.bb.intersect3d(futureFallBB)) {
+			hasCollidedFall = true;
+			fellOn = item.bb;
+		}
+	}
+
+	if (!hasCollided) {
+		this.position[0] += Math.sin(-this.yaw) * (this.speed[0]);
+		this.position[1] += Math.cos(-this.yaw) * (this.speed[0]);
+
+		this.position[0] += Math.sin(-(this.yaw + this.strafe)) * (this.speed[1]);
+		this.position[1] += Math.cos(-(this.yaw + this.strafe)) * (this.speed[1]);
+	}
+	else {
+		this.speed[0] = 0.0;
+		this.speed[1] = 0.0;
+	}
+	
+	if (!hasCollidedFall) {
+		this.position[2] += this.speed[2];
+	}
+	else {
+		this.canJump = true;
+		this.isJumping = false;
+		if (fellOn !== undefined) {
+			//this.position[2] = fellOn.z + fellOn.zscale;
+			//this.position[2] = fellOn.z + fellOn.zscale + 0.01;//fellOn.z + fellOn.zscale);
+			this.speed[2] = 0.0;
+			//console.log(this.position[2]);
+		}
+	}
+
+	// player mesh origin is around its center so adding things
+	this.object.position.x = this.position[0] + ((0.71)/2);
+	this.object.position.y = this.position[1] + ((0.71)/2);
+	this.object.position.z = this.position[2] + 0.5;
 	//console.log(this.speed);
-	this.bb.set(this.x, this.y, this.z, 0.71, 0.71, 1);
+	this.bb.set(this.position[0], this.position[1], this.position[2], 0.71, 0.71, 1);
 };
 
 ScenePlayer.prototype.draw = function(dt) {

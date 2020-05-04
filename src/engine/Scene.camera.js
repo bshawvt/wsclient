@@ -42,37 +42,42 @@ SceneCamera.prototype.setLocalState = function(game, In) {
 
 		var outterDistance = 2.5;
 		var cameraHeight = 0.75;
+		var ryaw = BadMath.D0TR * this.yaw;
+		var rpitch = BadMath.D0TR * this.pitch;
+
 		if (In.pointerLock || In.isMobile) {
 
 			var m = In.getCursorPosition();
 
 			this.yaw += m.dx * Config.input.sensX; 
 			this.pitch += m.dy * Config.input.sensY;
+			
 			this.pitch = Clamp(this.pitch, 1, 179);
 
-			var yaw = ((Math.PI/180) * this.yaw);
-			var pitch = (Math.PI/180) * this.pitch;
-			
+			ryaw = BadMath.D0TR * this.yaw;
+			rpitch = BadMath.D0TR * this.pitch;
 
 			if (this.attached.isPlayer) {
-				this.attached.setYaw(-yaw);
-				this.attached.setPitch(pitch);
+				this.attached.setYaw(-ryaw);
+				this.attached.setPitch(rpitch);
 			}
-			/*x: 1.0125080457438629, y: 2.4403491003932296, z: 1.0879759493841572
-				UserInterface.js?v=1587977542286:94 pitch: 61, yaw: 17.5*/
 
-			
-			this.object.position.x = ( ( Math.sin(yaw) * Math.sin(pitch) ) * outterDistance ) + this.attached.object.position.x;
-			this.object.position.y = ( ( Math.cos(yaw) * Math.sin(pitch) ) * outterDistance ) + this.attached.object.position.y;
-			this.object.position.z = (-Math.cos(pitch) * outterDistance) + this.attached.object.position.z + cameraHeight;
 		}
 
+		var syaw = Math.sin(ryaw);
+		var cyaw = Math.cos(ryaw);
+
+		var spitch = Math.sin(rpitch);
+		var cpitch = Math.cos(rpitch);
+
+		this.object.position.x = ( ( syaw * spitch ) * outterDistance ) + this.attached.object.position.x;
+		this.object.position.y = ( ( cyaw * spitch ) * outterDistance ) + this.attached.object.position.y;
+		this.object.position.z = (-cpitch * outterDistance) + this.attached.object.position.z + cameraHeight;
+
 		this.object.lookAt(new THREE.Vector3(this.attached.object.position.x, this.attached.object.position.y, this.attached.object.position.z + cameraHeight));
-		//this.object.up = new THREE.Vector3(0, 0, 1);
 
 	}
-	//console.log("x: " + this.object.position.x + ", y: " + this.object.position.y + ", z: " + this.object.position.z);
-	//console.log("pitch: " + this.pitch + ", yaw: " + this.yaw);
+
 };
 SceneCamera.prototype.draw = function(dt) {
 	// body...

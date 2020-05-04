@@ -36,7 +36,7 @@ function dopen() {
 	// chrome check
 	var d = document.createElement('br');
 	Object.defineProperty(d, "id", {get: () => { r = true; }});
-	console.log(d, t, "the clear is for this spam l0l");
+	console.log(d, t, "the clear is for this spam hah");
 	console.clear(); // clearing spam from the previous log
 	if (r == true) { 
 		document.body.innerHTML += "<span></span>";

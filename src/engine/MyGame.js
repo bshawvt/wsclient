@@ -46,7 +46,12 @@ function Game(opt) {
 
 	this.startTime = 0xffffffffffffff; // crazy number because it becomes dt after animator starts
 
-	
+	var worldloader = new WorldLoader(this);
+	this.worldloader = worldloader;
+	new Loader(["/bin/client/data/map.dat"], function(done, data, resourceName) {
+		//var worldFile = JSON.parse(Bytes2Ascii(new Int8Array(data.data)).join(""));
+		worldloader.load(Bytes2Ascii(new Int8Array(data.data)).join(""));
+	});
 	
 }
 
@@ -89,11 +94,7 @@ Game.prototype.start = function() {
 	this.sceneObjects = [];
 	this.sceneObjectsQueue = [];
 
-	var worldloader = new WorldLoader(this);
-	new Loader(["/bin/client/data/map.dat"], function(done, data, resourceName) {
-		//var worldFile = JSON.parse(Bytes2Ascii(new Int8Array(data.data)).join(""));
-		worldloader.load(Bytes2Ascii(new Int8Array(data.data)).join(""));
-	});
+	
 
 	this.network.start();
 
@@ -130,11 +131,14 @@ Game.prototype.start = function() {
 	this.sceneObjectsQueue.push(this.tiles[2]);
 	this.sceneObjectsQueue.push(this.tiles[3]);
 	this.sceneObjectsQueue.push(this.tiles[4]);*/
+
+	this.worldloader.reload();
 	
-	/*var s = new ScenePlayer(this);
+	/*var s = new ScenePlayer({game: this});
+	player = s;
 	s.isPlayer = true;
 	this.camera.attach(s);
-	this.sceneObjectsQueue.push(s);*/
+	this.add(s);*/
 
 
 };

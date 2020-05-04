@@ -25,7 +25,10 @@ function SceneObject(args) {
 SceneObject.prototype.parent = undefined;
 SceneObject.prototype.id = 0; // world id, set when added to the simulation
 //SceneObject.prototype.angles = [0.0, 0.0, 0.0]; // yaw pitch roll
-SceneObject.prototype.position = [0.0, 0.0, 0.0]; // [x y z] eventually added to threejs object position vector
+//SceneObject.prototype.position = [0.0, 0.0, 0.0]; // [x y z] eventually added to threejs object position vector
+SceneObject.prototype.x = 0.0;
+SceneObject.prototype.y = 0.0;
+SceneObject.prototype.z = 0.0;
 SceneObject.prototype.speed = [0.0, 0.0, 0.0]; // [forward/backward, strafe, jump/fall] speed of scene object
 SceneObject.prototype.inputState = null;//new Bitfield();
 //SceneObject.prototype.prevInputState = null;//new Bitfield();
