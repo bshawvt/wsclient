@@ -8,7 +8,7 @@ function Profiler(name) {
 	}
 	this.stop = function() {
 		self.end = (new Date()).getTime();
-		console.log("Profiler stopped for " + name + ", time elapsed: ", 
+		return ("Profiler stopped for " + name + ", time elapsed: ", 
 			(self.end - self.start) );
 	}
 }

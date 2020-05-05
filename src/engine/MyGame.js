@@ -117,21 +117,6 @@ Game.prototype.start = function() {
 	
 
 	// per app specific stuff 
-	//this.tiles[0] = new SceneTile(this, 0, 0, -1, 10, 10, 1);
-
-	// fake collision stuff
-	/*this.tiles = [];
-	this.tiles[0] = new SceneTile({game: this, x: 1, y: 0, z: 1, xscale: 2, yscale: 2, zscale: 3});
-	this.tiles[1] = new SceneTile({game: this, x: 3, y: 2, z: 1, xscale: 2, yscale: 5, zscale: 1});
-	this.tiles[2] = new SceneTile({game: this, x: 0, y: 0, z: 0, xscale: 10, yscale: 10, zscale: 1});
-	this.tiles[3] = new SceneTile({game: this, x: 3, y: 3, z: 4, xscale: 2, yscale: 2, zscale: 4});
-	this.tiles[4] = new SceneTile({game: this, x: 3.5, y: 3.5, z: 2, xscale: 0.25, yscale: 0.25, zscale: 2});
-	this.sceneObjectsQueue.push(this.tiles[0]);
-	this.sceneObjectsQueue.push(this.tiles[1]);
-	this.sceneObjectsQueue.push(this.tiles[2]);
-	this.sceneObjectsQueue.push(this.tiles[3]);
-	this.sceneObjectsQueue.push(this.tiles[4]);*/
-
 	this.worldloader.reload();
 	
 	/*var s = new ScenePlayer({game: this});

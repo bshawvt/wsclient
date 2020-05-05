@@ -75,9 +75,9 @@ craw.circle = function(opt) {
 	if (ctx==null) return;
 
 	opt = opt || {};
-	var x = opt.x || 0;
-	var y = opt.y || 0;
-	var r = opt.r || 5;
+	var x = Math.floor(opt.x || 0);
+	var y = Math.floor(opt.y || 0);
+	var r = Math.floor(opt.r || 5);
 	var weight = opt.weight || 1;
 	var fill = opt.f || false;
 
@@ -111,10 +111,10 @@ craw.line = function(opt, to) {
 	if (ctx==null) return;
 
 	opt = opt || {};
-	var x = opt.x || 0;
-	var y = opt.y || 0;
-	var x2 = to.x || 0;
-	var y2 = to.y || 0;
+	var x = Math.floor(opt.x || 0);
+	var y = Math.floor(opt.y || 0);
+	var x2 = Math.floor(to.x || 0);
+	var y2 = Math.floor(to.y || 0);
 	var weight = opt.weight || 1;
 	var fill = opt.f || false;
 	var color = opt.c || "#0f0f0f";
@@ -144,19 +144,19 @@ craw.img = function(img, opt) {
 	var ctx = craw.__C2D_CONTEXT;
 	if (ctx==null) return;
 
-	var x = opt.x || 0;
-	var y = opt.y || 0;
-	var w = opt.w || 200;
-	var h = opt.h || 200;
+	var x = Math.floor(opt.x || 0);
+	var y = Math.floor(opt.y || 0);
+	var w = Math.floor(opt.w || 200);
+	var h = Math.floor(opt.h || 200);
 
-	var sx = opt.sx || 0;
-	var sy = opt.sy || 0;
-	var sw = opt.sw || w;
-	var sh = opt.sh || h;
+	var sx = Math.floor(opt.sx || 0);
+	var sy = Math.floor(opt.sy || 0);
+	var sw = Math.floor(opt.sw || w);
+	var sh = Math.floor(opt.sh || h);
 	var scale = opt.s || 1;
 
 	//console.log(x, y, w, h, sx, sy, sw, sh);
-	ctx.drawImage(img, sx, sy, sw, sh, x, y, w * scale, h * scale);
+	ctx.drawImage(img, sx, sy, sw, sh, x, y, Math.floor(w * scale), Math.floor(h * scale));
 
 }
 /* sets the canvas that each drawing method will use
