@@ -2,61 +2,83 @@
 <html>
 <head>
 	<title> Sandbox </title>
-	<script type="application/javascript" src="/src/engine/BoundingBox.js">	</script>
-	<script type="application/javascript" src="/src/engine/QuadTree.js">	</script>
-	<script type="application/javascript" src="/src/engine/Canvas2d.js">	</script>
-	<script type="application/javascript" src="/src/engine/Debug.js">	</script>
+	<script type="application/javascript" src="/src/engine/BoundingBox.js"></script>
+	<script type="application/javascript" src="/src/engine/QuadTree.js"></script>
+	<script type="application/javascript" src="/src/engine/AreaSearch.js">	</script>
+	<script type="application/javascript" src="/src/engine/Canvas2d.js"></script>
+	<script type="application/javascript" src="/src/engine/Debug.js"></script>
 	<style>body { background-color: rgb(150, 150, 200);</style>
 </head>
 <body>
 	<script type="application/javascript">
 
-		var objs = [
-			/*{ bb: new BoundingBox(27, 20, 0, 2, 2, 0) }*//*,
-			{ bb: new BoundingBox(60, 25, 0, 2, 2, 0) },
-			{ bb: new BoundingBox(125, 25, 0, 2, 2, 0) },
-			{ bb: new BoundingBox(150, 25, 0, 2, 2, 0) }*/
+	var objs = [
+			/*{ t: 1, bb: new BoundingBox(123, 129, 0, 3, 3, 0) }, // should be in 3rd leaf
+			{ t: 2, bb: new BoundingBox(55, 55, 0, 3, 3, 0) } */// should be in 5th leaf
+			/*{ t: 4, bb: new BoundingBox(123, 23, 0, 3, 3, 0) }, 
+			{ t: 3, bb: new BoundingBox(48, 50, 0, 3, 3, 0) }*/
 		];
-		var objects = 5000;
-		var maxDepth = 4;
-		for(var i = 0; i < objects; i++ ) {
-			objs.push({ bb: new BoundingBox(Math.floor(Math.random() * 200), Math.floor(Math.random() * 200), 0, 1 + Math.floor(Math.random() * 15), 1 + Math.floor(Math.random() * 15), 0) });
-		}
-		var canvas = craw({w: 500, h: 500});
+	var objects =  10000;
+	var maxDepth = 1;
+	var width = 200;
+	var height = 200;
 
-		/*var p = new Profiler("quadtree");
-		p.start();
-		for(var i = 0; i < 1000; i++) {
-			var tree = new QuadTree(5, 0, 0, 200, 200, objs);
-			var set = tree.get(new BoundingBox(5, 5, 0, 50, 50, 0));
-		}
-		p.stop();*/
+	for(var i = 0; i < objects; i++ ) {
+		objs.push({ bb: new BoundingBox(Math.floor(Math.random() * width), Math.floor(Math.random() * height), 0, 1 + Math.floor(Math.random() * 15), 1 + Math.floor(Math.random() * 15), 0) });
+	}
+	var canvas = craw({w: width, h: height});
+	var v = {size: 0};
+	var m = 0;
+	
 
-		var p = new Profiler("quadtree");
-		p.start();
-		var tree = new QuadTree(maxDepth, 0, 0, 200, 200, objs);
-		var bb = new BoundingBox(5, 5, 0, 50, 50, 0);
-		for(var i = 0; i < objects; i++) {
-			var set = tree.get(bb);
-		}
-		var m = p.stop();
-		console.log(set);
+	var p = new Profiler();
+	p.start();
+	var tree = new QuadTree(maxDepth, 0, 0, width, height, objs);
+	var bb = new BoundingBox(125, 125, 0, 50, 50, 0);
+	for(var i = 0; i < objects; i++) {
+		var v = tree.get(bb);
+		v.forEach(function(e) {
+			if (e.bb.intersect2d(bb)) {
 
-		var p2 = new Profiler("quadtree");
-		p2.start();
-		//var tree = new QuadTree(5, 0, 0, 200, 200, objs);
-		//var bb = new BoundingBox(5, 5, 0, 50, 50, 0);
-		var z = 0;
-		for(var i = 0; i < objects; i++) {
-			for(var c = 0; c < objects; c++) {
-				if (objs[i].bb.intersect2d(objs[c].bb)) {
-					z++;
-				}
+			}
+		});
+	}
+	var m = p.stop();
+
+	var bcount = 0;
+	var gcount = 0;
+	var lgcount = 0;
+	var lbcount = 0;
+	var zzz = 0;
+	var m2 = 0;
+	var p2 = new Profiler();
+	p2.start();
+	
+	for(var i = 0; i < objects; i++) {
+		var a = objs[i];
+		for(var z = 0; z < objects; z++) {
+			//console.log(objs[z].bb);
+			if (a.bb.intersect2d(objs[z].bb)) {
+				zzz++;
 			}
 		}
-		console.log(z);
-		var m2 = p2.stop();
-		alert("max depth " + maxDepth + " quadtree, " + objects + " get tests: \n" + m + "ms\n" + objects + " objects getting " + objects + " objects test: \n" + m2 + "ms");
+	}
+	var m2 = p2.stop();
+
+	console.log(v);
+	alert("final test result:\nitems in set: " + (v.size || v.length) + 
+		/*"\nitems not added to set due to range: " + lbcount + 
+		"\ntotal added from get_recurse: " + lgcount + 
+		"\n\nglobal totals:" + 
+		"\nitems not added to set due to range: " + bcount + 
+		"\ntotal added from get_recurse: " + gcount +*/ 
+		"\ndynamic object count: " + objects + 
+		"\nloop size: " + objects + 
+		"\nquadtree max depth: " + maxDepth + 
+		"\ntime taken: " + m + "ms" + 
+		"\n\nobject vs object test results:\nobjects: " + objects + 
+		"\nobject collisions: " + zzz +
+		"\ntime elapsed: " + m2 + "ms");
 	</script>
 </body>
 </html>

@@ -32,7 +32,7 @@ QuadTree.prototype.constructor_root = function(maxDepth, x, y, width, height, ob
 		self.insert(e);
 		//craw.rect({x: e.bb.x, y: e.bb.y, w: e.bb.xscale, h: e.bb.yscale, f: true, c:"#ffff00"});
 	});
-	//craw.rect({x: this.x, y: this.y, w: this.width, h: this.height});
+	craw.rect({x: this.x, y: this.y, w: this.width, h: this.height});
 };
 
 QuadTree.prototype.constructor_child = function(parent, bb, depth) {
@@ -69,28 +69,38 @@ QuadTree.prototype.insert = function(object) {
 					new BoundingBox(this.x, 			this.y + halfHeight,0, halfWidth, halfHeight, 0), // se
 					new BoundingBox(this.x + halfWidth, this.y + halfHeight,0, halfWidth, halfHeight, 0) ];
 
+		var bigBoyCount = 0; // if > 1 then this fits inside multiple quads
+		var quad = 0; // the division index that this object would fit in if count is 1
 		for(var i = 0; i < 4; i++) {
 			if (bbs[i].intersect2d(object.bb)) {
-				if (this.divisions[i] == null) {
-					this.divisions[i] = new QuadTree(undefined, undefined, undefined, undefined, undefined, undefined, 
-						this, bbs[i], this.depth+1);
-				}
-				this.divisions[i].divided = true;
-				this.divisions[i].insert(object);
+				bigBoyCount++;
+				quad = i;
 			}
 		}
+
+		// fits it only one quad
+		if (bigBoyCount == 1) {
+			if (this.divisions[quad] == null) {
+				this.divisions[quad] = new QuadTree(undefined, undefined , undefined, undefined, undefined, undefined, 
+				this, bbs[quad], this.depth+1);
+			}
+			this.divisions[quad].divided = true;
+			this.divisions[quad].insert(object); // now try to insert deeper into the tree
+		}
+		// fits in multiple quads so instead insert in the previous node
+		else {
+			this.container.push(object);
+		}
 	}
+
 	else {
 		this.container.push(object);
 	}
 };
 
-QuadTree.prototype.get = function(rectbb) {
-
-	//craw.rect({x: rectbb.x, y: rectbb.y, w: rectbb.xscale, h: rectbb.yscale});
-
-	var set = new Set();
-	this.get_recurse(rectbb, set);
+QuadTree.prototype.get = function(rectbb, callback) {
+	var set = [];
+	set = this.get_recurse(rectbb, set, callback);
 	return set;
 };
 
@@ -98,23 +108,13 @@ QuadTree.prototype.get_recurse = function(rectbb, set) {
 	for(var i = 0; i < 4; i++) {
 		if (this.divisions[i] != null) {
 			if (rectbb.intersect2d(this.divisions[i].bb)) {
-				this.divisions[i].container.forEach((e) => {
-					if (rectbb.intersect2d(e.bb)) {
-						set.add(e);
-						//var hw = e.bb.xscale/2;
-						//craw.circle({x: e.bb.x + hw, y: e.bb.y + hw, r: e.bb.xscale, c: [255, 255, 0, 1]});
-						//console.log("aaaad");
-					}
-					else {
-						//var hw = e.bb.xscale/2;
-						//craw.circle({x: e.bb.x + hw, y: e.bb.y + hw, r: e.bb.xscale, c: [255, 255, 255, 1]});
-						//console.log("feck");
-					}
-				});
+				set = set.concat(this.divisions[i].container);
+				if (this.divisions[i].divided) {
+					this.divisions[i].get_recurse(rectbb, set);
+				}
 			}
-			if (this.divisions[i].divided) {
-				this.divisions[i].get_recurse(rectbb, set);
-			}
+
 		}
 	}
-};
+	return set;
+}
