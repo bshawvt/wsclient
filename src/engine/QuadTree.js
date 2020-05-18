@@ -32,7 +32,7 @@ QuadTree.prototype.constructor_root = function(maxDepth, x, y, width, height, ob
 		self.insert(e);
 		//craw.rect({x: e.bb.x, y: e.bb.y, w: e.bb.xscale, h: e.bb.yscale, f: true, c:"#ffff00"});
 	});
-	craw.rect({x: this.x, y: this.y, w: this.width, h: this.height});
+	//craw.rect({x: this.x, y: this.y, w: this.width, h: this.height});
 };
 
 QuadTree.prototype.constructor_child = function(parent, bb, depth) {
@@ -72,10 +72,12 @@ QuadTree.prototype.insert = function(object) {
 		var bigBoyCount = 0; // if > 1 then this fits inside multiple quads
 		var quad = 0; // the division index that this object would fit in if count is 1
 		for(var i = 0; i < 4; i++) {
+			if (bigBoyCount > 1) break;
 			if (bbs[i].intersect2d(object.bb)) {
 				bigBoyCount++;
 				quad = i;
 			}
+
 		}
 
 		// fits it only one quad

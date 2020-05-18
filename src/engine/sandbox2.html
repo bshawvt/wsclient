@@ -2,40 +2,83 @@
 <html>
 <head>
 	<title> Sandbox </title>
-	<script type="application/javascript" src="/src/engine/BoundingBox.js">	</script>
-	<script type="application/javascript" src="/src/engine/QuadTree.js">	</script>
-	<script type="application/javascript" src="/src/engine/GridThing.js">	</script>
-	<script type="application/javascript" src="/src/engine/Canvas2d.js">	</script>
-	<script type="application/javascript" src="/src/engine/Debug.js">	</script>
+	<script type="application/javascript" src="/src/engine/BoundingBox.js"></script>
+	<script type="application/javascript" src="/src/engine/QuadTree2.js"></script>
+	<script type="application/javascript" src="/src/engine/AreaSearch.js">	</script>
+	<script type="application/javascript" src="/src/engine/Canvas2d.js"></script>
+	<script type="application/javascript" src="/src/engine/Debug.js"></script>
 	<style>body { background-color: rgb(150, 150, 200);</style>
 </head>
 <body>
 	<script type="application/javascript">
-		var canvas = craw({w: 500, h: 500});
 
-		var objs = [
-			{ bb: new BoundingBox(100, 50, 0, 5, 5, 0) },
-			{ bb: new BoundingBox(150, 50, 0, 5, 5, 0) },
-			{ bb: new BoundingBox(200, 50, 0, 5, 5, 0) },
-			{ bb: new BoundingBox(230, 50, 0, 5, 5, 0) }
+	var objs = [
+			/*{ t: 1, bb: new BoundingBox(123, 129, 0, 3, 3, 0) }, // should be in 3rd leaf
+			{ t: 2, bb: new BoundingBox(55, 55, 0, 3, 3, 0) } */// should be in 5th leaf
+			/*{ t: 4, bb: new BoundingBox(123, 23, 0, 3, 3, 0) }, 
+			{ t: 3, bb: new BoundingBox(48, 50, 0, 3, 3, 0) }*/
 		];
-		var objects = objs.length;
-		var maxDepth = 1;
-		for(var i = 0; i < objects; i++ ) {
-			//objs.push({ bb: new BoundingBox(Math.floor(Math.random() * 500), Math.floor(Math.random() * 500), 0, 1 + Math.floor(Math.random() * 15), 1 + Math.floor(Math.random() * 15), 0) });
-		}
+	var objects =  10;
+	var maxDepth = 2;
+	var width = 2000;
+	var height = 2000;
 
-		
-		var p = new Profiler("partition");
-		p.start();
-		var tree = new GridThing(0, 0, 500, 500, 10, objs);
-		for(var i = 0; i < objects; i++) {
-			var item = objs[i];
-			var set = tree.get(new BoundingBox(item.bb.x - 15, item.bb.y - 15, 0, item.bb.xscale + 30, item.bb.yscale + 30, 0));
-		}
+	for(var i = 0; i < objects; i++ ) {
+		objs.push({ bb: new BoundingBox(Math.floor(Math.random() * width), Math.floor(Math.random() * height), 0, 1 + Math.floor(Math.random() * 15), 1 + Math.floor(Math.random() * 15), 0) });
+	}
+	var canvas = craw({w: width, h: height});
+	var v = {size: 0};
+	var m = 0;
+	
 
-		console.log(p.stop() + "ms elapsed");
-		
+	var p = new Profiler();
+	p.start();
+	var tree = new QuadTree(maxDepth, 0, 0, width, height, objs);
+	var bb = new BoundingBox(125, 125, 0, 50, 50, 0);
+	for(var i = 0; i < objects; i++) {
+		var v = tree.get(bb);
+		v.forEach(function(e) {
+			if (e.bb.intersect2d(bb)) {
+
+			}
+		});
+	}
+	var m = p.stop();
+
+	var bcount = 0;
+	var gcount = 0;
+	var lgcount = 0;
+	var lbcount = 0;
+	var zzz = 0;
+	var m2 = 0;
+	var p2 = new Profiler();
+	p2.start();
+	
+	for(var i = 0; i < objects; i++) {
+		var a = objs[i];
+		for(var z = 0; z < objects; z++) {
+			//console.log(objs[z].bb);
+			if (a.bb.intersect2d(objs[z].bb)) {
+				zzz++;
+			}
+		}
+	}
+	var m2 = p2.stop();
+
+	console.log(v);
+	console.log("final test result:\nitems in set: " + (v.size || v.length) + 
+		/*"\nitems not added to set due to range: " + lbcount + 
+		"\ntotal added from get_recurse: " + lgcount + 
+		"\n\nglobal totals:" + 
+		"\nitems not added to set due to range: " + bcount + 
+		"\ntotal added from get_recurse: " + gcount +*/ 
+		"\ndynamic object count: " + objects + 
+		"\nloop size: " + objects + 
+		"\nquadtree max depth: " + maxDepth + 
+		"\ntime taken: " + m + "ms" + 
+		"\n\nobject vs object test results:\nobjects: " + objects + 
+		"\nobject collisions: " + zzz +
+		"\ntime elapsed: " + m2 + "ms");
 	</script>
 </body>
 </html>

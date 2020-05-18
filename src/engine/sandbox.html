@@ -18,8 +18,8 @@
 			/*{ t: 4, bb: new BoundingBox(123, 23, 0, 3, 3, 0) }, 
 			{ t: 3, bb: new BoundingBox(48, 50, 0, 3, 3, 0) }*/
 		];
-	var objects =  10000;
-	var maxDepth = 1;
+	var objects =  1000;
+	var maxDepth = 2;
 	var width = 200;
 	var height = 200;
 
@@ -66,7 +66,7 @@
 	var m2 = p2.stop();
 
 	console.log(v);
-	alert("final test result:\nitems in set: " + (v.size || v.length) + 
+	console.log("final test result:\nitems in set: " + (v.size || v.length) + 
 		/*"\nitems not added to set due to range: " + lbcount + 
 		"\ntotal added from get_recurse: " + lgcount + 
 		"\n\nglobal totals:" + 
