@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> Sandbox </title>
+	<script type="application/javascript" src="/src/engine/BoundingBox.js"></script>
+	<script type="application/javascript" src="/src/engine/GridThing.js">	</script>
+	<script type="application/javascript" src="/src/engine/CellContainer.js">	</script>
+	<script type="application/javascript" src="/src/engine/Canvas2d.js"></script>
+	<script type="application/javascript" src="/src/engine/Debug.js"></script>
+	<style>body { background-color: rgb(150, 150, 200);</style>
+</head>
+<body>
+	<script type="application/javascript">
+		
+		var width = 500;
+		var height = 500;
+		var canvas = craw({w: width, h: height});
+		craw.rect({x: 0, y: 0, w: width, h: height, f: true, c: "#fff"});
+
+		var objs = [
+				/*{ t: 1, bb: new BoundingBox(10, 10, 0, 5, 5, 0) }, // should be in 3rd leaf
+				{ t: 2, bb: new BoundingBox(35, 10, 0, 5, 5, 0) }, // should be in 5th leaf
+				{ t: 4, bb: new BoundingBox(60, 10, 0, 5, 5, 0) }, 
+				{ t: 5, bb: new BoundingBox(85, 10, 0, 5, 5, 0) },
+				{ t: 6, bb: new BoundingBox(110, 10, 0, 5, 5, 0) },
+				{ t: 7, bb: new BoundingBox(135, 10, 0, 5, 5, 0) },
+				{ t: 8, bb: new BoundingBox(160, 10, 0, 5, 5, 0) },
+				{ t: 9, bb: new BoundingBox(185, 10, 0, 5, 5, 0) },
+				{ t: 9, bb: new BoundingBox(185, 160, 0, 5, 5, 0) },
+				{ t: 10, bb: new BoundingBox(10, 35, 0, 5, 5, 0) },
+				{ t: 10, bb: new BoundingBox(50, 35, 0, 5, 5, 0) }*/
+			];
+		var objects = 1000;
+		var maxSize = 10;
+		var ii = 0;
+		for(var xi = 0; xi < objects; xi++) {
+			var x = Math.random() * width;
+			var y = Math.random() * height;
+			var w = 3;
+			var h = 3;
+			objs.push({neighbors: [], bb: new BoundingBox(x, y, 0, w, h, 0)});
+		}
+		
+
+		/*for(var i = 0; i < objects; i++ ) {
+			objs.push({ bb: new BoundingBox(Math.floor(Math.random() * width), Math.floor(Math.random() * height), 0, 1 + Math.floor(Math.random() * 15), 1 + Math.floor(Math.random() * 15), 0) });
+		}*/
+		
+		
+
+		/*var p2 = new Profiler();
+			var g = new GridThing(width, height, objs, maxSize);
+		p2.start();
+		// profile some code
+		var v = null;
+		
+		for (var i = 0; i < objects; i++) {
+			var object = objs[i];
+			//console.log(object);
+			v = g.get(object.cells.ex, object.cells.ey, object.bb.x, object.bb.y);
+			for(var x = 0; x < v.length; x++) {
+				if (object.bb.intersect2d(v[x].bb)) {
+
+				}
+			}
+			//console.log(v);
+		}
+		var m2 = p2.stop();
+
+		var zzz = 0;
+		var m1 = 0;
+		var p1 = new Profiler();
+		p1.start();
+		
+		for(var i = 0; i < objects; i++) {
+			for(var z = 0; z < objects; z++) {
+				var a = objs[i];
+				if (a.bb.intersect2d(objs[z].bb)) {
+					zzz++;
+				}
+			}
+		}
+		var m1 = p1.stop();
+
+		console.log(v);
+		alert("number of objects: " + objects + "\nset length: " + (v.length) + "\n" + 
+			"time taken: " + m2 + "ms\n" +
+			"----------\n" + 
+			"object vs object time taken: " + m1 + "ms");*/
+		//console.log(g.cells);
+	</script>
+</body>
+</html>

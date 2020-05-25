@@ -18,10 +18,10 @@
 			/*{ t: 4, bb: new BoundingBox(123, 23, 0, 3, 3, 0) }, 
 			{ t: 3, bb: new BoundingBox(48, 50, 0, 3, 3, 0) }*/
 		];
-	var objects =  10;
+	var objects =  1000;
 	var maxDepth = 2;
-	var width = 2000;
-	var height = 2000;
+	var width = 5000;
+	var height = 5000;
 
 	for(var i = 0; i < objects; i++ ) {
 		objs.push({ bb: new BoundingBox(Math.floor(Math.random() * width), Math.floor(Math.random() * height), 0, 1 + Math.floor(Math.random() * 15), 1 + Math.floor(Math.random() * 15), 0) });
@@ -34,7 +34,7 @@
 	var p = new Profiler();
 	p.start();
 	var tree = new QuadTree(maxDepth, 0, 0, width, height, objs);
-	var bb = new BoundingBox(125, 125, 0, 50, 50, 0);
+	var bb = new BoundingBox(0, 0, 0, 50, 50, 0);
 	for(var i = 0; i < objects; i++) {
 		var v = tree.get(bb);
 		v.forEach(function(e) {
@@ -55,9 +55,8 @@
 	p2.start();
 	
 	for(var i = 0; i < objects; i++) {
-		var a = objs[i];
 		for(var z = 0; z < objects; z++) {
-			//console.log(objs[z].bb);
+			var a = objs[i];
 			if (a.bb.intersect2d(objs[z].bb)) {
 				zzz++;
 			}
@@ -66,7 +65,7 @@
 	var m2 = p2.stop();
 
 	console.log(v);
-	console.log("final test result:\nitems in set: " + (v.size || v.length) + 
+	alert("final test result:\nitems in set: " + (v.size || v.length) + 
 		/*"\nitems not added to set due to range: " + lbcount + 
 		"\ntotal added from get_recurse: " + lgcount + 
 		"\n\nglobal totals:" + 
