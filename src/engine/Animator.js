@@ -9,11 +9,20 @@ function Animator(target) {
 
 	this.dt = (new Date()).getTime();
 	this.done = false;
+	this.fps = 0;
+	this.fpsCounter = 0;
+	this.frameStart = this.dt;
 
 	this.animate = function(timestamp) {
 		if (self.done) return;
 
 		var now = (new Date()).getTime();
+		if (this.dt > this.frameStart + 1000) { 
+			console.log("fps: " + this.fps);
+			this.fps = this.fpsCounter;
+			this.fpsCounter = 0;
+			this.frameStart = this.dt;
+		}
 		if (now - self.dt > 1000) {
 			console.error("sKiPPing fRAmeS");
 			self.dt = now;
@@ -30,6 +39,8 @@ function Animator(target) {
 		window.requestAnimationFrame(function(timestamp) {
 			self.animate(timestamp);
 		});
+		this.fpsCounter++;
+
 	};
 
 	// begin

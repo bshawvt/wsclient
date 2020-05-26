@@ -81,18 +81,41 @@ Game.prototype.start = function() {
 			speed: 0.1,
 			rgb: "rgb(" + Math.floor(Math.random() * 255) + ", " + Math.floor(Math.random() * 255) + ", " + Math.floor(Math.random() * 255) + ")",
 			id: i,
-			bb: new BoundingBox(Math.random()*this.context.canvas.width, Math.random() * this.context.canvas.height, 0, 5, 5, 0),
+			bb: new BoundingBox(180 + Math.random() * 20, 180 + Math.random() * 20, 0, 5, 5, 0),
 			step: function(game, unused) {
 				var set = this.neighbors;//game.tree.get(this.neighbors);
 				var nself = this;
 				set.forEach(function(e) {
-					//console.log("cocks?");
 					if (nself.id !== e.id && nself.bb.intersect2d(e.bb)) {
-						nself.vdir = -nself.vdir;
-						nself.hdir = -nself.hdir;
-						nself.speed = Math.random() * 1;
+						var m = Math.floor(Math.random() * 5);
+						if (m == 0) {
+							nself.vdir = -nself.vdir;
+						}
+						else if (m==1) {
+							nself.hdir = -nself.hdir;
+						}
+						else {
+							nself.hdir = -nself.hdir;
+							nself.speed = Math.random() * 1;
+						}
 					}
 				});
+				/*for(var ix = 0; ix<self.sceneObjects.length; ix++) {
+					var item = self.sceneObjects[ix];
+					if (nself.id !== item.id && item.bb.intersect2d(this.bb)) {
+						var m = Math.floor(Math.random() * 5);
+						if (m == 0) {
+							nself.vdir = -nself.vdir;
+						}
+						else if (m==1) {
+							nself.hdir = -nself.hdir;
+						}
+						else {
+							nself.hdir = -nself.hdir;
+							nself.speed = Math.random() * 1;
+						}
+					}
+				}*/
 
 				if (this.bb.x <= 0 || this.bb.x >= game.context.canvas.width) {
 					this.hdir = -this.hdir;
@@ -132,7 +155,7 @@ Game.prototype.stop = function() {
 Game.prototype.frame = function(dt) {
 	var self = this;
 	this.dt = dt;
-	this.tree = new GridThing(5000, this.sceneObjects, 10);
+	this.tree = new GridThing(2000, this.sceneObjects, 10);
 	for(var i = 0; i < this.sceneObjects.length; i++) {
 		var item = this.sceneObjects[i];
 		if (item.removed) {
