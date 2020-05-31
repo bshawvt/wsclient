@@ -4,6 +4,9 @@
 	<title> Sandbox </title>
 	<script type="application/javascript" src="/src/engine/BoundingBox.js"></script>
 	<script type="application/javascript" src="/src/engine/GridThing.js">	</script>
+	<script type="application/javascript" src="/src/engine/GridPartition.js">	</script>
+	<script type="application/javascript" src="/src/engine/ObjectList.js">	</script>
+	<script type="application/javascript" src="/src/engine/ObjectListIterator.js">	</script>
 	<script type="application/javascript" src="/src/engine/CellContainer.js">	</script>
 	<script type="application/javascript" src="/src/engine/Canvas2d.js"></script>
 	<script type="application/javascript" src="/src/engine/Debug.js"></script>
@@ -30,39 +33,37 @@
 				{ t: 10, bb: new BoundingBox(10, 35, 0, 5, 5, 0) },
 				{ t: 10, bb: new BoundingBox(50, 35, 0, 5, 5, 0) }*/
 			];
-		var objects = 1000;
+		var objects = 5000;
 		var maxSize = 10;
 		var ii = 0;
-		for(var xi = 0; xi < objects; xi++) {
-			var x = Math.random() * width;
-			var y = Math.random() * height;
-			var w = 3;
-			var h = 3;
-			objs.push({neighbors: [], bb: new BoundingBox(x, y, 0, w, h, 0)});
+
+		for(var i = 0; i < objects; i++ ) {
+			objs.push({neighbors: [], bb: new BoundingBox(Math.floor(Math.random() * width), Math.floor(Math.random() * height), 0, 5, 5, 0) });
 		}
 		
-
-		/*for(var i = 0; i < objects; i++ ) {
-			objs.push({ bb: new BoundingBox(Math.floor(Math.random() * width), Math.floor(Math.random() * height), 0, 1 + Math.floor(Math.random() * 15), 1 + Math.floor(Math.random() * 15), 0) });
-		}*/
-		
 		
 
-		/*var p2 = new Profiler();
-			var g = new GridThing(width, height, objs, maxSize);
+		var p2 = new Profiler();
+			var g = new GridThing(width, objs, maxSize);
 		p2.start();
 		// profile some code
 		var v = null;
+		var t = 0; 
 		
 		for (var i = 0; i < objects; i++) {
 			var object = objs[i];
 			//console.log(object);
-			v = g.get(object.cells.ex, object.cells.ey, object.bb.x, object.bb.y);
-			for(var x = 0; x < v.length; x++) {
-				if (object.bb.intersect2d(v[x].bb)) {
-
-				}
-			}
+			//v = g.get(object.cells.ex, object.cells.ey, object.bb.x, object.bb.y);
+			object.neighbors.forEach(function(b) {
+				console.log(b);
+				b.forEach(function(e) {
+					if (object.bb.intersect2d(e.bb)) {
+						t++;
+					}
+				})
+				
+			});
+			v = object.neighbors;
 			//console.log(v);
 		}
 		var m2 = p2.stop();
@@ -83,10 +84,10 @@
 		var m1 = p1.stop();
 
 		console.log(v);
-		alert("number of objects: " + objects + "\nset length: " + (v.length) + "\n" + 
+		alert("number of objects: " + objects + "\nset length: " + (v.length) + "\ntotal collision count:" + (t) + "\n" + 
 			"time taken: " + m2 + "ms\n" +
 			"----------\n" + 
-			"object vs object time taken: " + m1 + "ms");*/
+			"object vs object time taken: " + m1 + "ms");
 		//console.log(g.cells);
 	</script>
 </body>

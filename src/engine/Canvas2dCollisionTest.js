@@ -38,6 +38,7 @@ function Game(opt) {
 
 	this.startTime = 0xffffffffffffff; // crazy number because it becomes dt after animator starts
 	this.tree = null;
+
 }
 
 /* begins main loop because of animator
@@ -73,7 +74,7 @@ Game.prototype.start = function() {
 	this.camera.attach(s);
 	this.add(s);*/
 	craw.set(this.context.canvas);
-	for(var i = 0; i < 1000; i++) {
+	for(var i = 0; i < 5000; i++) {
 		var obj = {
 			neighbors: [],
 			vdir: 1,
@@ -81,7 +82,7 @@ Game.prototype.start = function() {
 			speed: 0.1,
 			rgb: "rgb(" + Math.floor(Math.random() * 255) + ", " + Math.floor(Math.random() * 255) + ", " + Math.floor(Math.random() * 255) + ")",
 			id: i,
-			bb: new BoundingBox(180 + Math.random() * 20, 180 + Math.random() * 20, 0, 5, 5, 0),
+			bb: new BoundingBox(180 + Math.random() * 100, 180 + Math.random() * 100, 0, 5, 5, 0),
 			step: function(game, unused) {
 				var set = this.neighbors;//game.tree.get(this.neighbors);
 				var nself = this;
@@ -89,33 +90,24 @@ Game.prototype.start = function() {
 					if (nself.id !== e.id && nself.bb.intersect2d(e.bb)) {
 						var m = Math.floor(Math.random() * 5);
 						if (m == 0) {
-							nself.vdir = -nself.vdir;
+							nself.vdir = -nself.vdir || 1;
 						}
 						else if (m==1) {
-							nself.hdir = -nself.hdir;
+							nself.hdir = -nself.hdir || 1;
+						}
+						else if (m==2) {
+							nself.hdir = 0;
+						}
+						else if (m==3) {
+							nself.vdir = 0;
 						}
 						else {
 							nself.hdir = -nself.hdir;
+							nself.vdir = -nself.vdir;
 							nself.speed = Math.random() * 1;
 						}
 					}
 				});
-				/*for(var ix = 0; ix<self.sceneObjects.length; ix++) {
-					var item = self.sceneObjects[ix];
-					if (nself.id !== item.id && item.bb.intersect2d(this.bb)) {
-						var m = Math.floor(Math.random() * 5);
-						if (m == 0) {
-							nself.vdir = -nself.vdir;
-						}
-						else if (m==1) {
-							nself.hdir = -nself.hdir;
-						}
-						else {
-							nself.hdir = -nself.hdir;
-							nself.speed = Math.random() * 1;
-						}
-					}
-				}*/
 
 				if (this.bb.x <= 0 || this.bb.x >= game.context.canvas.width) {
 					this.hdir = -this.hdir;
@@ -155,7 +147,7 @@ Game.prototype.stop = function() {
 Game.prototype.frame = function(dt) {
 	var self = this;
 	this.dt = dt;
-	this.tree = new GridThing(2000, this.sceneObjects, 10);
+	this.tree = new GridPartition(2000, this.sceneObjects, 10);
 	for(var i = 0; i < this.sceneObjects.length; i++) {
 		var item = this.sceneObjects[i];
 		if (item.removed) {

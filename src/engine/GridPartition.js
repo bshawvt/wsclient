@@ -1,7 +1,8 @@
-function GridThing(size, objects, ratio) {
+function GridPartition(size, objects, ratio) {
 	this.cellIndex = 0;
 	this.lastIndex = 0;
 	this.cells = [];
+
 	this.ratio = ratio;
 	this.size = size;
 	this.columns = this.size / this.ratio;
@@ -14,12 +15,12 @@ function GridThing(size, objects, ratio) {
 
 }
 
-GridThing.prototype.get = function(x, y, x2, y2) {
-	craw.rect({x: x2, y: y2, w: 2, h: 2, f: true, c: "#00ff00"});
+GridPartition.prototype.get = function(x, y, x2, y2) {
+	//craw.rect({x: x2, y: y2, w: 2, h: 2, f: true, c: "#00ff00"});
 	var i = x + this.columns * y;
 	return this.cells[i] || [];
 };
-GridThing.prototype.insert = function(object) {
+GridPartition.prototype.insert = function(object) {
 	
 	var x = Math.floor(object.bb.x / this.ratio);
 	var y = Math.floor(object.bb.y / this.ratio);
@@ -29,29 +30,20 @@ GridThing.prototype.insert = function(object) {
 	var dy = y * this.ratio;
 	
 	if (this.cells[i] === undefined) {
-		this.cells[i] = [];
+		this.cells[i] = new ObjectList(object);
 		craw.rect({x: dx, y: dy, w: this.ratio, h: this.ratio, f: false, c: "#f00"});
+	}
+	else {
+		this.cells[i].fastAdd(object);
 	}
 
 	// nearest neighbors
 	// cell we belong to
-	//object.neighbors = this.cells[i];
-	if ((object.bb.x / this.ratio) > x) {
-
-	}
-	var i2 = x * this.columns * y;
-	var i3 = x * this.columns * y;
-	var i4 = x * this.columns * y;
-
-	object.neighbors.push(this.cells[i]);
-	//object.neighbors.push(this.cells[i2]);
-	//object.neighbors.push(this.cells[i3]);
-	//object.neighbors.push(this.cells[i4]);
+	object.neighbors = this.cells[i];
 
 
 
 
-	this.cells[i].push(object);
 	//console.log(x, y, i);
 
 };

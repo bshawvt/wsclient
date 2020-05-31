@@ -1,0 +1,6 @@
+progression system ideas
+
+every 10 character levels a character will receive 1 level point.
+level points can be spent to unlock skill and ability progressions such as guild only training. skills/abilities can be increased up to 100% through the use of experience points. skills/abilities will normally only be pushed above 100% through the use of items and boons however a level point can be applied to individual skills/abilities to continue improving mastery at exuberant experience point costs.
+
+

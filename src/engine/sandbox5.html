@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title> Client page </title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, minimal-ui">
+		<meta name="mobile-web-app-capable" content="yes">
+		
+
+		<!--<link href="https://fonts.googleapis.com/css?family=Roboto|Montserrat|Thasadith|Coiny" rel="stylesheet">
+		
+
+		<link rel="stylesheet" type="text/css" href="/src/core/sandbox.1.css">-->
+
+		<!--<script type="application/javascript" src="/src/engine/tests/.js"></script>-->
+		
+	</head>
+	<body>
+		<div id="app-content">
+			<span id="app-loading"></span>
+			<script type="text/javascript">
+				if (window.Worker) {
+					var work = new Worker("/src/engine/Init.js");
+					work.postMessage([0, 1]);
+					//work.start(document, window);
+				}
+			</script>
+		</div>
+	</body>
+</html>
