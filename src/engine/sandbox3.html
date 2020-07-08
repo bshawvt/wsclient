@@ -33,12 +33,12 @@
 				{ t: 10, bb: new BoundingBox(10, 35, 0, 5, 5, 0) },
 				{ t: 10, bb: new BoundingBox(50, 35, 0, 5, 5, 0) }*/
 			];
-		var objects = 5000;
-		var maxSize = 10;
+		var objects = 500;
+		var maxSize = 20;
 		var ii = 0;
 
 		for(var i = 0; i < objects; i++ ) {
-			objs.push({neighbors: [], bb: new BoundingBox(Math.floor(Math.random() * width), Math.floor(Math.random() * height), 0, 5, 5, 0) });
+			objs.push({neighbors: [], bb: new BoundingBox(Math.floor(Math.random() * width), Math.floor(Math.random() * height), 0, Math.floor(1+Math.random()*4), Math.floor(1+Math.random()*4), 0) });
 		}
 		
 		

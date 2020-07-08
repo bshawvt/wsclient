@@ -82,7 +82,7 @@ Game.prototype.start = function() {
 			speed: 0.1,
 			rgb: "rgb(" + Math.floor(Math.random() * 255) + ", " + Math.floor(Math.random() * 255) + ", " + Math.floor(Math.random() * 255) + ")",
 			id: i,
-			bb: new BoundingBox(180 + Math.random() * 100, 180 + Math.random() * 100, 0, 5, 5, 0),
+			bb: new BoundingBox(10 + Math.random() * 500, 10 + Math.random() * 500, 0, 5, 5, 0),
 			step: function(game, unused) {
 				var set = this.neighbors;//game.tree.get(this.neighbors);
 				var nself = this;

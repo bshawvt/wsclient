@@ -5,7 +5,7 @@ function GridThing(size, objects, ratio) {
 	this.ratio = ratio;
 	this.size = size;
 	this.columns = this.size / this.ratio;
-	craw.rect({x: 0, y: 0, w: 400, h: 400, c: "#f00"});
+	//craw.rect({x: 0, y: 0, w: 400, h: 400, c: "#f00"});
 
 	for(var i = 0; i < objects.length; i++) {
 		this.insert(objects[i]);
