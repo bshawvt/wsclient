@@ -74,7 +74,7 @@ Game.prototype.start = function() {
 	this.camera.attach(s);
 	this.add(s);*/
 	craw.set(this.context.canvas);
-	for(var i = 0; i < 5000; i++) {
+	for(var i = 0; i < 2000; i++) {
 		var obj = {
 			neighbors: [],
 			vdir: 1,
@@ -147,7 +147,7 @@ Game.prototype.stop = function() {
 Game.prototype.frame = function(dt) {
 	var self = this;
 	this.dt = dt;
-	this.tree = new GridPartition(2000, this.sceneObjects, 10);
+	this.tree = new GridThing(2000, this.sceneObjects, 10);
 	for(var i = 0; i < this.sceneObjects.length; i++) {
 		var item = this.sceneObjects[i];
 		if (item.removed) {

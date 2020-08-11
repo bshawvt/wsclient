@@ -19,7 +19,6 @@ QuadTree.prototype.constructor_root = function(maxDepth, x, y, width, height, ob
 	this.divided = false;
 
 
-	
 
 	this.x = x;
 	this.y = y;
